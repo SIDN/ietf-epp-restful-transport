@@ -524,8 +524,105 @@ code.
 
 The <logout> command MUST NOT be implemented by the server.
 
+## Query Resources
 
+### Check
 
+-  Request: HEAD {collection}/{id}
+
+-  Request payload: N/A
+
+-  Response payload: N/A
+
+The HTTP header X-REPP-avail with a value of "1" or "0" is returned,
+depending on whether the object can be provisioned or not.
+
+A <check> request MUST be limited to checking only one resource {id}
+at a time.  This may seem a step backwards when compared to the check
+command defined in the object mapping of the EPP RFCs where multiple
+object-ids are allowed inside a check command. The RESTful check operation 
+can be load balanced more efficient when there is only a single resource {id}
+that needs to be checked.
+
+The server MUST NOT support any <object:reason> elements described in
+the EPP object mapping RFCs.
+
+### Info
+
+-  Request: GET {collection}/{id}
+
+-  Request payload: OPTIONAL X-REPP-authinfo HTTP header with
+  <authInfo>.
+
+-  Response payload: Object <info> response.
+
+A object <info> request MUST be performed with the HTTP GET method on
+a resource identifying an object instance.  The response MUST be a
+response message as described in object mapping of the EPP RFCs,
+possibly extended with an [@!RFC3915] extension element (<rgp:
+infData>).
+
+#### Domain Name
+
+A domain name <info> differs from a contact- and host <info> in the
+sense that EPP Domain Name Mapping [@!RFC5731], Section 3.1.2 describes
+an OPTIONAL "hosts" attribute for the <domain:name> element.  This
+attribute is mapped to additional REST resources to be used in a
+domain name info request.
+
+The specified default value is "all".  This default is mapped to a
+shortcut, the resource object instance URL without any additional
+labels.
+
+-  default: GET domains/{id}
+
+-  Hosts=all: GET domains/{id}/all
+
+-  Hosts=del: GET domains/{id}/del
+
+-  Hosts=sub: GET domains/{id}/sub
+
+-  Hosts=none: GET domains/{id}/none
+
+   The server MAY require the client to include additional authorization
+   information. The authorization data MUST be sent with the "X-REPP-
+   authinfo" HTTP request-header.
+
+###  Poll
+
+####  Poll Request
+
+-  Request: GET messages/
+
+-  Request payload: N/A
+
+-  Response payload: Poll request response message.
+
+A client MUST use the HTTP GET method on the messages collection to
+request the message at the head of the queue.
+
+####  Poll Ack
+
+-  Request: DELETE messages/{id}
+
+-  Request payload: N/A
+
+-  Response payload: Poll ack response message
+
+A client MUST use the HTTP DELETE method on a message instance to
+remove the message from the message queue.
+
+####  Transfer Query Op
+
+-  Request: GET {collection}/{id}/transfer
+
+-  Request payload: Optional X-REPP-authinfo HTTP header with
+  <authInfo>
+
+-  Response payload: Transfer query response message.
+
+A <transfer> query MUST be performed with the HTTP GET method on the
+transfer resource of a specific object instance.
 
 
 
