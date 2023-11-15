@@ -9,22 +9,22 @@ PDF := $(patsubst %.md,%.pdf,$(wildcard *.md))
 txt: $(TXT)
 
 %.txt: %.xml
-	xml2rfc --text --v3 ../rfc/$< -p ../rfc
+	xml2rfc --text --v3 ../docs/$< -p ../rfc
 
 html: $(HTML)
 
 %.html: %.xml
-	xml2rfc --html --v3 ../rfc/$< -p ../rfc
+	xml2rfc --html --v3 ../docs/$< -p ../rfc
 
 xml: $(XML)
 
 %.xml: %.md
-	$(MMARK) $< > ../rfc/$(basename $<).xml
+	$(MMARK) $< > ../docs/$(basename $<).xml
 
 pdf: $(PDF)
 
 %.pdf: %.xml
-	xml2rfc --pdf --v3 ../rfc/$< -p ../rfc
+	xml2rfc --pdf --v3 ../docs/$< -p ../rfc
 
 .PHONY: clean
 clean:
