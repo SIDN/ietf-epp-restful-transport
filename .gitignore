@@ -1,8 +1,6 @@
-*.html
 *.pdf
 *.redxml
 *.swp
-*.txt
 *.upload
 *~
 .tags
@@ -17,8 +15,8 @@
 /versioned/
 Gemfile.lock
 archive.json
-draft-epp-restful-transport.xml
 package-lock.json
 report.xml
 !requirements.txt
 build/*
+.DS_Store

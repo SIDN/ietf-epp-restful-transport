@@ -1,0 +1,168 @@
+
+
+
+
+Network Working Group                                         M. Wullink
+Internet-Draft                                                 M. Davids
+Intended status: Standards Track                               SIDN Labs
+Expires: 18 May 2024                                    15 November 2023
+
+
+        Extensible Provisioning Protocol (EPP) RESTful Transport
+                   draft-epp-restful-transport-latest
+
+Abstract
+
+   This document specifies a 'RESTful interface for EPP' (REPP) with the
+   aim to improve efficiency and interoperability of EPP systems.
+
+   This document includes a new EPP Protocol Extension as well as a
+   mapping of [RFC5730] XML-commands to an HTTP based (RESTful)
+   interface.  Existing semantics and mappings as defined in [RFC5731],
+   [RFC5732] and [RFC5733] are largely retained and reusable in RESTful
+   EPP.
+
+   With REPP, no session is created on the EPP server.  Each request
+   from client to server will contain all of the information necessary
+   to understand the request.  The server will close the connection
+   after each HTTP request.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 18 May 2024.
+
+Copyright Notice
+
+   Copyright (c) 2023 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+
+
+
+
+Wullink & Davids           Expires 18 May 2024                  [Page 1]
+
+Internet-Draft                Domain Names                 November 2023
+
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+     1.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   2.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   3.  Security Considerations . . . . . . . . . . . . . . . . . . .   2
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   2
+   5.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   2
+   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   2
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   3
+
+1.  Introduction
+
+1.1.  Overview
+
+   The goal of domain names is to provide a mechanism for naming
+   resources in such a way that the names are usable in different hosts,
+   networks, protocol families, internets, and administrative
+   organizations.
+
+2.  Introduction
+
+   TODO Introduction
+
+3.  Security Considerations
+
+   TODO Security
+
+4.  IANA Considerations
+
+   This document has no IANA actions.
+
+5.  Acknowledgments
+
+6.  Normative References
+
+   [RFC5730]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)",
+              STD 69, RFC 5730, DOI 10.17487/RFC5730, August 2009,
+              <https://www.rfc-editor.org/info/rfc5730>.
+
+
+
+Wullink & Davids           Expires 18 May 2024                  [Page 2]
+
+Internet-Draft                Domain Names                 November 2023
+
+
+   [RFC5731]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
+              Domain Name Mapping", STD 69, RFC 5731,
+              DOI 10.17487/RFC5731, August 2009,
+              <https://www.rfc-editor.org/info/rfc5731>.
+
+   [RFC5732]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
+              Host Mapping", STD 69, RFC 5732, DOI 10.17487/RFC5732,
+              August 2009, <https://www.rfc-editor.org/info/rfc5732>.
+
+   [RFC5733]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
+              Contact Mapping", STD 69, RFC 5733, DOI 10.17487/RFC5733,
+              August 2009, <https://www.rfc-editor.org/info/rfc5733>.
+
+Authors' Addresses
+
+   Maarten Wullink
+   SIDN Labs
+   Email: maarten.wullink@sidn.nl
+
+
+   Marco Davids
+   SIDN Labs
+   Email: marco.davids@sidn.nl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Davids           Expires 18 May 2024                  [Page 3]
