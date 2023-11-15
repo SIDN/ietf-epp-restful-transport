@@ -9,12 +9,12 @@ PDF := $(patsubst %.md,%.pdf,$(wildcard *.md))
 txt: $(TXT)
 
 %.txt: %.xml
-	xml2rfc --text --v3 ../docs/$< -p ../docs
+	xml2rfc --text --v3 ../docs/$< -p ../docs --list-symbols -
 
 html: $(HTML)
 
 %.html: %.xml
-	xml2rfc --html --v3 ../docs/$< -p ../docs
+	xml2rfc --html --v3 ../docs/$< -p ../docs 
 
 xml: $(XML)
 

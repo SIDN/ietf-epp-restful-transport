@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
+<rfc version="3" ipr="trust200902" docName="draft-epp-restful-transport-latest" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true">
+
+<front>
+<title abbrev="RESTful Transport for EPP">Extensible Provisioning Protocol (EPP) RESTful Transport</title><seriesInfo value="draft-epp-restful-transport-latest" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
+<author initials="M." surname="Wullink" fullname="Maarten Wullink"><organization>SIDN Labs</organization><address><postal><street></street>
+</postal><email>maarten.wullink@sidn.nl</email>
+<uri>https://sidn.nl/</uri>
+</address></author><author initials="M." surname="Davids" fullname="Marco Davids"><organization>SIDN Labs</organization><address><postal><street></street>
+</postal><email>marco.davids@sidn.nl</email>
+<uri>https://sidn.nl/</uri>
+</address></author><date/>
+<area>Internet</area>
+<workgroup>Network Working Group</workgroup>
+
+<abstract>
+<t>This document specifies a 'RESTful transport for EPP' (REPP) with the
+aim to improve efficiency and interoperability of EPP.</t>
+</abstract>
+
+</front>
+
+<middle>
+
+<section anchor="introduction"><name>Introduction</name>
+<t>This document describes a new transport protocol for EPP, based on the <xref target="REST"></xref> architectural style.
+The newly defined transport leverages the HTTP protocol <xref target="RFC2616"></xref>
+and the principles of <xref target="REST"></xref>.
+Conforming to the REST constraints is generally referred to as being &quot;RESTful&quot;.
+Hence we dubbed the new transport protocol: &quot;'RESTful transport for EPP&quot; or &quot;REPP&quot;
+for short.</t>
+<t>This new transport machanism includes an new EPP Protocol Extension and a mapping of
+<xref target="RFC5730"></xref> XML-commands to [URI] resources. REPP, in contrast to
+the EPP specification, is stateless.  It aims to provide a
+mechanism that is more suitable for complex, high availability
+environments, as well as for environments where TCP connections can
+be unreliable.</t>
+<t>RFC 5730 <xref target="RFC5730"></xref> Section 2.1 describes that EPP can be layered over
+multiple transport protocols.  Currently, the EPP transport over TCP
+<xref target="RFC5734"></xref> is the only widely deployed transport mapping for EPP.
+This same section defines that newly defined transport mappings must
+preserve the stateful nature of EPP.</t>
+<t>The stateless nature of REPP dictates that no session state is maintained on the EPP server.  Each request
+from client to server will contain all of the information necessary
+to understand the request.  The server will close the connection
+after each HTTP request.</t>
+<t>With a stateless mechanism, some drawbacks of EPP (as mentioned in
+Section 5) are circumvented.</t>
+<t>A good understanding of the EPP base protocol specification <xref target="RFC5730"></xref>
+is advised, to grasp the extension and command mapping described in this
+document.</t>
+<t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
+&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
+document are to be interpreted as described in <xref target="RFC2119"></xref>.</t>
+</section>
+
+<section anchor="h1"><name>h1</name>
+<t>h1</t>
+
+<section anchor="h2"><name>h2</name>
+<t>h2</t>
+
+<section anchor="h3"><name>h3</name>
+<t>h3</t>
+
+<section anchor="h4"><name>h4</name>
+<t>h4</t>
+</section>
+</section>
+</section>
+</section>
+
+<section anchor="test1"><name>test1</name>
+</section>
+
+</middle>
+
+<back>
+<references><name>Normative References</name>
+<reference anchor="REST" target="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">
+  <front>
+    <title>Architectural Styles and the Design of Network-based Software Architectures</title>
+    <author fullname="Roy Fielding" initials="R." surname="Fielding">
+      <organization></organization>
+    </author>
+    <date year="2000"></date>
+  </front>
+</reference>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2616.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5730.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5734.xml"/>
+</references>
+
+</back>
+
+</rfc>

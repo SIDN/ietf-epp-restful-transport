@@ -6,8 +6,10 @@
 <title abbrev="RESTful Transport for EPP">Extensible Provisioning Protocol (EPP) RESTful Transport</title><seriesInfo value="draft-epp-restful-transport-latest" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
 <author initials="M." surname="Wullink" fullname="Maarten Wullink"><organization>SIDN Labs</organization><address><postal><street></street>
 </postal><email>maarten.wullink@sidn.nl</email>
+<uri>https://sidn.nl/</uri>
 </address></author><author initials="M." surname="Davids" fullname="Marco Davids"><organization>SIDN Labs</organization><address><postal><street></street>
 </postal><email>marco.davids@sidn.nl</email>
+<uri>https://sidn.nl/</uri>
 </address></author><date/>
 <area>Internet</area>
 <workgroup>Network Working Group</workgroup>
@@ -158,7 +160,8 @@ root}/{version}/{collection}</t>
 <t>o  {context-root} is the base URL which MUST be specified by each
   registry. The {context-root} MAY be an empty, zero length string.</t>
 <t>o  {version} is a label which identifies the interface version.  This
-  is the equivalent of the &lt;version&gt; element in the EPP RFCs.</t>
+  is the equivalent of the &lt;version&gt; element in the EPP RFCs. The version
+  used in a REPP URL MUST match the version used by EPP in the upper layer.</t>
 <t>o  {collection} MUST be substituted by &quot;domains&quot;, &quot;hosts&quot; or
   &quot;contacts&quot;, referring to either <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> or <xref target="RFC5733"></xref>.</t>
 <t>o  A trailing slash MAY be added to each request.  Implementations
@@ -687,17 +690,291 @@ transfer resource of a specific object instance.</t>
 </section>
 </section>
 </section>
+
+<section anchor="object-transform-resources"><name>Object Transform Resources</name>
+
+<section anchor="create"><name>Create</name>
+
+<ul>
+<li><t>Request: POST {collection}/</t>
+</li>
+<li><t>Request payload: Object &lt;create&gt;.</t>
+</li>
+<li><t>Response payload: Object &lt;create&gt; response.</t>
+</li>
+</ul>
+<t>A client MUST create a new object with the HTTP POST method in
+combination with an object collection.</t>
 </section>
 
-<section anchor="security-considerations"><name>Security Considerations</name>
-<t>TODO Security</t>
+<section anchor="delete"><name>Delete</name>
+
+<ul>
+<li><t>Request: DELETE {collection}/{id}</t>
+</li>
+<li><t>Request payload: N/A</t>
+</li>
+<li><t>Response payload: Object &lt;delete&gt; response.</t>
+</li>
+</ul>
+<t>Deleting an object from the registry database MUST be performed with
+the HTTP DELETE method on a REST resource specifying a specific
+object instance.</t>
+</section>
+
+<section anchor="renew"><name>Renew</name>
+
+<ul>
+<li><t>Request: PUT {collection}/{id}/validity</t>
+</li>
+<li><t>Request payload: Object &lt;renew&gt;.</t>
+</li>
+<li><t>Response payload: Object &lt;renew&gt; response.</t>
+</li>
+</ul>
+<t>Renewing an object is only specified by <xref target="RFC5731"></xref>, the &lt;renew&gt;
+command has been mapped to a validity resource.</t>
+</section>
+
+<section anchor="update"><name>Update</name>
+
+<ul>
+<li><t>Request: PUT {collection}/{id}</t>
+</li>
+<li><t>Request payload: Object:update.</t>
+</li>
+<li><t>Response payload: Update response message</t>
+</li>
+</ul>
+<t>An object &lt;update&gt; request MUST be performed with the HTTP PUT method
+on a specific object resource.  The payload MUST contain an &lt;object:
+update&gt; described in the EPP RFCs, possibly extended with <xref target="RFC3915"></xref>
+&lt;update&gt; extension elements.</t>
+</section>
+
+<section anchor="transfer"><name>Transfer</name>
+<t>Transferring an object from one sponsoring client to another is only
+   specified in <xref target="RFC5731"></xref> and <xref target="RFC5733"></xref>.  The &lt;transfer&gt; command has
+   been mapped to a transfer resource.</t>
+<t>The semantics of the HTTP DELETE method are determined by the role of
+   the client executing the method.  For the current sponsoring
+   registrar the DELETE method is defined as &quot;reject transfer&quot;.  For the
+   new sponsoring registrar the DELETE method is defined as &quot;cancel
+   transfer&quot;.</t>
+
+<section anchor="create-op"><name>Create Op</name>
+<t>o  Request: POST {collection}/{id}/transfer</t>
+<t>o  Request payload: <eref target="object:transfer">object:transfer</eref>.</t>
+<t>o  Response Payload: Transfer start response.</t>
+<t>Initiating a transfer MUST be done by creating a new &quot;transfer&quot;
+resource with the HTTP POST method on a specific domain name or
+contact object instance.  The server MAY require authorization
+information to validate the transfer request.</t>
+</section>
+
+<section anchor="cancel-op"><name>Cancel Op</name>
+
+<ul>
+<li><t>Request: DELETE {collection}/{id}/transfer</t>
+</li>
+<li><t>Request payload: N/A</t>
+</li>
+<li><t>Response payload: Transfer cancel response message.</t>
+</li>
+</ul>
+<t>The new sponsoring client MUST use the HTTP DELETE method to cancel a
+requested transfer.</t>
+</section>
+
+<section anchor="approve-op"><name>Approve Op</name>
+
+<ul>
+<li><t>Request: PUT {collection}/{id}/transfer</t>
+</li>
+<li><t>Request payload: N/A</t>
+</li>
+<li><t>Response payload: Transfer approve response message.</t>
+</li>
+</ul>
+<t>The current sponsoring client MUST use the HTTP PUT method to approve
+a transfer requested by the new sponsoring client.</t>
+</section>
+
+<section anchor="reject-op"><name>Reject Op</name>
+
+<ul>
+<li><t>Request: DELETE {collection}/{id}/transfer</t>
+</li>
+<li><t>Request payload: N/A</t>
+</li>
+<li><t>Response payload: Transfer reject response message</t>
+</li>
+</ul>
+<t>The current sponsoring client MUST use the HTTP DELETE method to
+reject a transfer requested by the new sponsoring client.</t>
+</section>
+</section>
+</section>
+</section>
+
+<section anchor="transport-considerations"><name>Transport Considerations</name>
+<t>Section 2.1 of the EPP core protocol specification <xref target="RFC5730"></xref>
+describes considerations to be addressed by protocol transport
+mappings.  This document addresses each of the considerations using a
+combination of features described in this document and features
+provided by HTTP as follows:</t>
+
+<ul>
+<li><t>HTTP is an application layer protocol which uses TCP as a
+transport protocol. TCP includes features to provide reliability,
+flow control, ordered delivery, and congestion control.  Section
+1.5 of  <xref target="RFC793"></xref> describes these features in detail; congestion
+control principles are described further in  <xref target="RFC2581"></xref> and  <xref target="RFC2914"></xref>.
+HTTP is a stateless protocol and as such it does not maintain any
+client state or session.</t>
+</li>
+<li><t>The stateful nature of EPP is no longer preserved through managed
+sessions.  There still is a controlled message exchanges because
+HTTP uses TCP as transport layer protocol.</t>
+</li>
+<li><t>HTTP 1.1 allows persistent connections which can be used to send
+multiple HTTP requests to the server using the same connection.
+The server MUST NOT allow persistent connections.</t>
+</li>
+<li><t>The server MUST NOT allow pipelining and return EPP result code
+2002 if pipelining is detected.</t>
+</li>
+<li><t>Batch-oriented processing (combining multiple EPP commands in a
+single HTTP request) MUST NOT be permitted.</t>
+</li>
+<li><t>Section 8 of this document describes features to frame EPP request
+data by adding the data to an HTTP request message-body or
+request-header.</t>
+</li>
+<li><t>A request processing failure has no influence on the processing of
+other requests.  The stateless nature of the server allows a
+client to retry a failed request or send another request.</t>
+</li>
+</ul>
+</section>
+
+<section anchor="formal-syntax"><name>Formal Syntax</name>
+<t>The extension used by REPP is specified in XML Schema
+notation.  The formal syntax presented here is a complete schema
+representation of REPP suitable for automated validation of
+EPP XML instances.  The schema is based on the XML schemas defined in
+<xref target="RFC5730"></xref>.  <xref target="RFC3735"></xref> Section 2.3 states that it MUST be announced in
+the &lt;greeting&gt; element.</t>
+
+<section anchor="xml-schema"><name>REPP XML Schema</name>
+<t>The RESTful EPP Schema.</t>
+
+<artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+      <schema xmlns:repp="urn:ietf:params:xml:ns:restful-epp-1.0"
+              xmlns:epp="urn:ietf:params:xml:ns:epp-1.0"
+              xmlns:eppcom="urn:ietf:params:xml:ns:eppcom-1.0"
+              xmlns="HTTP://www.w3.org/2001/XMLSchema"
+              targetNamespace="urn:ietf:params:xml:ns:restful-epp-1.0"
+              elementFormDefault="qualified">
+
+        <!--  Import common element types.   -->
+        <import namespace="urn:ietf:params:xml:ns:eppcom-1.0"
+                schemaLocation="eppcom-1.0.xsd"/>
+        <import namespace="urn:ietf:params:xml:ns:epp-1.0"
+                schemaLocation="epp-1.0.xsd"/>
+
+        <annotation>
+           <documentation>
+              RESTful EPP schema.
+           </documentation>
+        </annotation>
+
+        <!-- The rest element should be used as extension root. -->
+        <element name="rest" type="epp:extAnyType"/>
+
+        <!-- A request which requires auth info can use this
+             authorization shortcut without an object id. -->
+
+        <element name="authorization" type="re:authInfoType"/>
+
+        <!-- The authinfo element. For use with domain and host info
+             and domain transfer. -->
+        <complexType name="authInfoType">
+           <choice>
+              <element name="pw" type="eppcom:pwAuthInfoType"/>
+              <element name="ext" type="eppcom:extAuthInfoType"/>
+           </choice>
+        </complexType>
+
+      </schema>
+]]>
+</artwork>
+</section>
 </section>
 
 <section anchor="iana-considerations"><name>IANA Considerations</name>
-<t>This document has no IANA actions.</t>
+<t></t>
+<t>TODO: This draft defines three resource collections; domains,
+contacts, hosts.  This may require an IANA RESTful EPP collection
+protocol registry.  RFC3688 defines an IANA XML Registry and
+'restful-epp-1.0' defined here would have to be added to that:
+<eref target="http://www.iana.org/assignments/xml-registry-index.html">http://www.iana.org/assignments/xml-registry-index.html</eref></t>
 </section>
 
+<section anchor="internationalization-considerations"><name>Internationalization Considerations</name>
+<t>TODO</t>
+</section>
+
+<section anchor="security-considerations"><name>Security Considerations</name>
+<t><xref target="RFC5730"></xref> describes a &lt;login&gt; command for transmitting client
+credentials.  This command MUST NOT be used for RESTful EPP.  Due to
+the stateless nature of REST clients MUST transmit their credentials
+with each request.  The validation of the user credentials must be
+performed by an out-of-band mechanism.  This could be done with Basic
+and Digest access authentication <xref target="RFC2617"></xref> or with the use of OAuth
+<xref target="RFC5849"></xref>.</t>
+<t>EPP does not use XML encryption to protect messages.  Furthermore,
+RESTful EPP HTTP servers are vulnerable to common denial-of-service
+attacks.  Therefore, the security considerations of <xref target="RFC5734"></xref> also
+apply to RESTful EPP.</t>
+</section>
+
+<section anchor="obsolete-epp-result-codes"><name>Obsolete EPP Result Codes</name>
+<t>The following result codes specified in <xref target="RFC5730"></xref> are no longer
+meaningful in RESTful EPP and MUST NOT be used.</t>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Reason</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>1500</td>
+<td>The logout command is not used anymore.</td>
+</tr>
+
+<tr>
+<td>2002</td>
+<td>Commands can now be sent in any order.</td>
+</tr>
+
+<tr>
+<td>2100</td>
+<td>The REPP URL path includes the version.</td>
+</tr>
+
+<tr>
+<td>2200</td>
+<td>The login command is not used anymore.</td>
+</tr>
+</tbody>
+</table></section>
+
 <section anchor="acknowledgments"><name>Acknowledgments</name>
+<t>TODO</t>
 </section>
 
 </middle>
@@ -714,7 +991,10 @@ transfer resource of a specific object instance.</t>
   </front>
 </reference>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2581.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2616.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2617.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2914.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3375.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3735.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3915.xml"/>
@@ -728,8 +1008,228 @@ transfer resource of a specific object instance.</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5732.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5733.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5734.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5849.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5910.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.793.xml"/>
 </references>
+
+<section anchor="examples"><name>Examples</name>
+<t>In these examples, lines starting with &quot;C:&quot; represent data sent by a
+protocol client and lines starting with &quot;S:&quot; represent data returned
+by a REPP protocol server.  Indentation and white space in examples
+are provided only to illustrate element relationships and are not
+REQUIRED features of this protocol.</t>
+
+<section anchor="x-repp-authinfo"><name>X-REPP-authinfo</name>
+
+<section anchor="domain-info-with-authorization-data"><name>Domain Info with Authorization Data</name>
+<t>The X-REPP-authinfo header in a Domain Info Request might look like
+this:</t>
+
+<artwork><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+  <extension>
+      <re:rest xmlns:re="urn:ietf:params:xml:ns:restful-epp-1.0">
+        <re:authorization>
+            <re:pw>passwordfordomain</re:pw>
+        </re:authorization>
+      </re:rest>
+  </extension>
+</epp>
+]]>
+</artwork>
+<t>The HTTP header MUST contain the entire authorization information
+element as mentioned in Section <xref target="xml-schema"></xref></t>
+</section>
+</section>
+
+<section anchor="hello-example"><name>Hello Example</name>
+
+<section anchor="restful-hello-request"><name>RESTful &lt;hello&gt; Request</name>
+
+<artwork><![CDATA[C: OPTIONS /rest/v1/ HTTP/1.1
+C: Host: repp.example.com
+C: Cache-Control: no-cache
+C: Authorization: Basic amRvZTp0ZXN0
+C: Pragma: no-cache
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+]]>
+</artwork>
+</section>
+
+<section anchor="restful-hello-response"><name>RESTful &lt;hello&gt; Response</name>
+
+<artwork><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Length: 799
+S: Content-Type: application/epp+xml
+S: Connection: close
+S:
+S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <greeting>
+S:     <!-- rest of the greeting elements -->
+S:   </greeting>
+S: </epp>
+]]>
+</artwork>
+</section>
+</section>
+
+<section anchor="password-example"><name>Password Example</name>
+
+<section anchor="change-password-request"><name>Change Password Request</name>
+
+<artwork><![CDATA[C: PUT /rest/v1/password/ HTTP/1.1
+C: Host: repp.example.com
+C: Cache-Control: no-cache
+C: Authorization: Basic amRvZTp0ZXN0
+C: Pragma: no-cache
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-cltrid: ABC-12345
+C: Content-Type: text/plain
+C: Content-Length: 44
+C:
+C: bWFpbG1lYXQ6bWFhcnRlbi53dWxsaW5rQHNpZG4ubmw=
+]]>
+</artwork>
+</section>
+
+<section anchor="change-password-response"><name>Change Password Response</name>
+
+<artwork><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 0
+S: X-REPP-cltrid: ABC-12345
+S: X-REPP-svtrid: 54321-XYZ
+S: X-REPP-eppcode: 1000
+S: Connection: close
+]]>
+</artwork>
+</section>
+</section>
+
+<section anchor="domain-create-example"><name>Domain Create Example</name>
+
+<section anchor="domain-create-request"><name>Domain Create Request</name>
+
+<artwork><![CDATA[C: POST /rest/v1/domains/ HTTP/1.1
+C: Host: repp.example.com
+C: Cache-Control: no-cache
+C: Authorization: Basic amRvZTp0ZXN0
+C: Pragma: no-cache
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: Accept: application/epp+xml
+C: X-REPP-cltrid: ABC-12345
+C: Content-Type: text/plain
+C: Content-Length: 543
+
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+C:      xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:  <extension>
+C:   <re:rest xmlns:re="urn:ietf:params:xml:ns:restful-epp-1.0">
+C:    <domain:create>
+C:     <!-- Object specific elements-->
+C:    </domain:create>
+C:   </re:rest>
+C:  </extension>
+C: </epp>
+]]>
+</artwork>
+</section>
+
+<section anchor="domain-create-response"><name>Domain Create Response:</name>
+
+<artwork><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 642
+S: X-REPP-cltrid: ABC-12345
+S: X-REPP-svtrid: 54321-XYZ
+S: X-REPP-eppcode: 1000
+S: Content-Type: application/epp+xml
+S: Connection: close
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:   <response>
+S:      <result code="1000">
+S:         <msg>Command completed successfully</msg>
+S:      </result>
+S:      <resData>
+S:         <domain:creData
+S:             <!-- Object specific elements-->
+S:         </domain:creData>
+S:      </resData>
+S:      <trID>
+S:         <clTRID>ABC-12345</clTRID>
+S:         <svTRID>54321-XYZ</svTRID>
+S:      </trID>
+S:   </response>
+S:</epp>
+]]>
+</artwork>
+</section>
+</section>
+
+<section anchor="domain-delete-example"><name>Domain Delete Example</name>
+
+<section anchor="domain-delete-request"><name>Domain Delete Request:</name>
+
+<artwork><![CDATA[C: DELETE /rest/v1/domains/example.com HTTP/1.1
+C: Host: repp.example.com
+C: Cache-Control: no-cache
+C: Authorization: Basic amRvZTp0ZXN0
+C: Pragma: no-cache
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-cltrid: ABC-12345
+]]>
+</artwork>
+</section>
+
+<section anchor="domain-delete-response"><name>Domain Delete Response:</name>
+
+<artwork><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 505
+S: X-REPP-cltrid: ABC-12345
+S: X-REPP-svtrid: 54321-XYZ
+S: X-REPP-eppcode: 1000
+S: Content-Type: application/epp+xml
+S: Connection: close
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:   <response>
+S:      <result code="1000">
+S:         <msg>Command completed successfully</msg>
+S:      </result>
+S:      <trID>
+S:         <clTRID>ABC-12345</clTRID>
+S:         <svTRID>54321-XYZ</svTRID>
+S:       </trID>
+S:   </response>
+S:</epp>
+]]>
+</artwork>
+</section>
+</section>
+</section>
 
 </back>
 

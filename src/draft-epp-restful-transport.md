@@ -21,6 +21,7 @@ abbrev = ""
 organization = "SIDN Labs"
   [author.address]
   email = "maarten.wullink@sidn.nl"
+  uri = "https://sidn.nl/"
 
 [[author]]
 initials="M."
@@ -30,6 +31,7 @@ abbrev = ""
 organization = "SIDN Labs"
   [author.address]
   email = "marco.davids@sidn.nl"
+  uri = "https://sidn.nl/"
 %%%
 
 .# Abstract
@@ -210,7 +212,8 @@ o  {context-root} is the base URL which MUST be specified by each
   registry. The {context-root} MAY be an empty, zero length string.
 
 o  {version} is a label which identifies the interface version.  This
-  is the equivalent of the <version> element in the EPP RFCs.
+  is the equivalent of the <version> element in the EPP RFCs. The version 
+  used in a REPP URL MUST match the version used by EPP in the upper layer.
 
 o  {collection} MUST be substituted by "domains", "hosts" or
   "contacts", referring to either [@!RFC5731], [@!RFC5732] or [@!RFC5733].
@@ -499,7 +502,7 @@ After a successful password change, the HTTP header "X-REPP-eppcode"
 must contain EPP result code 1000, otherwise an appropriate 2xxx
 range EPP result code.
 
-##  Session Management Resources
+## Session Management Resources
 
 The server MUST NOT create a client session.  Login credentials MUST
 be added to each client request.  This SHOULD be done by using any of the
@@ -588,7 +591,7 @@ labels.
    information. The authorization data MUST be sent with the "X-REPP-
    authinfo" HTTP request-header.
 
-###  Poll
+### Poll
 
 ####  Poll Request
 
@@ -624,21 +627,257 @@ remove the message from the message queue.
 A <transfer> query MUST be performed with the HTTP GET method on the
 transfer resource of a specific object instance.
 
+## Object Transform Resources
+
+###  Create
+
+-  Request: POST {collection}/
+
+-  Request payload: Object <create>.
+
+-  Response payload: Object <create> response.
+
+A client MUST create a new object with the HTTP POST method in
+combination with an object collection.
+
+###  Delete
+
+-  Request: DELETE {collection}/{id}
+
+-  Request payload: N/A
+
+-  Response payload: Object <delete> response.
+
+Deleting an object from the registry database MUST be performed with
+the HTTP DELETE method on a REST resource specifying a specific
+object instance.
+
+###  Renew
+
+-  Request: PUT {collection}/{id}/validity
+
+-  Request payload: Object <renew>.
+
+-  Response payload: Object <renew> response.
+
+Renewing an object is only specified by [@!RFC5731], the <renew>
+command has been mapped to a validity resource.
+
+###  Update
+
+-  Request: PUT {collection}/{id}
+
+-  Request payload: Object:update.
+
+-  Response payload: Update response message
+
+An object <update> request MUST be performed with the HTTP PUT method
+on a specific object resource.  The payload MUST contain an <object:
+update> described in the EPP RFCs, possibly extended with [@!RFC3915]
+<update> extension elements.
+
+
+### Transfer
+
+   Transferring an object from one sponsoring client to another is only
+   specified in [@!RFC5731] and [@!RFC5733].  The <transfer> command has
+   been mapped to a transfer resource.
+
+   The semantics of the HTTP DELETE method are determined by the role of
+   the client executing the method.  For the current sponsoring
+   registrar the DELETE method is defined as "reject transfer".  For the
+   new sponsoring registrar the DELETE method is defined as "cancel
+   transfer".
+
+####  Create Op
+
+o  Request: POST {collection}/{id}/transfer
+
+o  Request payload: <object:transfer>.
+
+o  Response Payload: Transfer start response.
+
+Initiating a transfer MUST be done by creating a new "transfer"
+resource with the HTTP POST method on a specific domain name or
+contact object instance.  The server MAY require authorization
+information to validate the transfer request.
+
+####  Cancel Op
+
+-  Request: DELETE {collection}/{id}/transfer
+
+-  Request payload: N/A
+
+-  Response payload: Transfer cancel response message.
+
+The new sponsoring client MUST use the HTTP DELETE method to cancel a
+requested transfer.
+
+####  Approve Op
+
+-  Request: PUT {collection}/{id}/transfer
+
+-  Request payload: N/A
+
+-  Response payload: Transfer approve response message.
+
+The current sponsoring client MUST use the HTTP PUT method to approve
+a transfer requested by the new sponsoring client.
+
+####  Reject Op
+
+-  Request: DELETE {collection}/{id}/transfer
+
+-  Request payload: N/A
+
+-  Response payload: Transfer reject response message
+
+The current sponsoring client MUST use the HTTP DELETE method to
+reject a transfer requested by the new sponsoring client.
 
 
 
+# Transport Considerations
 
-# Security Considerations
+Section 2.1 of the EPP core protocol specification [@!RFC5730]
+describes considerations to be addressed by protocol transport
+mappings.  This document addresses each of the considerations using a
+combination of features described in this document and features
+provided by HTTP as follows:
 
-TODO Security
+-  HTTP is an application layer protocol which uses TCP as a
+  transport protocol. TCP includes features to provide reliability,
+  flow control, ordered delivery, and congestion control.  Section
+  1.5 of  [@!RFC793] describes these features in detail; congestion
+  control principles are described further in  [@!RFC2581] and  [@!RFC2914].
+  HTTP is a stateless protocol and as such it does not maintain any
+  client state or session.
+
+-  The stateful nature of EPP is no longer preserved through managed
+   sessions.  There still is a controlled message exchanges because
+   HTTP uses TCP as transport layer protocol.
+
+-  HTTP 1.1 allows persistent connections which can be used to send
+   multiple HTTP requests to the server using the same connection.
+   The server MUST NOT allow persistent connections.
+
+-  The server MUST NOT allow pipelining and return EPP result code
+   2002 if pipelining is detected.
+
+-  Batch-oriented processing (combining multiple EPP commands in a
+   single HTTP request) MUST NOT be permitted.
+
+-  Section 8 of this document describes features to frame EPP request
+   data by adding the data to an HTTP request message-body or
+   request-header.
+
+-  A request processing failure has no influence on the processing of
+   other requests.  The stateless nature of the server allows a
+   client to retry a failed request or send another request.
+
+
+# Formal Syntax
+
+The extension used by REPP is specified in XML Schema
+notation.  The formal syntax presented here is a complete schema
+representation of REPP suitable for automated validation of
+EPP XML instances.  The schema is based on the XML schemas defined in
+[@!RFC5730].  [@!RFC3735] Section 2.3 states that it MUST be announced in
+the <greeting> element.
+
+
+## REPP XML Schema {#xml-schema}
+
+The RESTful EPP Schema.
+```
+<?xml version="1.0" encoding="UTF-8"?>
+      <schema xmlns:repp="urn:ietf:params:xml:ns:restful-epp-1.0"
+              xmlns:epp="urn:ietf:params:xml:ns:epp-1.0"
+              xmlns:eppcom="urn:ietf:params:xml:ns:eppcom-1.0"
+              xmlns="HTTP://www.w3.org/2001/XMLSchema"
+              targetNamespace="urn:ietf:params:xml:ns:restful-epp-1.0"
+              elementFormDefault="qualified">
+
+        <!--  Import common element types.   -->
+        <import namespace="urn:ietf:params:xml:ns:eppcom-1.0"
+                schemaLocation="eppcom-1.0.xsd"/>
+        <import namespace="urn:ietf:params:xml:ns:epp-1.0"
+                schemaLocation="epp-1.0.xsd"/>
+
+        <annotation>
+           <documentation>
+              RESTful EPP schema.
+           </documentation>
+        </annotation>
+
+        <!-- The rest element should be used as extension root. -->
+        <element name="rest" type="epp:extAnyType"/>
+
+        <!-- A request which requires auth info can use this
+             authorization shortcut without an object id. -->
+
+        <element name="authorization" type="re:authInfoType"/>
+
+        <!-- The authinfo element. For use with domain and host info
+             and domain transfer. -->
+        <complexType name="authInfoType">
+           <choice>
+              <element name="pw" type="eppcom:pwAuthInfoType"/>
+              <element name="ext" type="eppcom:extAuthInfoType"/>
+           </choice>
+        </complexType>
+
+      </schema>
+```
 
 
 # IANA Considerations
 
-This document has no IANA actions.
+  <!--TODO ISSUE 1: Do we need XML extension -->   
+
+TODO: This draft defines three resource collections; domains,
+contacts, hosts.  This may require an IANA RESTful EPP collection
+protocol registry.  RFC3688 defines an IANA XML Registry and
+'restful-epp-1.0' defined here would have to be added to that:
+http://www.iana.org/assignments/xml-registry-index.html
+
+
+# Internationalization Considerations
+
+TODO
+
+# Security Considerations
+
+[@!RFC5730] describes a <login> command for transmitting client
+credentials.  This command MUST NOT be used for RESTful EPP.  Due to
+the stateless nature of REST clients MUST transmit their credentials
+with each request.  The validation of the user credentials must be
+performed by an out-of-band mechanism.  This could be done with Basic
+and Digest access authentication [@!RFC2617] or with the use of OAuth
+[@!RFC5849].
+
+EPP does not use XML encryption to protect messages.  Furthermore,
+RESTful EPP HTTP servers are vulnerable to common denial-of-service
+attacks.  Therefore, the security considerations of [@!RFC5734] also
+apply to RESTful EPP.
+
+
+# Obsolete EPP Result Codes
+
+The following result codes specified in [@!RFC5730] are no longer
+meaningful in RESTful EPP and MUST NOT be used.
+
+| Code | Reason                                                     
+------|------------------------------------------------------------
+| 1500 | The logout command is not used anymore.                    
+| 2002 | Commands can now be sent in any order.                     
+| 2100 | The REPP URL path includes the version.                                                  
+| 2200 | The login command is not used anymore.                     
 
 
 # Acknowledgments
+
+TODO
 
 {backmatter}
 
@@ -651,3 +890,209 @@ This document has no IANA actions.
     <date year="2000"/>
   </front>
 </reference>
+
+
+# Examples
+
+In these examples, lines starting with "C:" represent data sent by a
+protocol client and lines starting with "S:" represent data returned
+by a REPP protocol server.  Indentation and white space in examples
+are provided only to illustrate element relationships and are not
+REQUIRED features of this protocol.
+
+## X-REPP-authinfo
+
+###  Domain Info with Authorization Data
+
+The X-REPP-authinfo header in a Domain Info Request might look like
+this:
+```
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+  <extension>
+      <re:rest xmlns:re="urn:ietf:params:xml:ns:restful-epp-1.0">
+        <re:authorization>
+            <re:pw>passwordfordomain</re:pw>
+        </re:authorization>
+      </re:rest>
+  </extension>
+</epp>
+```
+
+The HTTP header MUST contain the entire authorization information
+element as mentioned in Section (#xml-schema)
+
+##  Hello Example
+
+###  RESTful <hello> Request
+
+```
+C: OPTIONS /rest/v1/ HTTP/1.1
+C: Host: repp.example.com
+C: Cache-Control: no-cache
+C: Authorization: Basic amRvZTp0ZXN0
+C: Pragma: no-cache
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+```
+
+###  RESTful <hello> Response
+
+```
+S: HTTP/1.1 200 OK
+S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Length: 799
+S: Content-Type: application/epp+xml
+S: Connection: close
+S:
+S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <greeting>
+S:     <!-- rest of the greeting elements -->
+S:   </greeting>
+S: </epp>
+```
+
+##  Password Example
+
+###  Change Password Request
+
+```
+C: PUT /rest/v1/password/ HTTP/1.1
+C: Host: repp.example.com
+C: Cache-Control: no-cache
+C: Authorization: Basic amRvZTp0ZXN0
+C: Pragma: no-cache
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-cltrid: ABC-12345
+C: Content-Type: text/plain
+C: Content-Length: 44
+C:
+C: bWFpbG1lYXQ6bWFhcnRlbi53dWxsaW5rQHNpZG4ubmw=
+```
+
+### Change Password Response
+
+```
+S: HTTP/1.1 200 OK
+S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 0
+S: X-REPP-cltrid: ABC-12345
+S: X-REPP-svtrid: 54321-XYZ
+S: X-REPP-eppcode: 1000
+S: Connection: close
+```
+
+##  Domain Create Example
+
+###  Domain Create Request
+
+```
+C: POST /rest/v1/domains/ HTTP/1.1
+C: Host: repp.example.com
+C: Cache-Control: no-cache
+C: Authorization: Basic amRvZTp0ZXN0
+C: Pragma: no-cache
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: Accept: application/epp+xml
+C: X-REPP-cltrid: ABC-12345
+C: Content-Type: text/plain
+C: Content-Length: 543
+
+C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+C:      xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:  <extension>
+C:   <re:rest xmlns:re="urn:ietf:params:xml:ns:restful-epp-1.0">
+C:    <domain:create>
+C:     <!-- Object specific elements-->
+C:    </domain:create>
+C:   </re:rest>
+C:  </extension>
+C: </epp>
+```
+
+###  Domain Create Response:
+
+```
+S: HTTP/1.1 200 OK
+S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 642
+S: X-REPP-cltrid: ABC-12345
+S: X-REPP-svtrid: 54321-XYZ
+S: X-REPP-eppcode: 1000
+S: Content-Type: application/epp+xml
+S: Connection: close
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:   <response>
+S:      <result code="1000">
+S:         <msg>Command completed successfully</msg>
+S:      </result>
+S:      <resData>
+S:         <domain:creData
+S:             <!-- Object specific elements-->
+S:         </domain:creData>
+S:      </resData>
+S:      <trID>
+S:         <clTRID>ABC-12345</clTRID>
+S:         <svTRID>54321-XYZ</svTRID>
+S:      </trID>
+S:   </response>
+S:</epp>
+```
+
+##  Domain Delete Example
+
+###  Domain Delete Request:
+
+```
+C: DELETE /rest/v1/domains/example.com HTTP/1.1
+C: Host: repp.example.com
+C: Cache-Control: no-cache
+C: Authorization: Basic amRvZTp0ZXN0
+C: Pragma: no-cache
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-cltrid: ABC-12345
+```
+
+### Domain Delete Response:
+
+```
+S: HTTP/1.1 200 OK
+S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 505
+S: X-REPP-cltrid: ABC-12345
+S: X-REPP-svtrid: 54321-XYZ
+S: X-REPP-eppcode: 1000
+S: Content-Type: application/epp+xml
+S: Connection: close
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:   <response>
+S:      <result code="1000">
+S:         <msg>Command completed successfully</msg>
+S:      </result>
+S:      <trID>
+S:         <clTRID>ABC-12345</clTRID>
+S:         <svTRID>54321-XYZ</svTRID>
+S:       </trID>
+S:   </response>
+S:</epp>
+```
