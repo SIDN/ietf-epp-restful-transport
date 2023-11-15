@@ -1,7 +1,9 @@
 # EPP over RESTful Transport
 
-[Plain text](https://sidn.github.io/ietf-epp-restful-transport/draft-epp-restful-transport.txt)
-[HTML](https://sidn.github.io/ietf-epp-restful-transport/draft-epp-restful-transport.html)
+[Plain text](https://sidn.github.io/ietf-epp-restful-transport/draft-epp-restful-transport.txt)  
+[HTML](https://sidn.github.io/ietf-epp-restful-transport/draft-epp-restful-transport.html)  
+[PDF](https://sidn.github.io/ietf-epp-restful-transport/draft-epp-restful-transport.pdf)  
+[XML](https://sidn.github.io/ietf-epp-restful-transport/draft-epp-restful-transport.xml)  
 
 ## REST
 
