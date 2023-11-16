@@ -1385,7 +1385,7 @@ for the server to process the request.<a href="#section-abstract-3" class="pilcr
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4">
-                <p id="section-toc.1-1.9.2.4.1"><a href="#section-9.4" class="auto internal xref">9.4</a>.  <a href="#name-query-resources" class="internal xref">Query Resources</a></p>
+                <p id="section-toc.1-1.9.2.4.1"><a href="#section-9.4" class="auto internal xref">9.4</a>.  <a href="#name-repp-query-commands" class="internal xref">REPP Query Commands</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4.2.1">
                     <p id="section-toc.1-1.9.2.4.2.1.1"><a href="#section-9.4.1" class="auto internal xref">9.4.1</a>.  <a href="#name-check" class="internal xref">Check</a></p>
@@ -1399,7 +1399,7 @@ for the server to process the request.<a href="#section-abstract-3" class="pilcr
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5">
-                <p id="section-toc.1-1.9.2.5.1"><a href="#section-9.5" class="auto internal xref">9.5</a>.  <a href="#name-object-transform-resources" class="internal xref">Object Transform Resources</a></p>
+                <p id="section-toc.1-1.9.2.5.1"><a href="#section-9.5" class="auto internal xref">9.5</a>.  <a href="#name-repp-transform-commands" class="internal xref">REPP Transform Commands</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5.2.1">
                     <p id="section-toc.1-1.9.2.5.2.1.1"><a href="#section-9.5.1" class="auto internal xref">9.5.1</a>.  <a href="#name-create" class="internal xref">Create</a></p>
@@ -1668,16 +1668,16 @@ XML is already defined, but future JSON mappings MUDST also be supported.<a href
       <h2 id="name-message-exchange">
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-message-exchange" class="section-name selfRef">Message Exchange</a>
       </h2>
-<p id="section-8-1">A <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> XML request includes a command- and object mapping to which a
-command must be applied.  With REPP XML request messages are expressed by using
-a combination of a URL resource and an HTTP method.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-1">A <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> EPP request includes a command- and object mapping to which a
+command must be applied. REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section  <a href="#http-method" class="auto internal xref">Section 8.1</a> provides a overview of each the behaviour assinged to each method.
+REPP requests are expressed by using an URL resource, an HTTP method and optionally a HTTP header and message body.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">Data (payload) belonging to a request or response is added to the HTTP message-
 body or sent as using an HTTP header, depending on the nature of the
 request as defined in Section 9.<a href="#section-8-2" class="pilcrow">¶</a></p>
 <p id="section-8-3">An HTTP request MUST contain no more than one EPP command.  HTTP
 requests MUST be processed independently of each other and in the
 same order as the server receives them.<a href="#section-8-3" class="pilcrow">¶</a></p>
-<div id="http-method-definition">
+<div id="http-method">
 <section id="section-8.1">
         <h3 id="name-http-method-definition">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-http-method-definition" class="section-name selfRef">HTTP Method Definition</a>
@@ -1877,12 +1877,8 @@ abbreviations:<a href="#section-9-3" class="pilcrow">¶</a></p>
   "domains", "hosts", "contacts" or "messages".<a href="#section-9-4" class="pilcrow">¶</a></p>
 <p id="section-9-5">{i}:  An abbreviation for {id}: a domain name, host name, contact id
   or a message id.<a href="#section-9-5" class="pilcrow">¶</a></p>
-<p id="section-9-6">(opt):  The item is optional.<a href="#section-9-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9-7">
-<pre>    Command mapping from EPP to REPP.
-
-</pre><a href="#section-9-7" class="pilcrow">¶</a>
-</div>
+<p id="section-9-6"></p>
+<p id="section-9-7">Command mapping from EPP to REPP.<a href="#section-9-7" class="pilcrow">¶</a></p>
 <table class="center" id="table-2">
         <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
 <thead>
@@ -1890,8 +1886,6 @@ abbreviations:<a href="#section-9-3" class="pilcrow">¶</a></p>
             <th class="text-left" rowspan="1" colspan="1">EPP command</th>
             <th class="text-left" rowspan="1" colspan="1">Method</th>
             <th class="text-left" rowspan="1" colspan="1">Resource</th>
-            <th class="text-left" rowspan="1" colspan="1">Request payload</th>
-            <th class="text-left" rowspan="1" colspan="1">Response payload</th>
           </tr>
         </thead>
         <tbody>
@@ -1899,120 +1893,86 @@ abbreviations:<a href="#section-9-3" class="pilcrow">¶</a></p>
             <td class="text-left" rowspan="1" colspan="1">Hello</td>
             <td class="text-left" rowspan="1" colspan="1">OPTIONS</td>
             <td class="text-left" rowspan="1" colspan="1">/</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;greeting&gt;</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Login</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1"></td>
             <td class="text-left" rowspan="1" colspan="1">N/A</td>
             <td class="text-left" rowspan="1" colspan="1">N/A</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Logout</td>
             <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1"></td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
             <td class="text-left" rowspan="1" colspan="1">N/A</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Check</td>
             <td class="text-left" rowspan="1" colspan="1">HEAD</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Info</td>
             <td class="text-left" rowspan="1" colspan="1">GET</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">AUTH(opt)</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;info&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Poll request</td>
             <td class="text-left" rowspan="1" colspan="1">GET</td>
-            <td class="text-left" rowspan="1" colspan="1">messages</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;poll&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/messages</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Poll ack</td>
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
-            <td class="text-left" rowspan="1" colspan="1">messages/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;poll&gt; ack</td>
+            <td class="text-left" rowspan="1" colspan="1">/messages/{i}</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer (query)</td>
             <td class="text-left" rowspan="1" colspan="1">GET</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}/transfer</td>
-            <td class="text-left" rowspan="1" colspan="1">AUTH(opt)</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;transfer&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfer</td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">New password</td>
+            <td class="text-left" rowspan="1" colspan="1">Change password</td>
             <td class="text-left" rowspan="1" colspan="1">PUT</td>
-            <td class="text-left" rowspan="1" colspan="1">password</td>
-            <td class="text-left" rowspan="1" colspan="1">password</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
+            <td class="text-left" rowspan="1" colspan="1">/password</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Create</td>
             <td class="text-left" rowspan="1" colspan="1">POST</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;create&gt;</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;create&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Delete</td>
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;delete&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Renew</td>
             <td class="text-left" rowspan="1" colspan="1">PUT</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}/validity</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;renew&gt;</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;renew&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/validity</td>
           </tr>
           <tr>
-            <td class="text-left" rowspan="1" colspan="1">Transfer  (create)</td>
+            <td class="text-left" rowspan="1" colspan="1">Transfer</td>
             <td class="text-left" rowspan="1" colspan="1">POST</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}/transfer</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;transfer&gt;</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;transfer&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfer</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer (cancel)</td>
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}/transfer</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;transfer&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfer</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer  (approve)</td>
             <td class="text-left" rowspan="1" colspan="1">PUT</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}/transfer</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;transfer&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfer</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer (reject)</td>
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}/transfer</td>
-            <td class="text-left" rowspan="1" colspan="1">N/A</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;transfer&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfer</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Update</td>
             <td class="text-left" rowspan="1" colspan="1">PUT</td>
-            <td class="text-left" rowspan="1" colspan="1">{c}/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;update&gt;</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;update&gt;</td>
+            <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
           </tr>
         </tbody>
       </table>
@@ -2069,12 +2029,11 @@ range EPP result code.<a href="#section-9.2-3" class="pilcrow">¶</a></p>
         <h3 id="name-session-management-resource">
 <a href="#section-9.3" class="section-number selfRef">9.3. </a><a href="#name-session-management-resource" class="section-name selfRef">Session Management Resources</a>
         </h3>
-<p id="section-9.3-1">The server MUST NOT create a client session.  Login credentials MUST
-be added to each client request.  This SHOULD be done by using any of the
-available HTTP authentication mechanisms. Basic authentication MAY
-be, all authentication mechanisms MUST be combined with TLS <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span> for additional security.<a href="#section-9.3-1" class="pilcrow">¶</a></p>
-<p id="section-9.3-2">To protect information exchanged between an EPP client and an EPP
-server <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span> Section 9 level of security is REQUIRED.<a href="#section-9.3-2" class="pilcrow">¶</a></p>
+<p id="section-9.3-1">REPP is designed as a stateless transport, therefore session management as described in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>
+is not supported. The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state.
+All session management functionality is delegated to the HTTP layer. Because the EPP server is stateless, the
+client is required to include authentication credentials with request. This MUST be done by using any of the
+available HTTP authentication mechanisms, such as those described in <span>[<a href="#RFC2617" class="cite xref">RFC2617</a>]</span>.<a href="#section-9.3-1" class="pilcrow">¶</a></p>
 <div id="login">
 <section id="section-9.3.1">
           <h4 id="name-login">
@@ -2100,13 +2059,18 @@ code.<a href="#section-9.3.1-1" class="pilcrow">¶</a></p>
 </div>
 </section>
 </div>
-<div id="query-resources">
+<div id="repp-query-commands">
 <section id="section-9.4">
-        <h3 id="name-query-resources">
-<a href="#section-9.4" class="section-number selfRef">9.4. </a><a href="#name-query-resources" class="section-name selfRef">Query Resources</a>
+        <h3 id="name-repp-query-commands">
+<a href="#section-9.4" class="section-number selfRef">9.4. </a><a href="#name-repp-query-commands" class="section-name selfRef">REPP Query Commands</a>
         </h3>
 <p id="section-9.4-1">TODO: describe these resources use GET method and cannot send request mesage in HTTP messagebody
 must use resource URL as identifier and options auth header.<a href="#section-9.4-1" class="pilcrow">¶</a></p>
+<p id="section-9.4-2">REPP query commands use the HTTP GET methods to request information about objects from the EPP server.
+Sending content using a HTTP GET request is discouraged in <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, there exists no generally defined semantics
+for content received in a GET request.
+An EPP XML query command is mapped to a REPP commands, using a URL resource and a HTTP method. There is no requirement for a HTTP message body, however some objects require additional authorization information.
+The cliet MUST add the authorization information to a dedicated HTTP header.<a href="#section-9.4-2" class="pilcrow">¶</a></p>
 <div id="check">
 <section id="section-9.4.1">
           <h4 id="name-check">
@@ -2123,7 +2087,7 @@ must use resource URL as identifier and options auth header.<a href="#section-9.
               <p id="section-9.4.1-1.3.1">Response payload: N/A<a href="#section-9.4.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-9.4.1-2">The HTTP header X-REPP-avail with a value of "1" or "0" is returned,
+<p id="section-9.4.1-2">The HTTP response contains a header X-REPP-avail, the value of this header is "1" or "0",
 depending on whether the object can be provisioned or not.<a href="#section-9.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-9.4.1-3">A &lt;check&gt; request MUST be limited to checking only one resource {id}
 at a time.  This may seem a step backwards when compared to the check
@@ -2262,10 +2226,10 @@ transfer resource of a specific object instance.<a href="#section-9.4.3.3-2" cla
 </div>
 </section>
 </div>
-<div id="object-transform-resources">
+<div id="repp-transform-commands">
 <section id="section-9.5">
-        <h3 id="name-object-transform-resources">
-<a href="#section-9.5" class="section-number selfRef">9.5. </a><a href="#name-object-transform-resources" class="section-name selfRef">Object Transform Resources</a>
+        <h3 id="name-repp-transform-commands">
+<a href="#section-9.5" class="section-number selfRef">9.5. </a><a href="#name-repp-transform-commands" class="section-name selfRef">REPP Transform Commands</a>
         </h3>
 <div id="create">
 <section id="section-9.5.1">
@@ -2520,14 +2484,16 @@ protocol registry.<a href="#section-11-1" class="pilcrow">¶</a></p>
 <p id="section-13-2"><span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> describes a &lt;login&gt; command for transmitting client
 credentials.  This command MUST NOT be used for RESTful EPP.  Due to
 the stateless nature of REST clients MUST transmit their credentials
-with each request.  The validation of the user credentials must be
-performed by an out-of-band mechanism.  This could be done with Basic
-and Digest access authentication <span>[<a href="#RFC2617" class="cite xref">RFC2617</a>]</span> or with the use of OAuth
-<span>[<a href="#RFC5849" class="cite xref">RFC5849</a>]</span>.<a href="#section-13-2" class="pilcrow">¶</a></p>
-<p id="section-13-3">EPP does not use XML encryption to protect messages.  Furthermore,
+with each HTTP request. The validation of the user credentials must be
+performed by an out-of-band mechanism. Examples of authentication mechanisms are Basic
+and Digest access authentication <span>[<a href="#RFC2617" class="cite xref">RFC2617</a>]</span> or OAuth <span>[<a href="#RFC5849" class="cite xref">RFC5849</a>]</span>.<a href="#section-13-2" class="pilcrow">¶</a></p>
+<p id="section-13-3">To protect data confidentiality and integrity, all data transport between the client
+ and server must use TLS <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span>. Section 9 of <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span> describes the level of security
+ that is REQUIRED.<a href="#section-13-3" class="pilcrow">¶</a></p>
+<p id="section-13-4">EPP does not use XML encryption to protect messages.  Furthermore,
 RESTful EPP HTTP servers are vulnerable to common denial-of-service
 attacks.  Therefore, the security considerations of <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span> also
-apply to RESTful EPP.<a href="#section-13-3" class="pilcrow">¶</a></p>
+apply to RESTful EPP.<a href="#section-13-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="obsolete-epp-result-codes">
@@ -2644,8 +2610,12 @@ meaningful in RESTful EPP and MUST NOT be used.<a href="#section-14-1" class="pi
 <span class="refAuthor">Hammer-Lahav, E., Ed.</span>, <span class="refTitle">"The OAuth 1.0 Protocol"</span>, <span class="seriesInfo">RFC 5849</span>, <span class="seriesInfo">DOI 10.17487/RFC5849</span>, <time datetime="2010-04" class="refDate">April 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5849">https://www.rfc-editor.org/info/rfc5849</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC793">[RFC793]</dt>
-    <dd>
+      <dd>
 <span class="refAuthor">Postel, J.</span>, <span class="refTitle">"Transmission Control Protocol"</span>, <span class="seriesInfo">RFC 793</span>, <span class="seriesInfo">DOI 10.17487/RFC0793</span>, <time datetime="1981-09" class="refDate">September 1981</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc793">https://www.rfc-editor.org/info/rfc793</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9110">[RFC9110]</dt>
+    <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>

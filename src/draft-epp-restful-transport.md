@@ -214,9 +214,9 @@ XML is already defined, but future JSON mappings MUDST also be supported.
 
 # Message Exchange
 
-A [@!RFC5730] XML request includes a command- and object mapping to which a
-command must be applied.  With REPP XML request messages are expressed by using 
-a combination of a URL resource and an HTTP method.
+A [@!RFC5730] EPP request includes a command- and object mapping to which a
+command must be applied. REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section  (#http-method) provides a overview of each the behaviour assinged to each method.
+REPP requests are expressed by using an URL resource, an HTTP method and optionally a HTTP header and message body.
 
 Data (payload) belonging to a request or response is added to the HTTP message-
 body or sent as using an HTTP header, depending on the nature of the
@@ -228,7 +228,7 @@ requests MUST be processed independently of each other and in the
 same order as the server receives them.
 
 
-## HTTP Method Definition
+## HTTP Method Definition {#http-method}
 
 The operations on resources MUST be performed by using an HTTP method. The
 server MUST support the following "verbs" ([@!REST]).
@@ -409,29 +409,29 @@ abbreviations:
 {i}:  An abbreviation for {id}: a domain name, host name, contact id
   or a message id.
 
-(opt):  The item is optional.
+   <!--TODO ISSUE #16: do we support changing password using /password  -->
 
-        Command mapping from EPP to REPP.
+  Command mapping from EPP to REPP.
 
-EPP command   | Method | Resource   | Request payload | Response payload
---------------|--------|------------|-----------------|-------------
-Hello         | OPTIONS | /         | N/A            | <greeting>   |
-Login         | N/A   |             | N/A            | N/A          |
-Logout        | N/A    |            | N/A            | N/A          |
-Check         | HEAD | {c}/{i}      | N/A            | N/A          |
-Info          | GET | {c}/{i}       | AUTH(opt)      | <info>       |
-Poll request  | GET | messages      | N/A            | <poll>       |
-Poll ack      | DELETE  |  messages/{i}            | N/A            | <poll> ack   |
-Transfer (query) | GET  |  {c}/{i}/transfer            | AUTH(opt)      | <transfer>   |
-New password  | PUT  | password      | password       | N/A          |
-Create        | POST  | {c}          | <create>       | <create>     |
-Delete        | DELETE  | {c}/{i}    | N/A            | <delete>     |
-Renew         | PUT | {c}/{i}/validity              | <renew>        | <renew>      |
-Transfer  (create)      | POST  | {c}/{i}/transfer            | <transfer>     | <transfer>   |
-Transfer (cancel)     | DELETE | {c}/{i}/transfer           | N/A            | <transfer>   |
-Transfer  (approve)    | PUT | {c}/{i}/transfer               | N/A            | <transfer>   |
-Transfer (reject)      | DELETE | {c}/{i}/transfer           | N/A            | <transfer>   |
-Update        | PUT | {c}/{i}       | <update>       | <update>     |
+EPP command        | Method  | Resource   
+-------------------|---------|------------
+Hello              | OPTIONS | /         
+Login              | N/A     | N/A        
+Logout             | N/A     | N/A        
+Check              | HEAD    | /{c}/{i}      
+Info               | GET     | /{c}/{i}       
+Poll request       | GET     | /messages      
+Poll ack           | DELETE  | /messages/{i} 
+Transfer (query)   | GET     | /{c}/{i}/transfer 
+Change password    | PUT     | /password
+Create             | POST    | /{c}   
+Delete             | DELETE  | /{c}/{i}    
+Renew              | PUT     | /{c}/{i}/validity
+Transfer           | POST    | /{c}/{i}/transfer 
+Transfer (cancel)  | DELETE  | /{c}/{i}/transfer 
+Transfer  (approve)| PUT     | /{c}/{i}/transfer    
+Transfer (reject)  | DELETE  | /{c}/{i}/transfer  
+Update             | PUT     | /{c}/{i} 
 
 
 ## Hello
@@ -469,13 +469,11 @@ range EPP result code.
 
 ## Session Management Resources
 
-The server MUST NOT create a client session.  Login credentials MUST
-be added to each client request.  This SHOULD be done by using any of the
-available HTTP authentication mechanisms. Basic authentication MAY
-be, all authentication mechanisms MUST be combined with TLS [@!RFC5246] for additional security.
-
-To protect information exchanged between an EPP client and an EPP
-server [@!RFC5734] Section 9 level of security is REQUIRED.
+REPP is designed as a stateless transport, therefore session management as described in [@!RFC5730] 
+is not supported. The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state. 
+All session management functionality is delegated to the HTTP layer. Because the EPP server is stateless, the 
+client is required to include authentication credentials with request. This MUST be done by using any of the
+available HTTP authentication mechanisms, such as those described in [@!RFC2617].
 
 ###  Login
 
@@ -492,10 +490,16 @@ code.
 
 The <logout> command MUST NOT be implemented by the server.
 
-## Query Resources
+## REPP Query Commands
 
 TODO: describe these resources use GET method and cannot send request mesage in HTTP messagebody
 must use resource URL as identifier and options auth header.
+
+REPP query commands use the HTTP GET methods to request information about objects from the EPP server.
+Sending content using a HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semantics
+for content received in a GET request. 
+An EPP XML query command is mapped to a REPP commands, using a URL resource and a HTTP method. There is no requirement for a HTTP message body, however some objects require additional authorization information.
+The cliet MUST add the authorization information to a dedicated HTTP header.
 
 ### Check
 
@@ -505,7 +509,7 @@ must use resource URL as identifier and options auth header.
 
 -  Response payload: N/A
 
-The HTTP header X-REPP-avail with a value of "1" or "0" is returned,
+The HTTP response contains a header X-REPP-avail, the value of this header is "1" or "0",
 depending on whether the object can be provisioned or not.
 
 A <check> request MUST be limited to checking only one resource {id}
@@ -593,7 +597,7 @@ remove the message from the message queue.
 A <transfer> query MUST be performed with the HTTP GET method on the
 transfer resource of a specific object instance.
 
-## Object Transform Resources
+## REPP Transform Commands
 
 ###  Create
 
@@ -759,10 +763,13 @@ TODO
 [@!RFC5730] describes a <login> command for transmitting client
 credentials.  This command MUST NOT be used for RESTful EPP.  Due to
 the stateless nature of REST clients MUST transmit their credentials
-with each request.  The validation of the user credentials must be
-performed by an out-of-band mechanism.  This could be done with Basic
-and Digest access authentication [@!RFC2617] or with the use of OAuth
-[@!RFC5849].
+with each HTTP request. The validation of the user credentials must be
+performed by an out-of-band mechanism. Examples of authentication mechanisms are Basic
+and Digest access authentication [@!RFC2617] or OAuth [@!RFC5849].
+
+ To protect data confidentiality and integrity, all data transport between the client
+ and server must use TLS [@!RFC5246]. Section 9 of [@!RFC5734] describes the level of security
+ that is REQUIRED.
 
 EPP does not use XML encryption to protect messages.  Furthermore,
 RESTful EPP HTTP servers are vulnerable to common denial-of-service
