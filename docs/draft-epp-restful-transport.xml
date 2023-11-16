@@ -31,8 +31,8 @@ for the server to process the request.</t>
 <middle>
 
 <section anchor="introduction"><name>Introduction</name>
-<t>This document describes a new transport protocol for EPP, based on the <xref target="REST"></xref> architectural style.
-The newly defined transport leverages the HTTP protocol <xref target="RFC2616"></xref>
+<t>This document describes a transport protocol for EPP, based on the <xref target="REST"></xref> architectural style.
+This transport machanism leverages the HTTP protocol <xref target="RFC2616"></xref>
 and the principles of <xref target="REST"></xref>.
 Conforming to the REST constraints is generally referred to as being &quot;RESTful&quot;.
 Hence we dubbed the new transport protocol: &quot;'RESTful transport for EPP&quot; or &quot;REPP&quot;
@@ -71,13 +71,13 @@ HTTP and the principles of <xref target="REST"></xref>.</t>
 <t>EPP RFCs - This is a reference to the EPP version 1.0
 specifications <xref target="RFC5730"></xref>, <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref>.</t>
 <t>Stateful EPP - The definition according to Section 2 of <xref target="RFC5730"></xref>.</t>
-<t>Stateless EPP or REPP - The RESTful transport for EPP described in
+<t>RESTful EPP or REPP - The RESTful transport for EPP described in
 this document.</t>
 <t>URL - A Uniform Resource Locator as defined in <xref target="RFC3986"></xref>.</t>
 <t>Resource - A network data object or service that can be identified
 by a URL.</t>
-<t>Command mapping - The mapping of <xref target="RFC5730"></xref> XML commands to
-Stateless EPP.</t>
+<t>Command mapping - The mapping of <xref target="RFC5730"></xref> EPP commands to
+RESTful EPP.</t>
 </section>
 
 <section anchor="conventions-used-in-this-document"><name>Conventions Used in This Document</name>
@@ -153,6 +153,11 @@ would require new object mapping schemas.</t>
 <t>The server MUST return HTTP Status-Code 412 when the object
 identifier (for example <eref target="domain:name">domain:name</eref>, <eref target="host:name">host:name</eref> or <eref target="contact:id">contact:id</eref>)
 in the HTTP message-body does not match the {id} object identifier in the URL.</t>
+</section>
+
+<section anchor="data-format"><name>Data format</name>
+<t>TODO Describe how REP MUST be data format agnostic and support multiple data formats.
+XML is already defined, but future JSON mappings MUDST also be supported.</t>
 </section>
 
 <section anchor="message-exchange"><name>Message Exchange</name>

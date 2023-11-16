@@ -103,7 +103,7 @@ specifications [@!RFC5730], [@!RFC5731], [@!RFC5732] and [@!RFC5733].
 
 Stateful EPP - The definition according to Section 2 of [@!RFC5730].
 
-Stateless EPP or REPP - The RESTful transport for EPP described in
+RESTful EPP or REPP - The RESTful transport for EPP described in
 this document.
 
 URL - A Uniform Resource Locator as defined in [@!RFC3986].
@@ -111,8 +111,8 @@ URL - A Uniform Resource Locator as defined in [@!RFC3986].
 Resource - A network data object or service that can be identified
 by a URL.
 
-Command mapping - The mapping of [@!RFC5730] XML commands to
-Stateless EPP.
+Command mapping - The mapping of [@!RFC5730] EPP commands to
+RESTful EPP.
 
 
 # Conventions Used in This Document
@@ -207,6 +207,10 @@ The server MUST return HTTP Status-Code 412 when the object
 identifier (for example <domain:name>, <host:name> or <contact:id>)
 in the HTTP message-body does not match the {id} object identifier in the URL.
 
+# Data format 
+
+TODO Describe how REP MUST be data format agnostic and support multiple data formats.
+XML is already defined, but future JSON mappings MUDST also be supported.
 
 # Message Exchange
 

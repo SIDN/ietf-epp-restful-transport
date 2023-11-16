@@ -32,5 +32,6 @@ The GitHub interface supports creating pull requests using the Edit (✏) button
 Formatted text and HTML versions of the draft can be built using.
 
 ```
-./build.sh 
+cd src
+make all
 ```
