@@ -164,8 +164,8 @@ efficient.
 # Resource Naming Convention
 
 A resource can be a single uniquely object identifier e.g. a domain
-name, or a collection of objects.  The complete set of objects a
-client can use in registry operations MUST be identified by {context-
+name, or a collection of objects. The complete set of objects available to
+client for registry operations MUST be identified by {context-
 root}/{version}/{collection}
 
 o  {context-root} is the base URL which MUST be specified by each
@@ -186,10 +186,9 @@ A specific object instance MUST be identified by {context-root}/
 {version}/{collection}/{id} where {id} is a unique object identifier
 described in EPP RFCs.
 
-An example domain name resource following this naming convention,
-would look like this:
+An example domain name resource, for example.com, would look like this:
 
-/rest/v1/domains/example.com
+/repp/v1/domains/example.com
 
 The level below a collection MUST be used to identify an object
 instance, the level below an object instance MUST be used to identify
@@ -216,7 +215,7 @@ XML is already defined, but future JSON mappings MUDST also be supported.
 
 A [@!RFC5730] EPP request includes a command- and object mapping to which a
 command must be applied. REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section  (#http-method) provides a overview of each the behaviour assinged to each method.
-REPP requests are expressed by using an URL resource, an HTTP method and optionally a HTTP header and message body.
+REPP requests are expressed by using an URL resource, an HTTP method and optionally an HTTP header and message body.
 
 Data (payload) belonging to a request or response is added to the HTTP message-
 body or sent as using an HTTP header, depending on the nature of the
@@ -230,8 +229,8 @@ same order as the server receives them.
 
 ## HTTP Method Definition {#http-method}
 
-The operations on resources MUST be performed by using an HTTP method. The
-server MUST support the following "verbs" ([@!REST]).
+REPP commands MUST be executed by using an HTTP method on a resource
+identified by an URL. The server MUST support the following "verbs" ([@!REST]).
 
 GET:  Request a representation of a resource or a collection of resources.
 
@@ -309,14 +308,14 @@ Content-Type: ...
 
 ## REPP Response
 
-The server response is made up out of a HTTP Status-Code, HTTP
-response-headers and it MAY contain an EPP XML message in the HTTP
+The server response contains an HTTP Status-Code, HTTP
+response-headers and it MAY contain an EPP response message in the HTTP
 message-body.
 
 ### REPP Response Headers
 
 HTTP response-headers are used to transmit additional response data
-to the client.  All REPP HTTP headers must have the "X-REPP-"
+to the client.  All HTTP headers used by REPP MUST use the "X-REPP-"
 prefix.
 
 X-REPP-svtrid:  This header is the equivalent of the <svTRID> element
@@ -359,32 +358,17 @@ REPP is designed atop of the HTTP protocol, both are an
 application layer protocol with their own status- and result codes.
 The value of an EPP result code and HTTP Status-Code MUST remain
 independent of each other.  E.g. an EPP result code indicating an
-error can be combined with an HTTP request with Status-Code 200.
+error can be combined with an HTTP request with Status-Code 200 when the 
+EPP command result contains an error, but the HTTP request was successful.
 
+EPP result code:  MUST only return EPP result information relating to
+  the EPP protocol.  The HTTP header "X-REPP-eppcode" MAY be used
+  to add EPP result information to the HTTP layer.
+  
 HTTP Status-Code:  MUST only return status information related to the
   HTTP protocol, When there is a mismatch between the object
   identifier in the HTTP message-body and the resource URL HTTP
   Status-Code 412 MUST be returned.
-
-  The following EPP result codes specify an interface-,
-  authorization-, authentication- or an internal server error and
-  MUST NOT be used in REPP.  Instead, when the related error
-  occurs, an HTTP Status-Code MUST be returned in accordance to the
-mapping shown in Table 1.
-
-EPP result code:  MUST only return EPP result information relating to
-  the EPP protocol.  The HTTP header "X-REPP-eppcode" MUST be used
-  for EPP result code information.
-
-            EPP result code and HTTP Status-Code mapping.
-
-EPP result code     | HTTP Status-Code
---------|------
-2000 unknown command     | 400
-2201 authorization error   | 401
-2202 Invalid authorization information | 401
-2101 unimplemented command  | 501
-
 
 
 # Command Mapping
@@ -399,17 +383,14 @@ body of the request, 4. the response payload, being the HTTP message-
 body of the response.
 
 Table 2 list a mapping for each EPP to REPP, the subsequent sections
-provide details for each request.  Each URL in the table is prefixed
-with "/repp/v1/".  To make the table fit we use the following
-abbreviations:
+provide details for each request. Each URL in the table i ussumed to have
+"/repp/v1/" prefixed. 
 
 {c}:  An abbreviation for {collection}: this MUST be substituted with
   "domains", "hosts", "contacts" or "messages".
 
 {i}:  An abbreviation for {id}: a domain name, host name, contact id
   or a message id.
-
-   <!--TODO ISSUE #16: do we support changing password using /password  -->
 
   Command mapping from EPP to REPP.
 
@@ -436,21 +417,22 @@ Update             | PUT     | /{c}/{i}
 
 ## Hello
 
-- Request: OPTIONS /repp/v1
+- Request: OPTIONS /{context-root}/{version}
 
 - Request payload: N/A
 
-- Response payload: <greeting>
+- Response payload: Greeting content
 
-The <greeting> (Section 2.4 RFC 5730) MUST NOT be automatically
-transmitted by the server with each new HTTP connection.  The server
-MUST send a <greeting> element in response to a OPTIONS method on the
-root "/" resource.
+The server MUST send a Greeting response, as defined in section 2.4 of [@!RFC5730] in response 
+to request using the HTTP OPTIONS method on the root "/" resource.
 
-A REPP client MUST NOT use a <hello> XML payload.
-
+A REPP client MUST not add content to the HTTP message body of a Hello request.
+The version information returned by the server in the Hello response must match the version used in the 
+URL of the REPP implementation.
 
 ## Password
+
+   <!--TODO ISSUE #16: do we support changing password using /password  -->
 
 -  Request: PUT /repp/v1/password
 
@@ -469,15 +451,19 @@ range EPP result code.
 
 ## Session Management Resources
 
-REPP is designed as a stateless transport, therefore session management as described in [@!RFC5730] 
-is not supported. The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state. 
-All session management functionality is delegated to the HTTP layer. Because the EPP server is stateless, the 
-client is required to include authentication credentials with request. This MUST be done by using any of the
+One of the design goals of REPP is to enable easily scaleable EPP services.
+This means that session management as described in [@!RFC5730] is not supported, session management functions are delegated to the HTTP layer.
+
+The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state. 
+The client MUST include authentication credentials with each request. This MAY be done by using any of the
 available HTTP authentication mechanisms, such as those described in [@!RFC2617].
 
 ###  Login
 
-The <login> command MUST NOT be implemented by a server.  The <newPW>
+The <login> command MUST NOT be implemented by a server. 
+
+  <!--TODO ISSUE #16: do we support changing password using /password  -->
+The <newPW>
 element has been replaced by the Password resource.  The <lang>
 element has been replaced by the Accept-Language HTTP request-header.
 The <svcs> element has no equivalent in RESTful EPP, the client can
@@ -496,9 +482,9 @@ TODO: describe these resources use GET method and cannot send request mesage in 
 must use resource URL as identifier and options auth header.
 
 REPP query commands use the HTTP GET methods to request information about objects from the EPP server.
-Sending content using a HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semantics
+Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semantics
 for content received in a GET request. 
-An EPP XML query command is mapped to a REPP commands, using a URL resource and a HTTP method. There is no requirement for a HTTP message body, however some objects require additional authorization information.
+An EPP XML query command is mapped to a REPP commands, using a URL resource and an HTTP method. There is no requirement for an HTTP message body, however some objects require additional authorization information.
 The cliet MUST add the authorization information to a dedicated HTTP header.
 
 ### Check
@@ -842,7 +828,7 @@ element, formatted as described in the EPP RFCs.
 ###  RESTful <hello> Request
 
 ```
-C: OPTIONS /rest/v1/ HTTP/1.1
+C: OPTIONS /repp/v1/ HTTP/1.1
 C: Host: repp.example.com
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
@@ -876,7 +862,7 @@ S: </epp>
 ###  Change Password Request
 
 ```
-C: PUT /rest/v1/password/ HTTP/1.1
+C: PUT /repp/v1/password/ HTTP/1.1
 C: Host: repp.example.com
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
@@ -910,7 +896,7 @@ S: Connection: close
 
 TODO: remove extension from example below
 ```
-C: POST /rest/v1/domains/ HTTP/1.1
+C: POST /repp/v1/domains/ HTTP/1.1
 C: Host: repp.example.com
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
@@ -974,7 +960,7 @@ S:</epp>
 ###  Domain Delete Request:
 
 ```
-C: DELETE /rest/v1/domains/example.com HTTP/1.1
+C: DELETE /repp/v1/domains/example.com HTTP/1.1
 C: Host: repp.example.com
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0

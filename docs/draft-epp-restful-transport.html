@@ -1621,8 +1621,8 @@ efficient.<a href="#section-5-3" class="pilcrow">¶</a></p>
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-resource-naming-convention" class="section-name selfRef">Resource Naming Convention</a>
       </h2>
 <p id="section-6-1">A resource can be a single uniquely object identifier e.g. a domain
-name, or a collection of objects.  The complete set of objects a
-client can use in registry operations MUST be identified by {context-
+name, or a collection of objects. The complete set of objects available to
+client for registry operations MUST be identified by {context-
 root}/{version}/{collection}<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2">o  {context-root} is the base URL which MUST be specified by each
   registry. The {context-root} MAY be an empty, zero length string.<a href="#section-6-2" class="pilcrow">¶</a></p>
@@ -1637,9 +1637,8 @@ root}/{version}/{collection}<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-6">A specific object instance MUST be identified by {context-root}/
 {version}/{collection}/{id} where {id} is a unique object identifier
 described in EPP RFCs.<a href="#section-6-6" class="pilcrow">¶</a></p>
-<p id="section-6-7">An example domain name resource following this naming convention,
-would look like this:<a href="#section-6-7" class="pilcrow">¶</a></p>
-<p id="section-6-8">/rest/v1/domains/example.com<a href="#section-6-8" class="pilcrow">¶</a></p>
+<p id="section-6-7">An example domain name resource, for example.com, would look like this:<a href="#section-6-7" class="pilcrow">¶</a></p>
+<p id="section-6-8">/repp/v1/domains/example.com<a href="#section-6-8" class="pilcrow">¶</a></p>
 <p id="section-6-9">The level below a collection MUST be used to identify an object
 instance, the level below an object instance MUST be used to identify
 attributes of the object instance.<a href="#section-6-9" class="pilcrow">¶</a></p>
@@ -1670,7 +1669,7 @@ XML is already defined, but future JSON mappings MUDST also be supported.<a href
       </h2>
 <p id="section-8-1">A <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> EPP request includes a command- and object mapping to which a
 command must be applied. REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section  <a href="#http-method" class="auto internal xref">Section 8.1</a> provides a overview of each the behaviour assinged to each method.
-REPP requests are expressed by using an URL resource, an HTTP method and optionally a HTTP header and message body.<a href="#section-8-1" class="pilcrow">¶</a></p>
+REPP requests are expressed by using an URL resource, an HTTP method and optionally an HTTP header and message body.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">Data (payload) belonging to a request or response is added to the HTTP message-
 body or sent as using an HTTP header, depending on the nature of the
 request as defined in Section 9.<a href="#section-8-2" class="pilcrow">¶</a></p>
@@ -1682,8 +1681,8 @@ same order as the server receives them.<a href="#section-8-3" class="pilcrow">¶
         <h3 id="name-http-method-definition">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-http-method-definition" class="section-name selfRef">HTTP Method Definition</a>
         </h3>
-<p id="section-8.1-1">The operations on resources MUST be performed by using an HTTP method. The
-server MUST support the following "verbs" (<span>[<a href="#REST" class="cite xref">REST</a>]</span>).<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-1">REPP commands MUST be executed by using an HTTP method on a resource
+identified by an URL. The server MUST support the following "verbs" (<span>[<a href="#REST" class="cite xref">REST</a>]</span>).<a href="#section-8.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.1-2">GET:  Request a representation of a resource or a collection of resources.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 <p id="section-8.1-3">PUT:  Update an existing resource.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
 <p id="section-8.1-4">POST:  Create a new resource.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
@@ -1760,8 +1759,8 @@ REPP, the following general-headers are REQUIRED in HTTP requests.<a href="#sect
         <h3 id="name-repp-response">
 <a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-repp-response" class="section-name selfRef">REPP Response</a>
         </h3>
-<p id="section-8.3-1">The server response is made up out of a HTTP Status-Code, HTTP
-response-headers and it MAY contain an EPP XML message in the HTTP
+<p id="section-8.3-1">The server response contains an HTTP Status-Code, HTTP
+response-headers and it MAY contain an EPP response message in the HTTP
 message-body.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 <div id="repp-response-headers">
 <section id="section-8.3.1">
@@ -1769,7 +1768,7 @@ message-body.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 <a href="#section-8.3.1" class="section-number selfRef">8.3.1. </a><a href="#name-repp-response-headers" class="section-name selfRef">REPP Response Headers</a>
           </h4>
 <p id="section-8.3.1-1">HTTP response-headers are used to transmit additional response data
-to the client.  All REPP HTTP headers must have the "X-REPP-"
+to the client.  All HTTP headers used by REPP MUST use the "X-REPP-"
 prefix.<a href="#section-8.3.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.3.1-2">X-REPP-svtrid:  This header is the equivalent of the &lt;svTRID&gt; element
   in the EPP RFCs and MUST be used accordingly.  If an HTTP message-
@@ -1806,51 +1805,15 @@ Connection:  ....<a href="#section-8.3.2-3" class="pilcrow">¶</a></p>
 application layer protocol with their own status- and result codes.
 The value of an EPP result code and HTTP Status-Code MUST remain
 independent of each other.  E.g. an EPP result code indicating an
-error can be combined with an HTTP request with Status-Code 200.<a href="#section-8.3.2-5" class="pilcrow">¶</a></p>
-<p id="section-8.3.2-6">HTTP Status-Code:  MUST only return status information related to the
+error can be combined with an HTTP request with Status-Code 200 when the
+EPP command result contains an error, but the HTTP request was successful.<a href="#section-8.3.2-5" class="pilcrow">¶</a></p>
+<p id="section-8.3.2-6">EPP result code:  MUST only return EPP result information relating to
+  the EPP protocol.  The HTTP header "X-REPP-eppcode" MAY be used
+  to add EPP result information to the HTTP layer.<a href="#section-8.3.2-6" class="pilcrow">¶</a></p>
+<p id="section-8.3.2-7">HTTP Status-Code:  MUST only return status information related to the
   HTTP protocol, When there is a mismatch between the object
   identifier in the HTTP message-body and the resource URL HTTP
-  Status-Code 412 MUST be returned.<a href="#section-8.3.2-6" class="pilcrow">¶</a></p>
-<p id="section-8.3.2-7">The following EPP result codes specify an interface-,
-  authorization-, authentication- or an internal server error and
-  MUST NOT be used in REPP.  Instead, when the related error
-  occurs, an HTTP Status-Code MUST be returned in accordance to the
-mapping shown in Table 1.<a href="#section-8.3.2-7" class="pilcrow">¶</a></p>
-<p id="section-8.3.2-8">EPP result code:  MUST only return EPP result information relating to
-  the EPP protocol.  The HTTP header "X-REPP-eppcode" MUST be used
-  for EPP result code information.<a href="#section-8.3.2-8" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-8.3.2-9">
-<pre>        EPP result code and HTTP Status-Code mapping.
-
-</pre><a href="#section-8.3.2-9" class="pilcrow">¶</a>
-</div>
-<table class="center" id="table-1">
-            <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
-<thead>
-              <tr>
-                <th class="text-left" rowspan="1" colspan="1">EPP result code</th>
-                <th class="text-left" rowspan="1" colspan="1">HTTP Status-Code</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="text-left" rowspan="1" colspan="1">2000 unknown command</td>
-                <td class="text-left" rowspan="1" colspan="1">400</td>
-              </tr>
-              <tr>
-                <td class="text-left" rowspan="1" colspan="1">2201 authorization error</td>
-                <td class="text-left" rowspan="1" colspan="1">401</td>
-              </tr>
-              <tr>
-                <td class="text-left" rowspan="1" colspan="1">2202 Invalid authorization information</td>
-                <td class="text-left" rowspan="1" colspan="1">401</td>
-              </tr>
-              <tr>
-                <td class="text-left" rowspan="1" colspan="1">2101 unimplemented command</td>
-                <td class="text-left" rowspan="1" colspan="1">501</td>
-              </tr>
-            </tbody>
-          </table>
+  Status-Code 412 MUST be returned.<a href="#section-8.3.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1870,17 +1833,15 @@ the HTTP method 3. the request payload, which is the HTTP message-
 body of the request, 4. the response payload, being the HTTP message-
 body of the response.<a href="#section-9-2" class="pilcrow">¶</a></p>
 <p id="section-9-3">Table 2 list a mapping for each EPP to REPP, the subsequent sections
-provide details for each request.  Each URL in the table is prefixed
-with "/repp/v1/".  To make the table fit we use the following
-abbreviations:<a href="#section-9-3" class="pilcrow">¶</a></p>
+provide details for each request. Each URL in the table i ussumed to have
+"/repp/v1/" prefixed.<a href="#section-9-3" class="pilcrow">¶</a></p>
 <p id="section-9-4">{c}:  An abbreviation for {collection}: this MUST be substituted with
   "domains", "hosts", "contacts" or "messages".<a href="#section-9-4" class="pilcrow">¶</a></p>
 <p id="section-9-5">{i}:  An abbreviation for {id}: a domain name, host name, contact id
   or a message id.<a href="#section-9-5" class="pilcrow">¶</a></p>
-<p id="section-9-6"></p>
-<p id="section-9-7">Command mapping from EPP to REPP.<a href="#section-9-7" class="pilcrow">¶</a></p>
-<table class="center" id="table-2">
-        <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<p id="section-9-6">Command mapping from EPP to REPP.<a href="#section-9-6" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+        <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
 <thead>
           <tr>
             <th class="text-left" rowspan="1" colspan="1">EPP command</th>
@@ -1983,20 +1944,20 @@ abbreviations:<a href="#section-9-3" class="pilcrow">¶</a></p>
         </h3>
 <ul class="normal">
 <li class="normal" id="section-9.1-1.1">
-            <p id="section-9.1-1.1.1">Request: OPTIONS /repp/v1<a href="#section-9.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="section-9.1-1.1.1">Request: OPTIONS /{context-root}/{version}<a href="#section-9.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-9.1-1.2">
             <p id="section-9.1-1.2.1">Request payload: N/A<a href="#section-9.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-9.1-1.3">
-            <p id="section-9.1-1.3.1">Response payload: &lt;greeting&gt;<a href="#section-9.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="section-9.1-1.3.1">Response payload: Greeting content<a href="#section-9.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-9.1-2">The &lt;greeting&gt; (Section 2.4 RFC 5730) MUST NOT be automatically
-transmitted by the server with each new HTTP connection.  The server
-MUST send a &lt;greeting&gt; element in response to a OPTIONS method on the
-root "/" resource.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.1-3">A REPP client MUST NOT use a &lt;hello&gt; XML payload.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
+<p id="section-9.1-2">The server MUST send a Greeting response, as defined in section 2.4 of <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> in response
+to request using the HTTP OPTIONS method on the root "/" resource.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
+<p id="section-9.1-3">A REPP client MUST not add content to the HTTP message body of a Hello request.
+The version information returned by the server in the Hello response must match the version used in the
+URL of the REPP implementation.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="password">
@@ -2004,24 +1965,25 @@ root "/" resource.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
         <h3 id="name-password">
 <a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-password" class="section-name selfRef">Password</a>
         </h3>
+<p id="section-9.2-1"></p>
 <ul class="normal">
-<li class="normal" id="section-9.2-1.1">
-            <p id="section-9.2-1.1.1">Request: PUT /repp/v1/password<a href="#section-9.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-9.2-2.1">
+            <p id="section-9.2-2.1.1">Request: PUT /repp/v1/password<a href="#section-9.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-9.2-1.2">
-            <p id="section-9.2-1.2.1">Request payload: New password<a href="#section-9.2-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-9.2-2.2">
+            <p id="section-9.2-2.2.1">Request payload: New password<a href="#section-9.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-9.2-1.3">
-            <p id="section-9.2-1.3.1">Response payload: N/A<a href="#section-9.2-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-9.2-2.3">
+            <p id="section-9.2-2.3.1">Response payload: N/A<a href="#section-9.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-9.2-2">The client MUST use the HTTP PUT method on the password resource.
+<p id="section-9.2-3">The client MUST use the HTTP PUT method on the password resource.
 This is the equivalent of the &lt;newPW&gt; element in the &lt;login&gt; command
 described in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>.  The request message-body MUST contain the
-new password which MUST be encoded using Base64 <span>[<a href="#RFC4648" class="cite xref">RFC4648</a>]</span>.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
-<p id="section-9.2-3">After a successful password change, the HTTP header "X-REPP-eppcode"
+new password which MUST be encoded using Base64 <span>[<a href="#RFC4648" class="cite xref">RFC4648</a>]</span>.<a href="#section-9.2-3" class="pilcrow">¶</a></p>
+<p id="section-9.2-4">After a successful password change, the HTTP header "X-REPP-eppcode"
 must contain EPP result code 1000, otherwise an appropriate 2xxx
-range EPP result code.<a href="#section-9.2-3" class="pilcrow">¶</a></p>
+range EPP result code.<a href="#section-9.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="session-management-resources">
@@ -2029,24 +1991,26 @@ range EPP result code.<a href="#section-9.2-3" class="pilcrow">¶</a></p>
         <h3 id="name-session-management-resource">
 <a href="#section-9.3" class="section-number selfRef">9.3. </a><a href="#name-session-management-resource" class="section-name selfRef">Session Management Resources</a>
         </h3>
-<p id="section-9.3-1">REPP is designed as a stateless transport, therefore session management as described in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>
-is not supported. The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state.
-All session management functionality is delegated to the HTTP layer. Because the EPP server is stateless, the
-client is required to include authentication credentials with request. This MUST be done by using any of the
-available HTTP authentication mechanisms, such as those described in <span>[<a href="#RFC2617" class="cite xref">RFC2617</a>]</span>.<a href="#section-9.3-1" class="pilcrow">¶</a></p>
+<p id="section-9.3-1">One of the design goals of REPP is to enable easily scaleable EPP services.
+This means that session management as described in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> is not supported, session management functions are delegated to the HTTP layer.<a href="#section-9.3-1" class="pilcrow">¶</a></p>
+<p id="section-9.3-2">The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state.
+The client MUST include authentication credentials with each request. This MAY be done by using any of the
+available HTTP authentication mechanisms, such as those described in <span>[<a href="#RFC2617" class="cite xref">RFC2617</a>]</span>.<a href="#section-9.3-2" class="pilcrow">¶</a></p>
 <div id="login">
 <section id="section-9.3.1">
           <h4 id="name-login">
 <a href="#section-9.3.1" class="section-number selfRef">9.3.1. </a><a href="#name-login" class="section-name selfRef">Login</a>
           </h4>
-<p id="section-9.3.1-1">The &lt;login&gt; command MUST NOT be implemented by a server.  The &lt;newPW&gt;
+<p id="section-9.3.1-1">The &lt;login&gt; command MUST NOT be implemented by a server.<a href="#section-9.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-9.3.1-2">
+The &lt;newPW&gt;
 element has been replaced by the Password resource.  The &lt;lang&gt;
 element has been replaced by the Accept-Language HTTP request-header.
 The &lt;svcs&gt; element has no equivalent in RESTful EPP, the client can
 use a &lt;hello&gt; to discover the server supported namespace URIs.  The
 server MUST check every XML namespace used in client XML requests.
 An unsupported namespace MUST result in the appropriate EPP result
-code.<a href="#section-9.3.1-1" class="pilcrow">¶</a></p>
+code.<a href="#section-9.3.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="logout">
@@ -2067,9 +2031,9 @@ code.<a href="#section-9.3.1-1" class="pilcrow">¶</a></p>
 <p id="section-9.4-1">TODO: describe these resources use GET method and cannot send request mesage in HTTP messagebody
 must use resource URL as identifier and options auth header.<a href="#section-9.4-1" class="pilcrow">¶</a></p>
 <p id="section-9.4-2">REPP query commands use the HTTP GET methods to request information about objects from the EPP server.
-Sending content using a HTTP GET request is discouraged in <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, there exists no generally defined semantics
+Sending content using an HTTP GET request is discouraged in <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, there exists no generally defined semantics
 for content received in a GET request.
-An EPP XML query command is mapped to a REPP commands, using a URL resource and a HTTP method. There is no requirement for a HTTP message body, however some objects require additional authorization information.
+An EPP XML query command is mapped to a REPP commands, using a URL resource and an HTTP method. There is no requirement for an HTTP message body, however some objects require additional authorization information.
 The cliet MUST add the authorization information to a dedicated HTTP header.<a href="#section-9.4-2" class="pilcrow">¶</a></p>
 <div id="check">
 <section id="section-9.4.1">
@@ -2503,8 +2467,8 @@ apply to RESTful EPP.<a href="#section-13-4" class="pilcrow">¶</a></p>
       </h2>
 <p id="section-14-1">The following result codes specified in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> are no longer
 meaningful in RESTful EPP and MUST NOT be used.<a href="#section-14-1" class="pilcrow">¶</a></p>
-<table class="center" id="table-3">
-        <caption><a href="#table-3" class="selfRef">Table 3</a></caption>
+<table class="center" id="table-2">
+        <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
 <thead>
           <tr>
             <th class="text-left" rowspan="1" colspan="1">Code</th>
@@ -2673,7 +2637,7 @@ element, formatted as described in the EPP RFCs.<a href="#appendix-A.1.1-3" clas
 <a href="#appendix-A.2.1" class="section-number selfRef">A.2.1. </a><a href="#name-restful-hello-request" class="section-name selfRef">RESTful &lt;hello&gt; Request</a>
           </h4>
 <div class="alignLeft art-text artwork" id="appendix-A.2.1-1">
-<pre>C: OPTIONS /rest/v1/ HTTP/1.1
+<pre>C: OPTIONS /repp/v1/ HTTP/1.1
 C: Host: repp.example.com
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
@@ -2724,7 +2688,7 @@ S: &lt;/epp&gt;
 <a href="#appendix-A.3.1" class="section-number selfRef">A.3.1. </a><a href="#name-change-password-request" class="section-name selfRef">Change Password Request</a>
           </h4>
 <div class="alignLeft art-text artwork" id="appendix-A.3.1-1">
-<pre>C: PUT /rest/v1/password/ HTTP/1.1
+<pre>C: PUT /repp/v1/password/ HTTP/1.1
 C: Host: repp.example.com
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
@@ -2775,7 +2739,7 @@ S: Connection: close
           </h4>
 <p id="appendix-A.4.1-1">TODO: remove extension from example below<a href="#appendix-A.4.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="appendix-A.4.1-2">
-<pre>C: POST /rest/v1/domains/ HTTP/1.1
+<pre>C: POST /repp/v1/domains/ HTTP/1.1
 C: Host: repp.example.com
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
@@ -2856,7 +2820,7 @@ S:&lt;/epp&gt;
 <a href="#appendix-A.5.1" class="section-number selfRef">A.5.1. </a><a href="#name-domain-delete-request" class="section-name selfRef">Domain Delete Request:</a>
           </h4>
 <div class="alignLeft art-text artwork" id="appendix-A.5.1-1">
-<pre>C: DELETE /rest/v1/domains/example.com HTTP/1.1
+<pre>C: DELETE /repp/v1/domains/example.com HTTP/1.1
 C: Host: repp.example.com
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0

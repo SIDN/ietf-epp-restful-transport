@@ -80,7 +80,7 @@ Table of Contents
      8.1.  HTTP Method Definition  . . . . . . . . . . . . . . . . .   7
      8.2.  REPP Request  . . . . . . . . . . . . . . . . . . . . . .   7
        8.2.1.  EPP Data  . . . . . . . . . . . . . . . . . . . . . .   7
-       8.2.2.  REPP Request Headers  . . . . . . . . . . . . . . . .   7
+       8.2.2.  REPP Request Headers  . . . . . . . . . . . . . . . .   8
        8.2.3.  Generic HTTP Headers  . . . . . . . . . . . . . . . .   8
      8.3.  REPP Response . . . . . . . . . . . . . . . . . . . . . .   8
        8.3.1.  REPP Response Headers . . . . . . . . . . . . . . . .   8
@@ -93,7 +93,7 @@ Table of Contents
        9.3.2.  Logout  . . . . . . . . . . . . . . . . . . . . . . .  13
      9.4.  REPP Query Commands . . . . . . . . . . . . . . . . . . .  13
        9.4.1.  Check . . . . . . . . . . . . . . . . . . . . . . . .  13
-       9.4.2.  Info  . . . . . . . . . . . . . . . . . . . . . . . .  13
+       9.4.2.  Info  . . . . . . . . . . . . . . . . . . . . . . . .  14
        9.4.3.  Poll  . . . . . . . . . . . . . . . . . . . . . . . .  14
      9.5.  REPP Transform Commands . . . . . . . . . . . . . . . . .  15
        9.5.1.  Create  . . . . . . . . . . . . . . . . . . . . . . .  15
@@ -104,7 +104,7 @@ Table of Contents
    10. Transport Considerations  . . . . . . . . . . . . . . . . . .  17
    11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  18
    12. Internationalization Considerations . . . . . . . . . . . . .  18
-   13. Security Considerations . . . . . . . . . . . . . . . . . . .  18
+   13. Security Considerations . . . . . . . . . . . . . . . . . . .  19
    14. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  19
 
 
@@ -118,15 +118,15 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    16. Normative References  . . . . . . . . . . . . . . . . . . . .  19
    Appendix A.  Examples . . . . . . . . . . . . . . . . . . . . . .  21
      A.1.  X-REPP-auth-info  . . . . . . . . . . . . . . . . . . . .  21
-       A.1.1.  Domain Info with Authorization Data . . . . . . . . .  21
+       A.1.1.  Domain Info with Authorization Data . . . . . . . . .  22
      A.2.  Hello Example . . . . . . . . . . . . . . . . . . . . . .  22
        A.2.1.  RESTful <hello> Request . . . . . . . . . . . . . . .  22
        A.2.2.  RESTful <hello> Response  . . . . . . . . . . . . . .  22
-     A.3.  Password Example  . . . . . . . . . . . . . . . . . . . .  22
-       A.3.1.  Change Password Request . . . . . . . . . . . . . . .  22
+     A.3.  Password Example  . . . . . . . . . . . . . . . . . . . .  23
+       A.3.1.  Change Password Request . . . . . . . . . . . . . . .  23
        A.3.2.  Change Password Response  . . . . . . . . . . . . . .  23
-     A.4.  Domain Create Example . . . . . . . . . . . . . . . . . .  23
-       A.4.1.  Domain Create Request . . . . . . . . . . . . . . . .  23
+     A.4.  Domain Create Example . . . . . . . . . . . . . . . . . .  24
+       A.4.1.  Domain Create Request . . . . . . . . . . . . . . . .  24
        A.4.2.  Domain Create Response: . . . . . . . . . . . . . . .  24
      A.5.  Domain Delete Example . . . . . . . . . . . . . . . . . .  25
        A.5.1.  Domain Delete Request:  . . . . . . . . . . . . . . .  25
@@ -261,9 +261,9 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 6.  Resource Naming Convention
 
    A resource can be a single uniquely object identifier e.g. a domain
-   name, or a collection of objects.  The complete set of objects a
-   client can use in registry operations MUST be identified by {context-
-   root}/{version}/{collection}
+   name, or a collection of objects.  The complete set of objects
+   available to client for registry operations MUST be identified by
+   {context- root}/{version}/{collection}
 
    o {context-root} is the base URL which MUST be specified by each
    registry.  The {context-root} MAY be an empty, zero length string.
@@ -293,10 +293,10 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    {version}/{collection}/{id} where {id} is a unique object identifier
    described in EPP RFCs.
 
-   An example domain name resource following this naming convention,
-   would look like this:
+   An example domain name resource, for example.com, would look like
+   this:
 
-   /rest/v1/domains/example.com
+   /repp/v1/domains/example.com
 
    The level below a collection MUST be used to identify an object
    instance, the level below an object instance MUST be used to identify
@@ -327,7 +327,7 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    HTTP method is assigned a distinct behaviour, section Section 8.1
    provides a overview of each the behaviour assinged to each method.
    REPP requests are expressed by using an URL resource, an HTTP method
-   and optionally a HTTP header and message body.
+   and optionally an HTTP header and message body.
 
 
 
@@ -348,8 +348,9 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
 8.1.  HTTP Method Definition
 
-   The operations on resources MUST be performed by using an HTTP
-   method.  The server MUST support the following "verbs" ([REST]).
+   REPP commands MUST be executed by using an HTTP method on a resource
+   identified by an URL.  The server MUST support the following "verbs"
+   ([REST]).
 
    GET: Request a representation of a resource or a collection of
    resources.
@@ -381,11 +382,10 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    GET: When payload data is required, it concerns <authInfo>.  This
    SHALL be put in the "X-REPP-auth-info" HTTP request-header.
 
-8.2.2.  REPP Request Headers
 
-   HTTP request-headers are used to transmit additional or optional
-   request data to the server.  All REPP HTTP headers must have the
-   "X-REPP-" prefix.
+
+
+
 
 
 
@@ -393,6 +393,12 @@ Wullink & Davids           Expires 19 May 2024                  [Page 7]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
+
+8.2.2.  REPP Request Headers
+
+   HTTP request-headers are used to transmit additional or optional
+   request data to the server.  All REPP HTTP headers must have the
+   "X-REPP-" prefix.
 
    X-REPP-cltrid: The client transaction identifier is the equivalent of
    the <clTRID> element in the EPP RFCs and MUST be used accordingly.
@@ -427,21 +433,15 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
 8.3.  REPP Response
 
-   The server response is made up out of a HTTP Status-Code, HTTP
-   response-headers and it MAY contain an EPP XML message in the HTTP
+   The server response contains an HTTP Status-Code, HTTP response-
+   headers and it MAY contain an EPP response message in the HTTP
    message-body.
 
 8.3.1.  REPP Response Headers
 
    HTTP response-headers are used to transmit additional response data
-   to the client.  All REPP HTTP headers must have the "X-REPP-" prefix.
-
-   X-REPP-svtrid: This header is the equivalent of the <svTRID> element
-   in the EPP RFCs and MUST be used accordingly.  If an HTTP message-
-   body with the EPP XML equivalent <svTRID> exists, both values MUST be
-   consistent.
-
-
+   to the client.  All HTTP headers used by REPP MUST use the "X-REPP-"
+   prefix.
 
 
 
@@ -449,6 +449,11 @@ Wullink & Davids           Expires 19 May 2024                  [Page 8]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
+
+   X-REPP-svtrid: This header is the equivalent of the <svTRID> element
+   in the EPP RFCs and MUST be used accordingly.  If an HTTP message-
+   body with the EPP XML equivalent <svTRID> exists, both values MUST be
+   consistent.
 
    X-REPP-cltrid: This header is the equivalent of the <clTRID> element
    in the EPP RFCs and MUST be used accordingly.  If an HTTP message-
@@ -484,18 +489,13 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    layer protocol with their own status- and result codes.  The value of
    an EPP result code and HTTP Status-Code MUST remain independent of
    each other.  E.g. an EPP result code indicating an error can be
-   combined with an HTTP request with Status-Code 200.
+   combined with an HTTP request with Status-Code 200 when the EPP
+   command result contains an error, but the HTTP request was
+   successful.
 
-   HTTP Status-Code: MUST only return status information related to the
-   HTTP protocol, When there is a mismatch between the object identifier
-   in the HTTP message-body and the resource URL HTTP Status-Code 412
-   MUST be returned.
-
-   The following EPP result codes specify an interface-, authorization-,
-   authentication- or an internal server error and MUST NOT be used in
-   REPP.  Instead, when the related error occurs, an HTTP Status-Code
-   MUST be returned in accordance to the mapping shown in Table 1.
-
+   EPP result code: MUST only return EPP result information relating to
+   the EPP protocol.  The HTTP header "X-REPP-eppcode" MAY be used to
+   add EPP result information to the HTTP layer.
 
 
 
@@ -506,25 +506,10 @@ Wullink & Davids           Expires 19 May 2024                  [Page 9]
 Internet-Draft          RESTful Transport for EPP          November 2023
 
 
-   EPP result code: MUST only return EPP result information relating to
-   the EPP protocol.  The HTTP header "X-REPP-eppcode" MUST be used for
-   EPP result code information.
-
-           EPP result code and HTTP Status-Code mapping.
-
-       +========================================+==================+
-       | EPP result code                        | HTTP Status-Code |
-       +========================================+==================+
-       | 2000 unknown command                   | 400              |
-       +----------------------------------------+------------------+
-       | 2201 authorization error               | 401              |
-       +----------------------------------------+------------------+
-       | 2202 Invalid authorization information | 401              |
-       +----------------------------------------+------------------+
-       | 2101 unimplemented command             | 501              |
-       +----------------------------------------+------------------+
-
-                                  Table 1
+   HTTP Status-Code: MUST only return status information related to the
+   HTTP protocol, When there is a mismatch between the object identifier
+   in the HTTP message-body and the resource URL HTTP Status-Code 412
+   MUST be returned.
 
 9.  Command Mapping
 
@@ -538,9 +523,8 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    body of the response.
 
    Table 2 list a mapping for each EPP to REPP, the subsequent sections
-   provide details for each request.  Each URL in the table is prefixed
-   with "/repp/v1/".  To make the table fit we use the following
-   abbreviations:
+   provide details for each request.  Each URL in the table i ussumed to
+   have "/repp/v1/" prefixed.
 
    {c}: An abbreviation for {collection}: this MUST be substituted with
    "domains", "hosts", "contacts" or "messages".
@@ -548,8 +532,24 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    {i}: An abbreviation for {id}: a domain name, host name, contact id
    or a message id.
 
-
    Command mapping from EPP to REPP.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -600,15 +600,15 @@ Internet-Draft          RESTful Transport for EPP          November 2023
            | Update             | PUT     | /{c}/{i}          |
            +--------------------+---------+-------------------+
 
-                                 Table 2
+                                 Table 1
 
 9.1.  Hello
 
-   -  Request: OPTIONS /repp/v1
+   -  Request: OPTIONS /{context-root}/{version}
 
    -  Request payload: N/A
 
-   -  Response payload: <greeting>
+   -  Response payload: Greeting content
 
 
 
@@ -618,14 +618,17 @@ Wullink & Davids           Expires 19 May 2024                 [Page 11]
 Internet-Draft          RESTful Transport for EPP          November 2023
 
 
-   The <greeting> (Section 2.4 RFC 5730) MUST NOT be automatically
-   transmitted by the server with each new HTTP connection.  The server
-   MUST send a <greeting> element in response to a OPTIONS method on the
-   root "/" resource.
+   The server MUST send a Greeting response, as defined in section 2.4
+   of [RFC5730] in response to request using the HTTP OPTIONS method on
+   the root "/" resource.
 
-   A REPP client MUST NOT use a <hello> XML payload.
+   A REPP client MUST not add content to the HTTP message body of a
+   Hello request.  The version information returned by the server in the
+   Hello response must match the version used in the URL of the REPP
+   implementation.
 
 9.2.  Password
+
 
    -  Request: PUT /repp/v1/password
 
@@ -644,28 +647,25 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
 9.3.  Session Management Resources
 
-   REPP is designed as a stateless transport, therefore session
-   management as described in [RFC5730] is not supported.  The server
-   MUST not create a client session for use across multiple client
-   requests.  The server MUST not maintain any state information
-   relating to the client or EPP process state.  All session management
-   functionality is delegated to the HTTP layer.  Because the EPP server
-   is stateless, the client is required to include authentication
-   credentials with request.  This MUST be done by using any of the
-   available HTTP authentication mechanisms, such as those described in
-   [RFC2617].
+   One of the design goals of REPP is to enable easily scaleable EPP
+   services.  This means that session management as described in
+   [RFC5730] is not supported, session management functions are
+   delegated to the HTTP layer.
+
+   The server MUST not create a client session for use across multiple
+   client requests.  The server MUST not maintain any state information
+   relating to the client or EPP process state.  The client MUST include
+   authentication credentials with each request.  This MAY be done by
+   using any of the available HTTP authentication mechanisms, such as
+   those described in [RFC2617].
 
 9.3.1.  Login
 
-   The <login> command MUST NOT be implemented by a server.  The <newPW>
-   element has been replaced by the Password resource.  The <lang>
-   element has been replaced by the Accept-Language HTTP request-header.
-   The <svcs> element has no equivalent in RESTful EPP, the client can
-   use a <hello> to discover the server supported namespace URIs.  The
-   server MUST check every XML namespace used in client XML requests.
-   An unsupported namespace MUST result in the appropriate EPP result
-   code.
+   The <login> command MUST NOT be implemented by a server.
 
+   The <newPW> element has been replaced by the Password resource.  The
+   <lang> element has been replaced by the Accept-Language HTTP request-
+   header.  The <svcs> element has no equivalent in RESTful EPP, the
 
 
 
@@ -673,6 +673,11 @@ Wullink & Davids           Expires 19 May 2024                 [Page 12]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
+
+   client can use a <hello> to discover the server supported namespace
+   URIs.  The server MUST check every XML namespace used in client XML
+   requests.  An unsupported namespace MUST result in the appropriate
+   EPP result code.
 
 9.3.2.  Logout
 
@@ -685,11 +690,11 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    options auth header.
 
    REPP query commands use the HTTP GET methods to request information
-   about objects from the EPP server.  Sending content using a HTTP GET
+   about objects from the EPP server.  Sending content using an HTTP GET
    request is discouraged in [RFC9110], there exists no generally
    defined semantics for content received in a GET request.  An EPP XML
    query command is mapped to a REPP commands, using a URL resource and
-   a HTTP method.  There is no requirement for a HTTP message body,
+   an HTTP method.  There is no requirement for an HTTP message body,
    however some objects require additional authorization information.
    The cliet MUST add the authorization information to a dedicated HTTP
    header.
@@ -716,12 +721,7 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    The server MUST NOT support any object:reason (object:reason)
    elements described in the EPP object mapping RFCs.
 
-9.4.2.  Info
 
-   -  Request: GET {collection}/{id}
-
-   -  Request payload: OPTIONAL X-REPP-auth-info HTTP header with
-      <authInfo>.
 
 
 
@@ -729,6 +729,13 @@ Wullink & Davids           Expires 19 May 2024                 [Page 13]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
+
+9.4.2.  Info
+
+   -  Request: GET {collection}/{id}
+
+   -  Request payload: OPTIONAL X-REPP-auth-info HTTP header with
+      <authInfo>.
 
    -  Response payload: Object <info> response.
 
@@ -772,19 +779,15 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
    -  Response payload: Poll request response message.
 
-   A client MUST use the HTTP GET method on the messages collection to
-   request the message at the head of the queue.
-
-
-
-
-
 
 
 Wullink & Davids           Expires 19 May 2024                 [Page 14]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
+
+   A client MUST use the HTTP GET method on the messages collection to
+   request the message at the head of the queue.
 
 9.4.3.2.  Poll Ack
 
@@ -830,9 +833,6 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
    -  Response payload: Object <delete> response.
 
-   Deleting an object from the registry database MUST be performed with
-   the HTTP DELETE method on a REST resource specifying a specific
-   object instance.
 
 
 
@@ -841,6 +841,10 @@ Wullink & Davids           Expires 19 May 2024                 [Page 15]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
+
+   Deleting an object from the registry database MUST be performed with
+   the HTTP DELETE method on a REST resource specifying a specific
+   object instance.
 
 9.5.3.  Renew
 
@@ -885,10 +889,6 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
    o Response Payload: Transfer start response.
 
-   Initiating a transfer MUST be done by creating a new "transfer"
-   resource with the HTTP POST method on a specific domain name or
-   contact object instance.  The server MAY require authorization
-   information to validate the transfer request.
 
 
 
@@ -897,6 +897,11 @@ Wullink & Davids           Expires 19 May 2024                 [Page 16]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
+
+   Initiating a transfer MUST be done by creating a new "transfer"
+   resource with the HTTP POST method on a specific domain name or
+   contact object instance.  The server MAY require authorization
+   information to validate the transfer request.
 
 9.5.5.2.  Cancel Op
 
@@ -939,13 +944,8 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    combination of features described in this document and features
    provided by HTTP as follows:
 
-   -  HTTP is an application layer protocol which uses TCP as a
-      transport protocol.  TCP includes features to provide reliability,
-      flow control, ordered delivery, and congestion control.
-      Section 1.5 of [RFC793] describes these features in detail;
-      congestion control principles are described further in [RFC2581]
-      and [RFC2914].  HTTP is a stateless protocol and as such it does
-      not maintain any client state or session.
+
+
 
 
 
@@ -953,6 +953,14 @@ Wullink & Davids           Expires 19 May 2024                 [Page 17]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
+
+   -  HTTP is an application layer protocol which uses TCP as a
+      transport protocol.  TCP includes features to provide reliability,
+      flow control, ordered delivery, and congestion control.
+      Section 1.5 of [RFC793] describes these features in detail;
+      congestion control principles are described further in [RFC2581]
+      and [RFC2914].  HTTP is a stateless protocol and as such it does
+      not maintain any client state or session.
 
    -  The stateful nature of EPP is no longer preserved through managed
       sessions.  There still is a controlled message exchanges because
@@ -986,6 +994,22 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
    TODO
 
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Davids           Expires 19 May 2024                 [Page 18]
+
+Internet-Draft          RESTful Transport for EPP          November 2023
+
+
 13.  Security Considerations
 
 
@@ -1000,15 +1024,6 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    To protect data confidentiality and integrity, all data transport
    between the client and server must use TLS [RFC5246].  Section 9 of
    [RFC5734] describes the level of security that is REQUIRED.
-
-
-
-
-
-Wullink & Davids           Expires 19 May 2024                 [Page 18]
-
-Internet-Draft          RESTful Transport for EPP          November 2023
-
 
    EPP does not use XML encryption to protect messages.  Furthermore,
    RESTful EPP HTTP servers are vulnerable to common denial-of-service
@@ -1032,13 +1047,24 @@ Internet-Draft          RESTful Transport for EPP          November 2023
             | 2200 | The login command is not used anymore.  |
             +------+-----------------------------------------+
 
-                                 Table 3
+                                 Table 2
 
 15.  Acknowledgments
 
    TODO
 
 16.  Normative References
+
+
+
+
+
+
+
+Wullink & Davids           Expires 19 May 2024                 [Page 19]
+
+Internet-Draft          RESTful Transport for EPP          November 2023
+
 
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,
@@ -1053,18 +1079,6 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    [RFC2581]  Allman, M., Paxson, V., and W. Stevens, "TCP Congestion
               Control", RFC 2581, DOI 10.17487/RFC2581, April 1999,
               <https://www.rfc-editor.org/info/rfc2581>.
-
-
-
-
-
-
-
-
-Wullink & Davids           Expires 19 May 2024                 [Page 19]
-
-Internet-Draft          RESTful Transport for EPP          November 2023
-
 
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
               Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
@@ -1100,6 +1114,14 @@ Internet-Draft          RESTful Transport for EPP          November 2023
               DOI 10.17487/RFC5246, August 2008,
               <https://www.rfc-editor.org/info/rfc5246>.
 
+
+
+
+Wullink & Davids           Expires 19 May 2024                 [Page 20]
+
+Internet-Draft          RESTful Transport for EPP          November 2023
+
+
    [RFC5730]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)",
               STD 69, RFC 5730, DOI 10.17487/RFC5730, August 2009,
               <https://www.rfc-editor.org/info/rfc5730>.
@@ -1112,15 +1134,6 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    [RFC5732]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Host Mapping", STD 69, RFC 5732, DOI 10.17487/RFC5732,
               August 2009, <https://www.rfc-editor.org/info/rfc5732>.
-
-
-
-
-
-Wullink & Davids           Expires 19 May 2024                 [Page 20]
-
-Internet-Draft          RESTful Transport for EPP          November 2023
-
 
    [RFC5733]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Contact Mapping", STD 69, RFC 5733, DOI 10.17487/RFC5733,
@@ -1154,6 +1167,17 @@ Appendix A.  Examples
 
 A.1.  X-REPP-auth-info
 
+
+
+
+
+
+
+Wullink & Davids           Expires 19 May 2024                 [Page 21]
+
+Internet-Draft          RESTful Transport for EPP          November 2023
+
+
 A.1.1.  Domain Info with Authorization Data
 
    The X-REPP-auth-info header in a Domain Info Request might look like
@@ -1171,13 +1195,6 @@ A.1.1.  Domain Info with Authorization Data
      </extension>
    </epp>
 
-
-
-Wullink & Davids           Expires 19 May 2024                 [Page 21]
-
-Internet-Draft          RESTful Transport for EPP          November 2023
-
-
    The HTTP header X-REPP-auth-info MUST contain the entire
    authorization information element, formatted as described in the EPP
    RFCs.
@@ -1186,7 +1203,7 @@ A.2.  Hello Example
 
 A.2.1.  RESTful <hello> Request
 
-   C: OPTIONS /rest/v1/ HTTP/1.1
+   C: OPTIONS /repp/v1/ HTTP/1.1
    C: Host: repp.example.com
    C: Cache-Control: no-cache
    C: Authorization: Basic amRvZTp0ZXN0
@@ -1198,23 +1215,6 @@ A.2.1.  RESTful <hello> Request
 
 A.2.2.  RESTful <hello> Response
 
-   S: HTTP/1.1 200 OK
-   S: Date: Sun, 10 Apr 2012 12:00:00 UTC
-   S: Server: Acme REPP server v1.0
-   S: Content-Length: 799
-   S: Content-Type: application/epp+xml
-   S: Connection: close
-   S:
-   S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-   S:   <greeting>
-   S:     <!-- rest of the greeting elements -->
-   S:   </greeting>
-   S: </epp>
-
-A.3.  Password Example
-
-A.3.1.  Change Password Request
 
 
 
@@ -1234,7 +1234,25 @@ Wullink & Davids           Expires 19 May 2024                 [Page 22]
 Internet-Draft          RESTful Transport for EPP          November 2023
 
 
-   C: PUT /rest/v1/password/ HTTP/1.1
+   S: HTTP/1.1 200 OK
+   S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+   S: Server: Acme REPP server v1.0
+   S: Content-Length: 799
+   S: Content-Type: application/epp+xml
+   S: Connection: close
+   S:
+   S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+   S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:   <greeting>
+   S:     <!-- rest of the greeting elements -->
+   S:   </greeting>
+   S: </epp>
+
+A.3.  Password Example
+
+A.3.1.  Change Password Request
+
+   C: PUT /repp/v1/password/ HTTP/1.1
    C: Host: repp.example.com
    C: Cache-Control: no-cache
    C: Authorization: Basic amRvZTp0ZXN0
@@ -1259,24 +1277,6 @@ A.3.2.  Change Password Response
    S: X-REPP-eppcode: 1000
    S: Connection: close
 
-A.4.  Domain Create Example
-
-A.4.1.  Domain Create Request
-
-   TODO: remove extension from example below
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1290,7 +1290,13 @@ Wullink & Davids           Expires 19 May 2024                 [Page 23]
 Internet-Draft          RESTful Transport for EPP          November 2023
 
 
-   C: POST /rest/v1/domains/ HTTP/1.1
+A.4.  Domain Create Example
+
+A.4.1.  Domain Create Request
+
+   TODO: remove extension from example below
+
+   C: POST /repp/v1/domains/ HTTP/1.1
    C: Host: repp.example.com
    C: Cache-Control: no-cache
    C: Authorization: Basic amRvZTp0ZXN0
@@ -1315,12 +1321,6 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    C: </epp>
 
 A.4.2.  Domain Create Response:
-
-
-
-
-
-
 
 
 
@@ -1380,7 +1380,7 @@ A.5.  Domain Delete Example
 
 A.5.1.  Domain Delete Request:
 
-   C: DELETE /rest/v1/domains/example.com HTTP/1.1
+   C: DELETE /repp/v1/domains/example.com HTTP/1.1
    C: Host: repp.example.com
    C: Cache-Control: no-cache
    C: Authorization: Basic amRvZTp0ZXN0
