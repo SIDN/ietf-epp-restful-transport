@@ -52,8 +52,8 @@ for the server to process the request.
 
 # Introduction
 
-This document describes a new transport protocol for EPP, based on the [@!REST] architectural style.
-The newly defined transport leverages the HTTP protocol [@!RFC2616]
+This document describes a transport protocol for EPP, based on the [@!REST] architectural style.
+This transport machanism leverages the HTTP protocol [@!RFC2616]
 and the principles of [@!REST].
 Conforming to the REST constraints is generally referred to as being "RESTful".
 Hence we dubbed the new transport protocol: "'RESTful transport for EPP" or "REPP"
@@ -824,9 +824,8 @@ TODO:  X-REPP-auth-info must be removed, if auth data is neeeded, then complete 
 </epp>
 ```
 
-The HTTP header MUST contain the entire authorization information
-element as mentioned in Section (#xml-schema)
-
+The HTTP header X-REPP-auth-info MUST contain the entire authorization information
+element, formatted as described in the EPP RFCs.
 ##  Hello Example
 
 ###  RESTful <hello> Request

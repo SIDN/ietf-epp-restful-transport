@@ -17,15 +17,13 @@
 <abstract>
 <t>This document specifies a 'RESTful transport for EPP' (REPP) with the
 aim to improve efficiency and interoperability of EPP.</t>
-<t>This document includes a new EPP Protocol Extension as well as a
-mapping of <xref target="RFC5730"></xref> XML-commands to an HTTP based (RESTful)
+<t>This document includes a mapping of <xref target="RFC5730"></xref> EPP commands to an HTTP based (RESTful)
 interface.  Existing semantics and mappings as defined in <xref target="RFC5731"></xref>,
 <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are largely retained and reusable in RESTful
 EPP.</t>
-<t>With REPP, no session is created on the EPP server.  Each request
-from client to server will contain all of the information necessary
-to understand the request.  The server will close the connection
-after each HTTP request.</t>
+<t>REPP allows for a stateless server implementation, no session data is stored on the EPP server.
+Each request from a client to the server MUST contain all of the information necessary
+for the server to process the request.</t>
 </abstract>
 
 </front>
@@ -39,8 +37,8 @@ and the principles of <xref target="REST"></xref>.
 Conforming to the REST constraints is generally referred to as being &quot;RESTful&quot;.
 Hence we dubbed the new transport protocol: &quot;'RESTful transport for EPP&quot; or &quot;REPP&quot;
 for short.</t>
-<t>This new transport machanism includes an new EPP Protocol Extension and a mapping of
-<xref target="RFC5730"></xref> XML-commands to [URI] resources. REPP, in contrast to
+<t>This new REST based transport includes a mapping of
+<xref target="RFC5730"></xref> EPP-commands to [URI] resources. REPP, in contrast to
 the EPP specification, is stateless.  It aims to provide a
 mechanism that is more suitable for complex, high availability
 environments, as well as for environments where TCP connections can
@@ -57,7 +55,7 @@ after each HTTP request.</t>
 <t>With a stateless mechanism, some drawbacks of EPP (as mentioned in
 Section 5) are circumvented.</t>
 <t>A good understanding of the EPP base protocol specification <xref target="RFC5730"></xref>
-is advised, to grasp the extension and command mapping described in this
+is advised, to grasp the command mapping described in this
 document.</t>
 <t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,
 &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this
@@ -101,10 +99,8 @@ requests.</t>
 Every client request needs to provide all of the information necessary
 to process the request.</t>
 <t>REPP conforms to the EPP transport mapping considerations as defined in
-<xref target="RFC5730"></xref>, Section 2.1.  With REPP, the EPP <xref target="RFC5730"></xref> XML commands
-are mapped to REST URL resources. Since REPP relies on a newly defined XSD
-schema with protocol elements, REPP can also be referred to as
-an <xref target="RFC5730"></xref>, Section 2.7.1 protocol extension.</t>
+<xref target="RFC5730"></xref>, Section 2.1.  With REPP, the EPP <xref target="RFC5730"></xref> commands
+are mapped to REST URL resources.</t>
 </section>
 
 <section anchor="drawbacks-associated-with-stateful-epp"><name>Drawbacks Associated with Stateful EPP</name>
@@ -122,34 +118,6 @@ in situations where session limits are enforced.</t>
 <t>REPP is designed to avoid these drawbacks, hence making the
 interaction between an EPP client and an EPP server more robust and
 efficient.</t>
-</section>
-
-<section anchor="epp-extension-framework"><name>EPP Extension Framework</name>
-<t>According to <xref target="RFC3735"></xref>, Section 2, EPP provides an extension
-framework that allows features to be added at the protocol, object,
-and command-response levels. REPP affects the
-following levels:</t>
-<t>Protocol extension:  REPP defines a new namespace
-&quot;urn:ietf:params:xml:ns:restful-epp-1.0&quot;.  It declares new
-elements, which MUST be used for REPP.  The root element
-for the new namespace is the &lt;repp&gt; element.  This element MUST
-contain an object mapping defined by the object mapping schemas.</t>
-<t>Object extension:  REPP does not define any new object level
-extensions.  The existing object level extensions can be reused.
-However, any existing object mapping element, including any added
-extension elements it might contain, SHALL be added as a child to
-the new &lt;repp&gt; element.</t>
-<t>Command-Response extension:  REPP does not use the &quot;command&quot;
-concept, because the 'command' concept is part of a RPC style and
-not a RESTful style.  A REST URL and HTTP method combination have
-replaced the command structure.  All command extensions can be
-reused as a rest extension.</t>
-<t>REPP reuses the existing response messages defined in the
-EPP RFCs.  The EPP response MUST be added to the standard &lt;epp&gt;
-element and SHALL NOT be part of any &lt;repp&gt; element.</t>
-<t>The DNSSEC <xref target="RFC5910"></xref>, E.164 number <xref target="RFC4114"></xref> and ENUM validation
-information <xref target="RFC5076"></xref> extension mapping elements can be added as
-children of the &lt;repp&gt; element.</t>
 </section>
 
 <section anchor="resource-naming-convention"><name>Resource Naming Convention</name>
@@ -219,7 +187,7 @@ server using the POST, PUT and GET HTTP methods.</t>
 <t>POST and PUT:  Payload data, when required, MUST be added to the
   message-body.</t>
 <t>GET:  When payload data is required, it concerns &lt;authInfo&gt;.  This
-  SHALL be put in the &quot;X-REPP-authinfo&quot; HTTP request-header.</t>
+  SHALL be put in the &quot;X-REPP-auth-info&quot; HTTP request-header.</t>
 </section>
 
 <section anchor="repp-request-headers"><name>REPP Request Headers</name>
@@ -231,9 +199,10 @@ the &quot;X-REPP-&quot; prefix.</t>
   accordingly.  When this header is present in a client request, an
   equivalent element in the message-body MAY also be present, but
   MUST than be consistent with the header.</t>
-<t>X-REPP-authinfo:  The X-REPP-authinfo request-header is the
-  alternative of the &lt;authInfo&gt; element in the EPP RFCs and MUST be
-  used accordingly.  It MUST contain the entire authorization
+<t>X-REPP-auth-info:  The X-REPP-auth-info request-header is used as
+  a mechanism for transporting the authorization information associated
+  with the an object. The &lt;authInfo&gt; element is described in the EPP RFCs and MUST be
+  used accordingly. It MUST contain the entire authorization
   information element as mentioned in Section 11.1.</t>
 </section>
 
@@ -576,6 +545,8 @@ code.</t>
 </section>
 
 <section anchor="query-resources"><name>Query Resources</name>
+<t>TODO: describe these resources use GET method and cannot send request mesage in HTTP messagebody
+must use resource URL as identifier and options auth header.</t>
 
 <section anchor="check"><name>Check</name>
 
@@ -604,17 +575,15 @@ the EPP object mapping RFCs.</t>
 <ul>
 <li><t>Request: GET {collection}/{id}</t>
 </li>
-<li><t>Request payload: OPTIONAL X-REPP-authinfo HTTP header with
+<li><t>Request payload: OPTIONAL X-REPP-auth-info HTTP header with
 &lt;authInfo&gt;.</t>
 </li>
 <li><t>Response payload: Object &lt;info&gt; response.</t>
 </li>
 </ul>
 <t>A object &lt;info&gt; request MUST be performed with the HTTP GET method on
-a resource identifying an object instance.  The response MUST be a
-response message as described in object mapping of the EPP RFCs,
-possibly extended with an <xref target="RFC3915"></xref> extension element (&lt;rgp:
-infData&gt;).</t>
+a resource identifying an object instance. The response MUST be a
+response message as described in object mapping of the EPP RFCs.</t>
 
 <section anchor="domain-name"><name>Domain Name</name>
 <t>A domain name &lt;info&gt; differs from a contact- and host &lt;info&gt; in the
@@ -679,7 +648,7 @@ remove the message from the message queue.</t>
 <ul>
 <li><t>Request: GET {collection}/{id}/transfer</t>
 </li>
-<li><t>Request payload: Optional X-REPP-authinfo HTTP header with
+<li><t>Request payload: Optional X-REPP-auth-info HTTP header with
 &lt;authInfo&gt;</t>
 </li>
 <li><t>Response payload: Transfer query response message.</t>
@@ -748,8 +717,7 @@ command has been mapped to a validity resource.</t>
 </ul>
 <t>An object &lt;update&gt; request MUST be performed with the HTTP PUT method
 on a specific object resource.  The payload MUST contain an &lt;object:
-update&gt; described in the EPP RFCs, possibly extended with <xref target="RFC3915"></xref>
-&lt;update&gt; extension elements.</t>
+update&gt; described in the EPP RFCs.</t>
 </section>
 
 <section anchor="transfer"><name>Transfer</name>
@@ -858,67 +826,10 @@ client to retry a failed request or send another request.</t>
 </ul>
 </section>
 
-<section anchor="formal-syntax"><name>Formal Syntax</name>
-<t>The extension used by REPP is specified in XML Schema
-notation.  The formal syntax presented here is a complete schema
-representation of REPP suitable for automated validation of
-EPP XML instances.  The schema is based on the XML schemas defined in
-<xref target="RFC5730"></xref>.  <xref target="RFC3735"></xref> Section 2.3 states that it MUST be announced in
-the &lt;greeting&gt; element.</t>
-
-<section anchor="xml-schema"><name>REPP XML Schema</name>
-<t>The RESTful EPP Schema.</t>
-
-<artwork><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-      <schema xmlns:repp="urn:ietf:params:xml:ns:restful-epp-1.0"
-              xmlns:epp="urn:ietf:params:xml:ns:epp-1.0"
-              xmlns:eppcom="urn:ietf:params:xml:ns:eppcom-1.0"
-              xmlns="HTTP://www.w3.org/2001/XMLSchema"
-              targetNamespace="urn:ietf:params:xml:ns:restful-epp-1.0"
-              elementFormDefault="qualified">
-
-        <!--  Import common element types.   -->
-        <import namespace="urn:ietf:params:xml:ns:eppcom-1.0"
-                schemaLocation="eppcom-1.0.xsd"/>
-        <import namespace="urn:ietf:params:xml:ns:epp-1.0"
-                schemaLocation="epp-1.0.xsd"/>
-
-        <annotation>
-           <documentation>
-              RESTful EPP schema.
-           </documentation>
-        </annotation>
-
-        <!-- The rest element should be used as extension root. -->
-        <element name="rest" type="epp:extAnyType"/>
-
-        <!-- A request which requires auth info can use this
-             authorization shortcut without an object id. -->
-
-        <element name="authorization" type="re:authInfoType"/>
-
-        <!-- The authinfo element. For use with domain and host info
-             and domain transfer. -->
-        <complexType name="authInfoType">
-           <choice>
-              <element name="pw" type="eppcom:pwAuthInfoType"/>
-              <element name="ext" type="eppcom:extAuthInfoType"/>
-           </choice>
-        </complexType>
-
-      </schema>
-]]>
-</artwork>
-</section>
-</section>
-
 <section anchor="iana-considerations"><name>IANA Considerations</name>
-<t></t>
 <t>TODO: This draft defines three resource collections; domains,
 contacts, hosts.  This may require an IANA RESTful EPP collection
-protocol registry.  RFC3688 defines an IANA XML Registry and
-'restful-epp-1.0' defined here would have to be added to that:
-<eref target="http://www.iana.org/assignments/xml-registry-index.html">http://www.iana.org/assignments/xml-registry-index.html</eref></t>
+protocol registry.</t>
 </section>
 
 <section anchor="internationalization-considerations"><name>Internationalization Considerations</name>
@@ -926,6 +837,7 @@ protocol registry.  RFC3688 defines an IANA XML Registry and
 </section>
 
 <section anchor="security-considerations"><name>Security Considerations</name>
+<t></t>
 <t><xref target="RFC5730"></xref> describes a &lt;login&gt; command for transmitting client
 credentials.  This command MUST NOT be used for RESTful EPP.  Due to
 the stateless nature of REST clients MUST transmit their credentials
@@ -996,12 +908,8 @@ meaningful in RESTful EPP and MUST NOT be used.</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2617.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2914.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3375.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3735.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3915.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.4114.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.4648.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5076.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5730.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5731.xml"/>
@@ -1009,7 +917,6 @@ meaningful in RESTful EPP and MUST NOT be used.</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5733.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5734.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5849.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5910.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.793.xml"/>
 </references>
 
@@ -1020,11 +927,12 @@ by a REPP protocol server.  Indentation and white space in examples
 are provided only to illustrate element relationships and are not
 REQUIRED features of this protocol.</t>
 
-<section anchor="x-repp-authinfo"><name>X-REPP-authinfo</name>
+<section anchor="x-repp-auth-info"><name>X-REPP-auth-info</name>
 
 <section anchor="domain-info-with-authorization-data"><name>Domain Info with Authorization Data</name>
-<t>The X-REPP-authinfo header in a Domain Info Request might look like
-this:</t>
+<t>The X-REPP-auth-info header in a Domain Info Request might look like
+this:
+TODO:  X-REPP-auth-info must be removed, if auth data is neeeded, then complete req xml must be sent</t>
 
 <artwork><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
@@ -1038,8 +946,8 @@ this:</t>
 </epp>
 ]]>
 </artwork>
-<t>The HTTP header MUST contain the entire authorization information
-element as mentioned in Section <xref target="xml-schema"></xref></t>
+<t>The HTTP header X-REPP-auth-info MUST contain the entire authorization information
+element, formatted as described in the EPP RFCs.</t>
 </section>
 </section>
 
@@ -1119,6 +1027,7 @@ S: Connection: close
 <section anchor="domain-create-example"><name>Domain Create Example</name>
 
 <section anchor="domain-create-request"><name>Domain Create Request</name>
+<t>TODO: remove extension from example below</t>
 
 <artwork><![CDATA[C: POST /rest/v1/domains/ HTTP/1.1
 C: Host: repp.example.com
