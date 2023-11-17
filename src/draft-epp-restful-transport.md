@@ -405,8 +405,9 @@ EPP command        | Method   | Resource
 Hello              | GET      | /         
 Login              | N/A      | N/A        
 Logout             | N/A      | N/A        
-Check              | HEAD/GET | /{c}/{i}      
+Check              | HEAD     | /{c}/{i}      
 Info               | GET      | /{c}/{i}       
+
 Poll Request       | GET      | /messages      
 Poll Ack           | DELETE   | /messages/{i} 
 Transfer Query     | GET      | /{c}/{i}/transfer 
@@ -419,7 +420,11 @@ Transfer Approve   | PUT      | /{c}/{i}/transfer
 Transfer Reject    | DELETE   | /{c}/{i}/transfer  
 Update             | PUT      | /{c}/{i} 
 
-
+  <!-- 
+  Allow for new commands not in the original RFC5730, need to add this to table and add footnote here
+  [1] xxxx is not defined in [@!RFC5730] it is defined in this document as an additional mechanism for checking if there are any messages waiting in the queue.  
+  -->
+  
 ## Hello
 
 - Request: GET /{context-root}/{version}
@@ -431,7 +436,6 @@ Update             | PUT      | /{c}/{i}
 The server MUST send a Greeting response, as defined in section 2.4 of [@!RFC5730] in response 
 to request using the HTTP GET method on the root "/" resource.
 
-A REPP client MAY add content to the HTTP message-body of a Hello request.
 The version information returned by the server in the Hello response MUST match the version used in the 
 URL of the REPP server.
 
@@ -441,7 +445,6 @@ Example Hello request with an empty message-body:
 C: GET /repp/v1/ HTTP/1.1
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
-C: Pragma: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
@@ -462,11 +465,10 @@ S:
 S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:   <greeting>
-S:     <!-- rest of the greeting elements -->
+S:     <!-- rest of the greeting response is omitted -->
 S:   </greeting>
 S: </epp>
 ```
-
 
 ## Session Management Resources
 
@@ -511,26 +513,32 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 
 ### Check
 
-Request without a request message:
-
--  Request: HEAD {collection}/{id}
+-  Request: HEAD /{collection}/{id}
 
 -  Request payload: N/A
 
 -  Response payload: N/A
 
+The server MUST support the HTTP HEAD method for the Check command, the client and the server MUST not add any content to the HTTP message-body. The response MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of the X-REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.
+
+A Check request using the HTTP HEAD method is limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked. 
+
+  <!-- do we also need GET method for check? this old text described addign GET method 
+  but we already use this for Info command, so need other resource for check? 
+
+ the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check content to the message-body. 
+The HTTP response for a request using the HTTP GET method, MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of  X-REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.
+
+A Check request using the HTTP HEAD method is limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked. When the HTTP GET method is used, the EPP request in the message-body MUST also be limited to a single object to check. The server MUST return EPP result code 2002, when the Check request contains more than 1 object to check. 
+
 Request with a request message:
 
--  Request: GET {collection}/{id}
-
+-  Request: GET /{collection}/{id}
+ 
 -  Request payload: Check request
 
 -  Response payload: Check Response
-
-The server MUST support the HTTP HEAD method for the Check command, the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check content to the message-body. 
-The HTTP response for a request using the HTTP GET method, MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of  X-REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.
-
-A Check request using the HTTP HEAD method is limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked. When the HTTP GET method is used, the EPP request in the message-body MUST also be limited to a single object to check. The server MUST return EPP result code 2002, when the Check request contains more than 1 object to check.
+-->
 
 Example Check request for a domain name:
 
@@ -538,7 +546,6 @@ Example Check request for a domain name:
 C: HEAD /repp/v1/domains/example.nl HTTP/1.1
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
-C: Pragma: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
@@ -561,91 +568,210 @@ S: X-REPP-check-avail: 0
 S: X-REPP-check-reason: In use
 ```
 
-
-
 ### Info
 
-A object <info> request MUST be performed with the HTTP GET or POST method on
+An Info request MUST be performed using the HTTP GET or POST method on
 a resource identifying an object instance. The response MUST be a
 response message as described in object mapping of the EPP RFCs.
 
+An object MAY have authorization attachted to it, forcing the client to include
+the authorization in the request. When the authorization needs to be included in the request
+the HTTP POST method MUST be used.
+
 A request for an object without authorization information.  
 
--  Request: GET {collection}/{id}
+-  Request: GET /{collection}/{id}
 
 -  Request payload: N/A
 
--  Response payload: <info> response
+-  Response payload: Info response
 
 A request for an object that has authorization information attached.  
 
--  Request: POST {collection}/{id}
+-  Request: POST /{collection}/{id}
 
--  Request payload: <info> request
+-  Request payload: Info request
 
--  Response payload: <info> response
+-  Response payload: Info response
 
 #### Domain Name
 
-A domain name <info> differs from a contact- and host <info> in the
+A domain name Info request is different from a contact- and host Info request in the
 sense that EPP Domain Name Mapping [@!RFC5731], Section 3.1.2 describes
-an OPTIONAL "hosts" attribute for the <domain:name> element.  This
-attribute is mapped to additional REST resources to be used in a
-domain name info request.
+an OPTIONAL "hosts" attribute. This attribute is mapped to a nested resource of the domains collection.
 
-The specified default value is "all".  This default is mapped to a
+The specified default value is "all". This default is mapped to a
 shortcut, the resource object instance URL without any additional
 labels.
 
--  default: GET domains/{id}
+-  default: GET /domains/{id}
 
--  Hosts=all: GET domains/{id}/all
+-  Hosts=all: GET /domains/{id}/hosts/all
 
--  Hosts=del: GET domains/{id}/del
+-  Hosts=del: GET /domains/{id}/hosts/del
 
--  Hosts=sub: GET domains/{id}/sub
+-  Hosts=sub: GET /domains/{id}/hosts/sub
 
--  Hosts=none: GET domains/{id}/none
+-  Hosts=none: GET /domains/{id}/hosts/none
 
-   The server MAY require the client to include additional authorization
-   information. The authorization data MUST be sent with the "X-REPP-
-   authinfo" HTTP request-header.
+Example domain Info including all hosts, without authorization data:
+
+```
+C: GET /repp/v1/domains/example.nl/hosts/all HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+c: X-REPP-cltrid: ABC-12345
+c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+```
+
+Example Info response:
+
+```
+S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Length: 424
+S: Content-Type: application/epp+xml
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <resData>
+S:      <domain:infData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:         <!-- rest of the Info response is omitted -->
+S:      </domain:infData>
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+```
 
 ### Poll
 
 ####  Poll Request
 
--  Request: GET messages/
+-  Request: GET /messages
 
 -  Request payload: N/A
 
--  Response payload: Poll request response message.
+-  Response payload: Poll response
 
 A client MUST use the HTTP GET method on the messages collection to
 request the message at the head of the queue.
 
+Example Poll request:
+```
+C: GET /repp/v1/messages HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+c: X-REPP-cltrid: ABC-12345
+```
+
+Example Poll response:
+
+```
+S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Length: 312
+S: Content-Type: application/epp+xml
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1301">
+S:      <msg>Command completed successfully; ack to dequeue</msg>
+S:    </result>
+S:    <msgQ count="5" id="12345">
+S:      <qDate>2000-06-08T22:00:00.0Z</qDate>
+S:      <msg>Transfer requested.</msg>
+S:    </msgQ>
+S:    <resData>
+S:       <!-- rest of the Poll response is omitted -->
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+```
+
 ####  Poll Ack
 
--  Request: DELETE messages/{id}
+-  Request: DELETE /messages/{id}
 
 -  Request payload: N/A
 
--  Response payload: Poll ack response message
+-  Response payload: Poll ack response
 
-A client MUST use the HTTP DELETE method on a message instance to
-remove the message from the message queue.
+A client MUST use the HTTP DELETE method on a message instance to acknowledge the removal of the message from the message queue.
 
-####  Transfer Query Op
+Example Poll Ack request:
+```
+C: GET /repp/v1/messages/12345 HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+c: X-REPP-cltrid: ABC-12345
+```
+
+Example Poll Ack response:
+
+```
+S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Length: 312
+S: Content-Type: application/epp+xml
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <msgQ count="4" id="12345"/>
+S:    <trID>
+S:      <clTRID>ABC-12346</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+```
+
+
+###  Transfer Query
 
 -  Request: GET {collection}/{id}/transfer
 
--  Request payload: Optional X-REPP-auth-info HTTP header with
-  <authInfo>
+-  Request payload: 
 
--  Response payload: Transfer query response message.
+-  Response payload: Transfer respons.
 
 A <transfer> query MUST be performed with the HTTP GET method on the
 transfer resource of a specific object instance.
+
 
 ## REPP Transform Commands
 
@@ -867,28 +993,6 @@ by a REPP protocol server.  Indentation and white space in examples
 are provided only to illustrate element relationships and are not
 REQUIRED features of this protocol.
 
-## X-REPP-auth-info
-
-###  Domain Info with Authorization Data
-
-The X-REPP-auth-info header in a Domain Info Request might look like
-this:
-TODO:  X-REPP-auth-info must be removed, if auth data is neeeded, then complete req xml must be sent
-```
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-  <extension>
-      <re:rest xmlns:re="urn:ietf:params:xml:ns:restful-epp-1.0">
-        <re:authorization>
-            <re:pw>passwordfordomain</re:pw>
-        </re:authorization>
-      </re:rest>
-  </extension>
-</epp>
-```
-
-The HTTP header X-REPP-auth-info MUST contain the entire authorization information
-element, formatted as described in the EPP RFCs.
 
 
 ##  Domain Create Example
@@ -901,7 +1005,6 @@ C: POST /repp/v1/domains/ HTTP/1.1
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
-C: Pragma: no-cache
 C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: Accept: application/epp+xml
@@ -966,7 +1069,6 @@ C: DELETE /repp/v1/domains/example.nl HTTP/1.1
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
-C: Pragma: no-cache
 C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: X-REPP-cltrid: ABC-12345
