@@ -332,7 +332,7 @@ All resource URLs in the table are assumed to use the prefix: &quot;/{context-ro
 
 <tr>
 <td>Check</td>
-<td>HEAD</td>
+<td>HEAD/GET</td>
 <td>/{c}/{i}</td>
 </tr>
 
@@ -495,6 +495,7 @@ Sending content using an HTTP GET request is discouraged in <xref target="RFC911
 <t>A REPP client MAY use the HTTP GET method for executing a query command only when no request data has to be added to the HTTP message-body. When an EPP object requires additional authInfo information, as described in [RFC5731] and [RFC5733], the client MUST use the HTTP POST method and add the query command content to the HTTP message-body.</t>
 
 <section anchor="check"><name>Check</name>
+<t>Request without a request message:</t>
 
 <ul>
 <li><t>Request: HEAD {collection}/{id}</t>
@@ -504,9 +505,19 @@ Sending content using an HTTP GET request is discouraged in <xref target="RFC911
 <li><t>Response payload: N/A</t>
 </li>
 </ul>
-<t>The server MUST support the HTTP HEAD method for the Check command, the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check request content to the message-body.
+<t>Request with a request message:</t>
+
+<ul>
+<li><t>Request: GET {collection}/{id}</t>
+</li>
+<li><t>Request payload: Check request</t>
+</li>
+<li><t>Response payload: Check Response</t>
+</li>
+</ul>
+<t>The server MUST support the HTTP HEAD method for the Check command, the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check content to the message-body.
 The HTTP response for a request using the HTTP GET method, MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of  X-REPP-check-avail header MUST be &quot;1&quot; or &quot;0&quot; as described in the EPP RFCs, depending on whether the object can be provisioned or not.</t>
-<t>A Check request MUST be limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked.</t>
+<t>A Check request using the HTTP HEAD method is limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked. When the HTTP GET method is used, the EPP request in the message-body MUST also be limited to a single object to check. The server MUST return EPP result code 2002, when the Check request contains more than 1 object to check.</t>
 <t>Example Check request for a domain name:</t>
 
 <artwork><![CDATA[C: HEAD /repp/v1/domains/example.nl HTTP/1.1

@@ -400,24 +400,24 @@ All resource URLs in the table are assumed to use the prefix: "/{context-root}/{
 
   Command mapping from EPP to REPP.
 
-EPP command        | Method  | Resource   
--------------------|---------|------------
-Hello              | GET     | /         
-Login              | N/A     | N/A        
-Logout             | N/A     | N/A        
-Check              | HEAD    | /{c}/{i}      
-Info               | GET     | /{c}/{i}       
-Poll Request       | GET     | /messages      
-Poll Ack           | DELETE  | /messages/{i} 
-Transfer Query     | GET     | /{c}/{i}/transfer 
-Create             | POST    | /{c}   
-Delete             | DELETE  | /{c}/{i}    
-Renew              | PUT     | /{c}/{i}/validity
-Transfer           | POST    | /{c}/{i}/transfer 
-Transfer Cancel    | DELETE  | /{c}/{i}/transfer 
-Transfer Approve   | PUT     | /{c}/{i}/transfer    
-Transfer Reject    | DELETE  | /{c}/{i}/transfer  
-Update             | PUT     | /{c}/{i} 
+EPP command        | Method   | Resource   
+-------------------|----------|------------
+Hello              | GET      | /         
+Login              | N/A      | N/A        
+Logout             | N/A      | N/A        
+Check              | HEAD/GET | /{c}/{i}      
+Info               | GET      | /{c}/{i}       
+Poll Request       | GET      | /messages      
+Poll Ack           | DELETE   | /messages/{i} 
+Transfer Query     | GET      | /{c}/{i}/transfer 
+Create             | POST     | /{c}   
+Delete             | DELETE   | /{c}/{i}    
+Renew              | PUT      | /{c}/{i}/validity
+Transfer           | POST     | /{c}/{i}/transfer 
+Transfer Cancel    | DELETE   | /{c}/{i}/transfer 
+Transfer Approve   | PUT      | /{c}/{i}/transfer    
+Transfer Reject    | DELETE   | /{c}/{i}/transfer  
+Update             | PUT      | /{c}/{i} 
 
 
 ## Hello
@@ -511,16 +511,26 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 
 ### Check
 
+Request without a request message:
+
 -  Request: HEAD {collection}/{id}
 
 -  Request payload: N/A
 
 -  Response payload: N/A
 
-The server MUST support the HTTP HEAD method for the Check command, the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check request content to the message-body. 
+Request with a request message:
+
+-  Request: GET {collection}/{id}
+
+-  Request payload: Check request
+
+-  Response payload: Check Response
+
+The server MUST support the HTTP HEAD method for the Check command, the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check content to the message-body. 
 The HTTP response for a request using the HTTP GET method, MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of  X-REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.
 
-A Check request MUST be limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked.
+A Check request using the HTTP HEAD method is limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked. When the HTTP GET method is used, the EPP request in the message-body MUST also be limited to a single object to check. The server MUST return EPP result code 2002, when the Check request contains more than 1 object to check.
 
 Example Check request for a domain name:
 

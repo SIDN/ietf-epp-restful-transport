@@ -1847,7 +1847,7 @@ All resource URLs in the table are assumed to use the prefix: "/{context-root}/{
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Check</td>
-            <td class="text-left" rowspan="1" colspan="1">HEAD</td>
+            <td class="text-left" rowspan="1" colspan="1">HEAD/GET</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
           </tr>
           <tr>
@@ -2030,22 +2030,35 @@ Sending content using an HTTP GET request is discouraged in <span>[<a href="#RFC
           <h4 id="name-check">
 <a href="#section-9.3.1" class="section-number selfRef">9.3.1. </a><a href="#name-check" class="section-name selfRef">Check</a>
           </h4>
+<p id="section-9.3.1-1">Request without a request message:<a href="#section-9.3.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-9.3.1-1.1">
-              <p id="section-9.3.1-1.1.1">Request: HEAD {collection}/{id}<a href="#section-9.3.1-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-9.3.1-2.1">
+              <p id="section-9.3.1-2.1.1">Request: HEAD {collection}/{id}<a href="#section-9.3.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-9.3.1-1.2">
-              <p id="section-9.3.1-1.2.1">Request payload: N/A<a href="#section-9.3.1-1.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-9.3.1-2.2">
+              <p id="section-9.3.1-2.2.1">Request payload: N/A<a href="#section-9.3.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-9.3.1-1.3">
-              <p id="section-9.3.1-1.3.1">Response payload: N/A<a href="#section-9.3.1-1.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-9.3.1-2.3">
+              <p id="section-9.3.1-2.3.1">Response payload: N/A<a href="#section-9.3.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-9.3.1-2">The server MUST support the HTTP HEAD method for the Check command, the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check request content to the message-body.
-The HTTP response for a request using the HTTP GET method, MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of  X-REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.<a href="#section-9.3.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.3.1-3">A Check request MUST be limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked.<a href="#section-9.3.1-3" class="pilcrow">¶</a></p>
-<p id="section-9.3.1-4">Example Check request for a domain name:<a href="#section-9.3.1-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.3.1-5">
+<p id="section-9.3.1-3">Request with a request message:<a href="#section-9.3.1-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9.3.1-4.1">
+              <p id="section-9.3.1-4.1.1">Request: GET {collection}/{id}<a href="#section-9.3.1-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-9.3.1-4.2">
+              <p id="section-9.3.1-4.2.1">Request payload: Check request<a href="#section-9.3.1-4.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-9.3.1-4.3">
+              <p id="section-9.3.1-4.3.1">Response payload: Check Response<a href="#section-9.3.1-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-9.3.1-5">The server MUST support the HTTP HEAD method for the Check command, the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check content to the message-body.
+The HTTP response for a request using the HTTP GET method, MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of  X-REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.<a href="#section-9.3.1-5" class="pilcrow">¶</a></p>
+<p id="section-9.3.1-6">A Check request using the HTTP HEAD method is limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked. When the HTTP GET method is used, the EPP request in the message-body MUST also be limited to a single object to check. The server MUST return EPP result code 2002, when the Check request contains more than 1 object to check.<a href="#section-9.3.1-6" class="pilcrow">¶</a></p>
+<p id="section-9.3.1-7">Example Check request for a domain name:<a href="#section-9.3.1-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.3.1-8">
 <pre>C: HEAD /repp/v1/domains/example.nl HTTP/1.1
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
@@ -2058,10 +2071,10 @@ C: Accept-Charset: utf-8
 c: X-REPP-cltrid: ABC-12345
 c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
-</pre><a href="#section-9.3.1-5" class="pilcrow">¶</a>
+</pre><a href="#section-9.3.1-8" class="pilcrow">¶</a>
 </div>
-<p id="section-9.3.1-6">Example Check response:<a href="#section-9.3.1-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.3.1-7">
+<p id="section-9.3.1-9">Example Check response:<a href="#section-9.3.1-9" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.3.1-10">
 <pre>S: HTTP/1.1 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
@@ -2071,7 +2084,7 @@ S: X-REPP-svtrid: XYZ-12345
 S: X-REPP-check-avail: 0
 S: X-REPP-check-reason: In use
 
-</pre><a href="#section-9.3.1-7" class="pilcrow">¶</a>
+</pre><a href="#section-9.3.1-10" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
