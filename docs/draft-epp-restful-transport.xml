@@ -188,6 +188,8 @@ identified by an URL. The server MUST support the following &quot;verbs&quot; (<
 </section>
 
 <section anchor="repp-request"><name>REPP Request</name>
+<t>TODO: add text that due to stateless nature a request must contain all
+data required to execute command. includes data previously part of client session (login)</t>
 
 <section anchor="epp-data"><name>EPP Data</name>
 <t>The payload data for a REPP request MAY be transmitted to the
@@ -207,6 +209,8 @@ the &quot;X-REPP-&quot; prefix.</t>
   accordingly.  When this header is present in a client request, an
   equivalent element in the message-body MAY also be present, but
   MUST than be consistent with the header.</t>
+<t>X-REPP-svcs: The namespace used by the client in the EPP request document
+  in the message-body of the HTTP request.</t>
 </section>
 
 <section anchor="generic-http-headers"><name>Generic HTTP Headers</name>
@@ -248,9 +252,11 @@ prefix.</t>
   element in te EPP RFCs and MUST be used accordingly. If an HTTP
   message-body with The EPP XML equivalent &lt;result code&gt; exists,
   both values MUST be consistent.</t>
-<t>X-REPP-avail:  The EPP avail header is the alternative of the &quot;avail&quot;
+<t>X-REPP-check-avail: An alternative for the &quot;avail&quot;
   attribute of the <eref target="object:name">object:name</eref> element in a check response and
   MUST be used accordingly.</t>
+<t>X-REPP-check-reason: An optional alternative for the &quot;object:reason&quot;
+  element in a check response and MUST be used accordingly.</t>
 </section>
 
 <section anchor="generic-headers"><name>Generic Headers</name>
@@ -290,10 +296,10 @@ body of the request, 4. the response payload, being the HTTP message-
 body of the response.</t>
 <t>Table 2 list a mapping for each EPP to REPP, the subsequent sections
 provide details for each request.
-Each respource URL in the table is assumed to use tge prefix &quot;/{context-root}/{version}/&quot;.</t>
+All resource URLs in the table are assumed to use the prefix: &quot;/{context-root}/{version}/&quot;.</t>
 <t>{c}:  An abbreviation for {collection}: this MUST be substituted with
   &quot;domains&quot;, &quot;hosts&quot;, &quot;contacts&quot; or &quot;messages&quot;.</t>
-<t>{i}:  An abbreviation for {id}: a domain name, hostname, contact-id
+<t>{i}:  An abbreviation for {id}:  this MUST be substituted with the value of a domain name, hostname, contact-id
   or a message-id.</t>
 <t>Command mapping from EPP to REPP.</t>
 <table>
@@ -352,12 +358,6 @@ Each respource URL in the table is assumed to use tge prefix &quot;/{context-roo
 <td>Transfer Query</td>
 <td>GET</td>
 <td>/{c}/{i}/transfer</td>
-</tr>
-
-<tr>
-<td>Change Password</td>
-<td>PUT</td>
-<td>/password</td>
 </tr>
 
 <tr>
@@ -456,48 +456,36 @@ S: </epp>
 </artwork>
 </section>
 
-<section anchor="password"><name>Password</name>
-<t></t>
-
-<ul>
-<li><t>Request: PUT /repp/v1/password</t>
-</li>
-<li><t>Request payload: New password</t>
-</li>
-<li><t>Response payload: N/A</t>
-</li>
-</ul>
-<t>The client MUST use the HTTP PUT method on the password resource.
-This is the equivalent of the &lt;newPW&gt; element in the &lt;login&gt; command
-described in <xref target="RFC5730"></xref>.  The request message-body MUST contain the
-new password which MUST be encoded using Base64 <xref target="RFC4648"></xref>.</t>
-<t>After a successful password change, the HTTP header &quot;X-REPP-eppcode&quot;
-must contain EPP result code 1000, otherwise an appropriate 2xxx
-range EPP result code.</t>
-</section>
-
 <section anchor="session-management-resources"><name>Session Management Resources</name>
-<t>One of the design goals of REPP is to enable easily scaleable EPP services.
+<t>One of the design goals of REPP is to increase the scalability of an EPP service.
 This means that session management as described in <xref target="RFC5730"></xref> is not supported, session management functions are delegated to the HTTP layer.</t>
 <t>The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state.
 The client MUST include authentication credentials with each request. This MAY be done by using any of the
 available HTTP authentication mechanisms, such as those described in <xref target="RFC2617"></xref>.</t>
 
 <section anchor="login"><name>Login</name>
-<t>The &lt;login&gt; command MUST NOT be implemented by a server.</t>
+<t>The Login command defined in <xref target="RFC5730"></xref> is used to configure a session and is part of the stateful nature of the EPP protocol. A REPP server is stateless and MUST not maintain any client state and MUST not implement the Login command. The client MUST add all the information to a REPP request that is required for the server to be able to properly process the request.</t>
 <t>
-The &lt;newPW&gt;
-element has been replaced by the Password resource.  The &lt;lang&gt;
-element has been replaced by the Accept-Language HTTP request-header.
-The &lt;svcs&gt; element has no equivalent in RESTful EPP, the client can
-use a &lt;hello&gt; to discover the server supported namespace URIs.  The
-server MUST check every XML namespace used in client XML requests.
-An unsupported namespace MUST result in the appropriate EPP result
-code.</t>
+Data attributes from the <xref target="RFC5730"></xref> Login command are either no longer used or are transferred to the server using a HTTP-header.</t>
+
+<ul spacing="compact">
+<li>clID: No longer used</li>
+<li>pw:  No longer used</li>
+<li>newPW:  No longer used</li>
+<li>version:  This attributed has been replaced by the version in the
+server URL.</li>
+<li>lang: This attribute has been replaced by the Accept-Language HTTP
+request-header.</li>
+<li>svcs: This attribute has been replaced by 1 or more X-REPP-svcs HTTP
+request-headers.</li>
+</ul>
+<t>The server MUST check the namespace used in all X-REPP-svcs HTTP
+request-header. An unsupported namespace MUST result in the appropriate
+EPP result code.</t>
 </section>
 
 <section anchor="logout"><name>Logout</name>
-<t>The &lt;logout&gt; command MUST NOT be implemented by the server.</t>
+<t>The concept of a session is no longer sued by REPP, therefore the Logout command MUST not be implemented by the server.</t>
 </section>
 </section>
 
@@ -516,16 +504,36 @@ Sending content using an HTTP GET request is discouraged in <xref target="RFC911
 <li><t>Response payload: N/A</t>
 </li>
 </ul>
-<t>The HTTP response contains a header X-REPP-avail, the value of this header is &quot;1&quot; or &quot;0&quot;,
-depending on whether the object can be provisioned or not.</t>
-<t>A &lt;check&gt; request MUST be limited to checking only one resource {id}
-at a time.  This may seem a step backwards when compared to the check
-command defined in the object mapping of the EPP RFCs where multiple
-object-ids are allowed inside a check command. The RESTful check operation
-can be load balanced more efficient when there is only a single resource {id}
-that needs to be checked.</t>
-<t>The server MUST NOT support any <eref target="object:reason">object:reason</eref> elements described in
-the EPP object mapping RFCs.</t>
+<t>The server MUST support the HTTP HEAD method for the Check command, the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check request content to the message-body.
+The HTTP response for a request using the HTTP GET method, MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of  X-REPP-check-avail header MUST be &quot;1&quot; or &quot;0&quot; as described in the EPP RFCs, depending on whether the object can be provisioned or not.</t>
+<t>A Check request MUST be limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked.</t>
+<t>Example Check request for a domain name:</t>
+
+<artwork><![CDATA[C: HEAD /repp/v1/domains/example.nl HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Pragma: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+c: X-REPP-cltrid: ABC-12345
+c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+]]>
+</artwork>
+<t>Example Check response:</t>
+
+<artwork><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Length: 0
+S: X-REPP-cltrid: ABC-12345
+S: X-REPP-svtrid: XYZ-12345
+S: X-REPP-check-avail: 0
+S: X-REPP-check-reason: In use
+]]>
+</artwork>
 </section>
 
 <section anchor="info"><name>Info</name>
@@ -819,6 +827,7 @@ and Digest access authentication <xref target="RFC2617"></xref> or OAuth <xref t
 RESTful EPP HTTP servers are vulnerable to common denial-of-service
 attacks.  Therefore, the security considerations of <xref target="RFC5734"></xref> also
 apply to RESTful EPP.</t>
+<t></t>
 </section>
 
 <section anchor="obsolete-epp-result-codes"><name>Obsolete EPP Result Codes</name>
@@ -879,7 +888,6 @@ meaningful in RESTful EPP and MUST NOT be used.</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2914.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3375.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.4648.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5730.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5731.xml"/>
@@ -922,42 +930,6 @@ element, formatted as described in the EPP RFCs.</t>
 </section>
 </section>
 
-<section anchor="password-example"><name>Password Example</name>
-
-<section anchor="change-password-request"><name>Change Password Request</name>
-
-<artwork><![CDATA[C: PUT /repp/v1/password/ HTTP/1.1
-C: Host: repp.example.nl
-C: Cache-Control: no-cache
-C: Authorization: Basic amRvZTp0ZXN0
-C: Pragma: no-cache
-C: Accept-Language: en
-C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
-C: Content-Type: text/plain
-C: Content-Length: 44
-C:
-C: bWFpbG1lYXQ6bWFhcnRlbi53dWxsaW5rQHNpZG4ubmw=
-]]>
-</artwork>
-</section>
-
-<section anchor="change-password-response"><name>Change Password Response</name>
-
-<artwork><![CDATA[S: HTTP/1.1 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
-S: Server: Acme REPP server v1.0
-S: Content-Language: en
-S: Content-Length: 0
-S: X-REPP-cltrid: ABC-12345
-S: X-REPP-svtrid: 54321-XYZ
-S: X-REPP-eppcode: 1000
-S: Connection: close
-]]>
-</artwork>
-</section>
-</section>
-
 <section anchor="domain-create-example"><name>Domain Create Example</name>
 
 <section anchor="domain-create-request"><name>Domain Create Request</name>
@@ -972,6 +944,7 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: Accept: application/epp+xml
 C: X-REPP-cltrid: ABC-12345
+c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Type: text/plain
 C: Content-Length: 543
 
