@@ -133,14 +133,15 @@ REQUIRED features of this protocol.
 
 # RESTful transport for EPP or REPP
 
-REPP is designed to solve, in the spirit of [@!RFC3375], the drawbacks
+RESTful transport for EPP (REPP) is designed to solve,
+in the spirit of [@!RFC3375], the drawbacks
 as mentioned in the next paragraph and yet maintain compatibility
 with existing object mapping definitions.
 
 The design intent is to provide a clear, clean and self-explanatory
 interface that can easily be integrated with existing software
 systems.  On the basis of these principles a [REST] architectural
-style was chosen.  A client interacts with a REPP server via HTTP
+style was chosen. A client interacts with a REPP server via HTTP
 requests.
 
 A server implementing REPP, MUST NOT keep any client state.
@@ -150,6 +151,11 @@ to process the request.
 REPP conforms to the EPP transport mapping considerations as defined in
 [@!RFC5730], Section 2.1.  With REPP, the EPP [@!RFC5730] commands
 are mapped to REST URL resources. 
+
+  <!-- Add text that REPP tries to mimies the use of request and response messages in http message-body
+   and some epp commands are not supported
+   and maybe we can think of some new commands?
+  -->
 
 # Drawbacks Associated with Stateful EPP
 

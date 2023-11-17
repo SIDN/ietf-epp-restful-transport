@@ -213,9 +213,9 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
 4.  RESTful transport for EPP or REPP
 
-   REPP is designed to solve, in the spirit of [RFC3375], the drawbacks
-   as mentioned in the next paragraph and yet maintain compatibility
-   with existing object mapping definitions.
+   RESTful transport for EPP (REPP) is designed to solve, in the spirit
+   of [RFC3375], the drawbacks as mentioned in the next paragraph and
+   yet maintain compatibility with existing object mapping definitions.
 
 
 
@@ -239,6 +239,7 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    REPP conforms to the EPP transport mapping considerations as defined
    in [RFC5730], Section 2.1.  With REPP, the EPP [RFC5730] commands are
    mapped to REST URL resources.
+
 
 5.  Drawbacks Associated with Stateful EPP
 
@@ -272,7 +273,6 @@ Internet-Draft          RESTful Transport for EPP          November 2023
       is the equivalent of the <version> element in the EPP RFCs.  The
       version used in a REPP URL MUST match the version used by EPP in
       the upper layer.
-
 
 
 

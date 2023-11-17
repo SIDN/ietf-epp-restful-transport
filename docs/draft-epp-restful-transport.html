@@ -1555,13 +1555,14 @@ REQUIRED features of this protocol.<a href="#section-3-3" class="pilcrow">¶</a>
       <h2 id="name-restful-transport-for-epp-o">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-restful-transport-for-epp-o" class="section-name selfRef">RESTful transport for EPP or REPP</a>
       </h2>
-<p id="section-4-1">REPP is designed to solve, in the spirit of <span>[<a href="#RFC3375" class="cite xref">RFC3375</a>]</span>, the drawbacks
+<p id="section-4-1">RESTful transport for EPP (REPP) is designed to solve,
+in the spirit of <span>[<a href="#RFC3375" class="cite xref">RFC3375</a>]</span>, the drawbacks
 as mentioned in the next paragraph and yet maintain compatibility
 with existing object mapping definitions.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">The design intent is to provide a clear, clean and self-explanatory
 interface that can easily be integrated with existing software
 systems.  On the basis of these principles a [REST] architectural
-style was chosen.  A client interacts with a REPP server via HTTP
+style was chosen. A client interacts with a REPP server via HTTP
 requests.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <p id="section-4-3">A server implementing REPP, MUST NOT keep any client state.
 Every client request needs to provide all of the information necessary
@@ -1569,6 +1570,7 @@ to process the request.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">REPP conforms to the EPP transport mapping considerations as defined in
 <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>, Section 2.1.  With REPP, the EPP <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> commands
 are mapped to REST URL resources.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<p id="section-4-5"></p>
 </section>
 </div>
 <div id="drawbacks-associated-with-stateful-epp">
