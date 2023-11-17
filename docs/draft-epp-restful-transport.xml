@@ -86,6 +86,11 @@ and examples provided in this document MUST be interpreted in the
 character case presented to develop a conforming implementation.</t>
 <t>The examples in this document assume that request and response messages
 are properly formatted XML documents.</t>
+<t>In examples, lines starting with &quot;C:&quot; represent data sent by a
+REPP client and lines starting with &quot;S:&quot; represent data returned
+by a REPP server. Indentation and white space in examples
+are provided only to illustrate element relationships and are not
+REQUIRED features of this protocol.</t>
 </section>
 
 <section anchor="restful-transport-for-epp-or-repp"><name>RESTful transport for EPP or REPP</name>
@@ -127,16 +132,23 @@ efficient.</t>
 name, or a collection of objects. The complete set of objects available to
 client for registry operations MUST be identified by {context-
 root}/{version}/{collection}</t>
-<t>o  {context-root} is the base URL which MUST be specified by each
-  registry. The {context-root} MAY be an empty, zero length string.</t>
-<t>o  {version} is a label which identifies the interface version.  This
-  is the equivalent of the &lt;version&gt; element in the EPP RFCs. The version
-  used in a REPP URL MUST match the version used by EPP in the upper layer.</t>
-<t>o  {collection} MUST be substituted by &quot;domains&quot;, &quot;hosts&quot; or
-  &quot;contacts&quot;, referring to either <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> or <xref target="RFC5733"></xref>.</t>
-<t>o  A trailing slash MAY be added to each request.  Implementations
-  MUST consider requests which only differ with respect to this
-  trailing slash as identical.</t>
+
+<ul>
+<li><t>{context-root} is the base URL which MUST be specified by each
+registry. The {context-root} MAY be an empty, zero length string.</t>
+</li>
+<li><t>{version} is a label which identifies the interface version.  This
+is the equivalent of the &lt;version&gt; element in the EPP RFCs. The version
+used in a REPP URL MUST match the version used by EPP in the upper layer.</t>
+</li>
+<li><t>{collection} MUST be substituted by &quot;domains&quot;, &quot;hosts&quot; or
+&quot;contacts&quot;, referring to either <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> or <xref target="RFC5733"></xref>.</t>
+</li>
+<li><t>A trailing slash MAY be added to each request.  Implementations
+MUST consider requests which only differ with respect to this
+trailing slash as identical.</t>
+</li>
+</ul>
 <t>A specific object instance MUST be identified by {context-root}/
 {version}/{collection}/{id} where {id} is a unique object identifier
 described in EPP RFCs.</t>
@@ -177,14 +189,21 @@ same order as the server receives them.</t>
 <section anchor="http-method"><name>HTTP Method Definition</name>
 <t>REPP commands MUST be executed by using an HTTP method on a resource
 identified by an URL. The server MUST support the following &quot;verbs&quot; (<xref target="REST"></xref>).</t>
-<t>GET:  Request a representation of a resource or a collection of resources.</t>
-<t>PUT:  Update an existing resource.</t>
-<t>POST:  Create a new resource.</t>
-<t>DELETE:  Delete an existing resource.</t>
-<t>HEAD:  Check for the existence of a resource.</t>
-<t>OPTIONS:  Request a greeting.</t>
-<t>The server MUST not support the following &quot;verbs&quot;</t>
-<t>PATCH:  Partial updating of a resource is MUST not be allowed.</t>
+
+<ul>
+<li><t>GET:  Request a representation of a resource or a collection of resources.</t>
+</li>
+<li><t>PUT:  Update an existing resource.</t>
+</li>
+<li><t>POST:  Create a new resource.</t>
+</li>
+<li><t>DELETE:  Delete an existing resource.</t>
+</li>
+<li><t>HEAD:  Check for the existence of a resource.</t>
+</li>
+<li><t>OPTIONS:  Request a greeting.</t>
+</li>
+</ul>
 </section>
 
 <section anchor="repp-request"><name>REPP Request</name>
@@ -248,7 +267,8 @@ prefix.</t>
   in the EPP RFCs and MUST be used accordingly.  If an HTTP message-
   body with the EPP XML equivalent &lt;clTRID&gt; exists, both values MUST
   be consistent.</t>
-<t>X-REPP-eppcode:  This header is the equivalent of the &lt;result code&gt;
+<t>
+X-REPP-eppcode:  This header is the equivalent of the &lt;result code&gt;
   element in te EPP RFCs and MUST be used accordingly. If an HTTP
   message-body with The EPP XML equivalent &lt;result code&gt; exists,
   both values MUST be consistent.</t>
@@ -257,6 +277,10 @@ prefix.</t>
   MUST be used accordingly.</t>
 <t>X-REPP-check-reason: An optional alternative for the &quot;object:reason&quot;
   element in a check response and MUST be used accordingly.</t>
+<t>X-REPP-object-authInfo-value: The client MUST use this header when a command is used
+ on an object having associated authorization information, as described in section 3.1.3 of <xref target="RFC5730"></xref>.</t>
+<t>X-REPP-object-authInfo-roid: The client MUST use this header when a roid attribute is required
+as described in section 3.1.3 of <xref target="RFC5730"></xref>.</t>
 </section>
 
 <section anchor="generic-headers"><name>Generic Headers</name>
@@ -338,22 +362,77 @@ All resource URLs in the table are assumed to use the prefix: &quot;/{context-ro
 
 <tr>
 <td>Info</td>
+<td>GET/POST</td>
+<td>/{c}/{i}</td>
+</tr>
+
+<tr>
+<td>Poll Request</td>
 <td>GET</td>
+<td>/messages</td>
+</tr>
+
+<tr>
+<td>Poll Ack</td>
+<td>DELETE</td>
+<td>/messages/{i}</td>
+</tr>
+
+<tr>
+<td>Transfer Query</td>
+<td>GET/POST</td>
+<td>/{c}/{i}/transfer</td>
+</tr>
+
+<tr>
+<td>Create</td>
+<td>POST</td>
+<td>/{c}</td>
+</tr>
+
+<tr>
+<td>Delete</td>
+<td>DELETE</td>
+<td>/{c}/{i}</td>
+</tr>
+
+<tr>
+<td>Renew</td>
+<td>PUT</td>
+<td>/{c}/{i}/validity</td>
+</tr>
+
+<tr>
+<td>Transfer</td>
+<td>POST</td>
+<td>/{c}/{i}/transfer</td>
+</tr>
+
+<tr>
+<td>Transfer Cancel</td>
+<td>DELETE</td>
+<td>/{c}/{i}/transfer</td>
+</tr>
+
+<tr>
+<td>Transfer Approve</td>
+<td>PUT</td>
+<td>/{c}/{i}/transfer</td>
+</tr>
+
+<tr>
+<td>Transfer Reject</td>
+<td>DELETE</td>
+<td>/{c}/{i}/transfer</td>
+</tr>
+
+<tr>
+<td>Update</td>
+<td>PUT</td>
 <td>/{c}/{i}</td>
 </tr>
 </tbody>
-</table><t>Poll Request       | GET      | /messages<br />
-Poll Ack           | DELETE   | /messages/{i}
-Transfer Query     | GET      | /{c}/{i}/transfer
-Create             | POST     | /{c}<br />
-Delete             | DELETE   | /{c}/{i}<br />
-Renew              | PUT      | /{c}/{i}/validity
-Transfer           | POST     | /{c}/{i}/transfer
-Transfer Cancel    | DELETE   | /{c}/{i}/transfer
-Transfer Approve   | PUT      | /{c}/{i}/transfer<br />
-Transfer Reject    | DELETE   | /{c}/{i}/transfer<br />
-Update             | PUT      | /{c}/{i}</t>
-<t></t>
+</table><t></t>
 
 <section anchor="hello"><name>Hello</name>
 
@@ -393,14 +472,14 @@ S:
 S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:   <greeting>
-S:     <!-- rest of the greeting response is omitted -->
+S:     <!-- The rest of the response is omitted here -->
 S:   </greeting>
 S: </epp>
 ]]>
 </artwork>
 </section>
 
-<section anchor="session-management-resources"><name>Session Management Resources</name>
+<section anchor="session-management"><name>Session Management</name>
 <t>One of the design goals of REPP is to increase the scalability of an EPP service.
 This means that session management as described in <xref target="RFC5730"></xref> is not supported, session management functions are delegated to the HTTP layer.</t>
 <t>The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state.
@@ -433,7 +512,7 @@ EPP result code.</t>
 </section>
 </section>
 
-<section anchor="repp-query-commands"><name>REPP Query Commands</name>
+<section anchor="query-commands"><name>Query Commands</name>
 <t>
 Sending content using an HTTP GET request is discouraged in <xref target="RFC9110"></xref>, there exists no generally defined semanticsfor content received in a GET request.</t>
 <t>A REPP client MAY use the HTTP GET method for executing a query command only when no request data has to be added to the HTTP message-body. When an EPP object requires additional authInfo information, as described in [RFC5731] and [RFC5733], the client MUST use the HTTP POST method and add the query command content to the HTTP message-body.</t>
@@ -572,7 +651,7 @@ S:      <msg>Command completed successfully</msg>
 S:    </result>
 S:    <resData>
 S:      <domain:infData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-S:         <!-- rest of the Info response is omitted -->
+S:         <!-- The rest of the response is omitted here -->
 S:      </domain:infData>
 S:    </resData>
 S:    <trID>
@@ -632,7 +711,7 @@ S:      <qDate>2000-06-08T22:00:00.0Z</qDate>
 S:      <msg>Transfer requested.</msg>
 S:    </msgQ>
 S:    <resData>
-S:       <!-- rest of the Poll response is omitted -->
+S:       <!-- The rest of the response is omitted here -->
 S:    </resData>
 S:    <trID>
 S:      <clTRID>ABC-12345</clTRID>
@@ -704,12 +783,47 @@ S:</epp>
 <li><t>Response payload: Transfer respons.</t>
 </li>
 </ul>
-<t>A &lt;transfer&gt; query MUST be performed with the HTTP GET method on the
+<t>A Transfer Query command MUST be performed using the HTTP GET method on the nested
 transfer resource of a specific object instance.</t>
+<t>Example domain name Transfer Query request using authorization:</t>
+
+<artwork><![CDATA[C: GET /repp/v1/domains/example.nl/transfer HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+c: X-REPP-cltrid: ABC-12345
+c: X-REPP-object-authInfo-value: SECRET-TOKEN
+c: X-REPP-object-authInfo-roid: CONTACT-12345
+c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+]]>
+</artwork>
+<t>Example Transfer Query response:</t>
+
+<artwork><![CDATA[S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <resData>
+S:      <!-- The rest of the response is omitted here -->
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+]]>
+</artwork>
 </section>
 </section>
 
-<section anchor="repp-transform-commands"><name>REPP Transform Commands</name>
+<section anchor="transform-commands"><name>Transform Commands</name>
 
 <section anchor="create"><name>Create</name>
 
@@ -973,11 +1087,7 @@ meaningful in RESTful EPP and MUST NOT be used.</t>
 </references>
 
 <section anchor="examples"><name>Examples</name>
-<t>In these examples, lines starting with &quot;C:&quot; represent data sent by a
-protocol client and lines starting with &quot;S:&quot; represent data returned
-by a REPP protocol server.  Indentation and white space in examples
-are provided only to illustrate element relationships and are not
-REQUIRED features of this protocol.</t>
+<t>TODO: move examples to section where related command is handled</t>
 
 <section anchor="domain-create-example"><name>Domain Create Example</name>
 
