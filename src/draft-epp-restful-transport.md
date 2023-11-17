@@ -121,6 +121,9 @@ XML is case sensitive.  Unless stated otherwise, XML specifications
 and examples provided in this document MUST be interpreted in the
 character case presented to develop a conforming implementation.
 
+The examples in this document assume that request and response messages
+are properly formatted XML documents.  
+
 
 # RESTful transport for EPP or REPP
 
@@ -186,9 +189,9 @@ A specific object instance MUST be identified by {context-root}/
 {version}/{collection}/{id} where {id} is a unique object identifier
 described in EPP RFCs.
 
-An example domain name resource, for example.com, would look like this:
+An example domain name resource, for example.nl, would look like this:
 
-/repp/v1/domains/example.com
+/repp/v1/domains/example.nl
 
 The level below a collection MUST be used to identify an object
 instance, the level below an object instance MUST be used to identify
@@ -210,6 +213,9 @@ in the HTTP message-body does not match the {id} object identifier in the URL.
 
 TODO Describe how REP MUST be data format agnostic and support multiple data formats.
 XML is already defined, but future JSON mappings MUDST also be supported.
+
+now using http header: Accept: application/epp+xml
+MUST support other content-types e.g.: application/epp+json
 
 # Message Exchange
 
@@ -276,13 +282,6 @@ X-REPP-cltrid:  The client transaction identifier is the equivalent
   accordingly.  When this header is present in a client request, an
   equivalent element in the message-body MAY also be present, but
   MUST than be consistent with the header.
-
-<!--TODO ISSUE 9: How to handle authInfo data for INFO command (GET request) -->
-X-REPP-auth-info:  The X-REPP-auth-info request-header is used as
-  a mechanism for transporting the authorization information associated 
-  with the an object. The <authInfo> element is described in the EPP RFCs and MUST be
-  used accordingly. It MUST contain the entire authorization
-  information element as mentioned in Section 11.1.
 
 
 ### Generic HTTP Headers
@@ -383,52 +382,86 @@ body of the request, 4. the response payload, being the HTTP message-
 body of the response.
 
 Table 2 list a mapping for each EPP to REPP, the subsequent sections
-provide details for each request. Each URL in the table i ussumed to have
-"/repp/v1/" prefixed. 
+provide details for each request.
+Each respource URL in the table is assumed to use tge prefix "/{context-root}/{version}/".
 
 {c}:  An abbreviation for {collection}: this MUST be substituted with
   "domains", "hosts", "contacts" or "messages".
 
-{i}:  An abbreviation for {id}: a domain name, host name, contact id
-  or a message id.
+{i}:  An abbreviation for {id}: a domain name, hostname, contact-id
+  or a message-id.
 
   Command mapping from EPP to REPP.
 
 EPP command        | Method  | Resource   
 -------------------|---------|------------
-Hello              | OPTIONS | /         
+Hello              | GET     | /         
 Login              | N/A     | N/A        
 Logout             | N/A     | N/A        
 Check              | HEAD    | /{c}/{i}      
 Info               | GET     | /{c}/{i}       
-Poll request       | GET     | /messages      
-Poll ack           | DELETE  | /messages/{i} 
-Transfer (query)   | GET     | /{c}/{i}/transfer 
-Change password    | PUT     | /password
+Poll Request       | GET     | /messages      
+Poll Ack           | DELETE  | /messages/{i} 
+Transfer Query     | GET     | /{c}/{i}/transfer 
+Change Password    | PUT     | /password
 Create             | POST    | /{c}   
 Delete             | DELETE  | /{c}/{i}    
 Renew              | PUT     | /{c}/{i}/validity
 Transfer           | POST    | /{c}/{i}/transfer 
-Transfer (cancel)  | DELETE  | /{c}/{i}/transfer 
-Transfer  (approve)| PUT     | /{c}/{i}/transfer    
-Transfer (reject)  | DELETE  | /{c}/{i}/transfer  
+Transfer Cancel    | DELETE  | /{c}/{i}/transfer 
+Transfer Approve   | PUT     | /{c}/{i}/transfer    
+Transfer Reject    | DELETE  | /{c}/{i}/transfer  
 Update             | PUT     | /{c}/{i} 
 
 
 ## Hello
 
-- Request: OPTIONS /{context-root}/{version}
+- Request: GET /{context-root}/{version}
 
-- Request payload: N/A
+- Request payload: Optional Hello request
 
-- Response payload: Greeting content
+- Response payload: Greeting response
 
 The server MUST send a Greeting response, as defined in section 2.4 of [@!RFC5730] in response 
-to request using the HTTP OPTIONS method on the root "/" resource.
+to request using the HTTP GET method on the root "/" resource.
 
-A REPP client MUST not add content to the HTTP message body of a Hello request.
-The version information returned by the server in the Hello response must match the version used in the 
-URL of the REPP implementation.
+A REPP client MAY add content to the HTTP message-body of a Hello request.
+The version information returned by the server in the Hello response MUST match the version used in the 
+URL of the REPP server.
+
+Example Hello request with an empty message-body:
+
+```
+C: GET /repp/v1/ HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Pragma: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+c: X-REPP-cltrid: ABC-12345
+```
+
+Example Hello response:
+
+```
+S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Length: 799
+S: Content-Type: application/epp+xml
+S:
+S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:   <greeting>
+S:     <!-- rest of the greeting elements -->
+S:   </greeting>
+S: </epp>
+```
+
+
 
 ## Password
 
@@ -478,14 +511,10 @@ The <logout> command MUST NOT be implemented by the server.
 
 ## REPP Query Commands
 
-TODO: describe these resources use GET method and cannot send request mesage in HTTP messagebody
-must use resource URL as identifier and options auth header.
+   <!--TODO: ISSUE #9: How to handle authInfo data for INFO command (GET request)? -->
+Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semanticsfor content received in a GET request. 
 
-REPP query commands use the HTTP GET methods to request information about objects from the EPP server.
-Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semantics
-for content received in a GET request. 
-An EPP XML query command is mapped to a REPP commands, using a URL resource and an HTTP method. There is no requirement for an HTTP message body, however some objects require additional authorization information.
-The cliet MUST add the authorization information to a dedicated HTTP header.
+A REPP client MAY use the HTTP GET method for executing a query command only when no request data has to be added to the HTTP message-body. When an EPP object requires additional authInfo information, as described in [RFC5731] and [RFC5733], the client MUST use the HTTP POST method and add the query command content to the HTTP message-body.
 
 ### Check
 
@@ -510,16 +539,25 @@ the EPP object mapping RFCs.
 
 ### Info
 
--  Request: GET {collection}/{id}
-
--  Request payload: OPTIONAL X-REPP-auth-info HTTP header with
-  <authInfo>.
-
--  Response payload: Object <info> response.
-
-A object <info> request MUST be performed with the HTTP GET method on
+A object <info> request MUST be performed with the HTTP GET or POST method on
 a resource identifying an object instance. The response MUST be a
 response message as described in object mapping of the EPP RFCs.
+
+A request for an object without authorization information.  
+
+-  Request: GET {collection}/{id}
+
+-  Request payload: N/A
+
+-  Response payload: <info> response
+
+A request for an object that has authorization information attached.  
+
+-  Request: POST {collection}/{id}
+
+-  Request payload: <info> request
+
+-  Response payload: <info> response
 
 #### Domain Name
 
@@ -823,39 +861,7 @@ TODO:  X-REPP-auth-info must be removed, if auth data is neeeded, then complete 
 
 The HTTP header X-REPP-auth-info MUST contain the entire authorization information
 element, formatted as described in the EPP RFCs.
-##  Hello Example
 
-###  RESTful <hello> Request
-
-```
-C: OPTIONS /repp/v1/ HTTP/1.1
-C: Host: repp.example.com
-C: Cache-Control: no-cache
-C: Authorization: Basic amRvZTp0ZXN0
-C: Pragma: no-cache
-C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
-C: Accept-Language: en
-C: Accept-Charset: utf-8
-```
-
-###  RESTful <hello> Response
-
-```
-S: HTTP/1.1 200 OK
-S: Date: Sun, 10 Apr 2012 12:00:00 UTC
-S: Server: Acme REPP server v1.0
-S: Content-Length: 799
-S: Content-Type: application/epp+xml
-S: Connection: close
-S:
-S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-S:   <greeting>
-S:     <!-- rest of the greeting elements -->
-S:   </greeting>
-S: </epp>
-```
 
 ##  Password Example
 
@@ -863,7 +869,7 @@ S: </epp>
 
 ```
 C: PUT /repp/v1/password/ HTTP/1.1
-C: Host: repp.example.com
+C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
 C: Pragma: no-cache
@@ -880,7 +886,7 @@ C: bWFpbG1lYXQ6bWFhcnRlbi53dWxsaW5rQHNpZG4ubmw=
 
 ```
 S: HTTP/1.1 200 OK
-S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 0
@@ -897,7 +903,7 @@ S: Connection: close
 TODO: remove extension from example below
 ```
 C: POST /repp/v1/domains/ HTTP/1.1
-C: Host: repp.example.com
+C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
 C: Pragma: no-cache
@@ -925,7 +931,7 @@ C: </epp>
 
 ```
 S: HTTP/1.1 200 OK
-S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 642
@@ -960,8 +966,8 @@ S:</epp>
 ###  Domain Delete Request:
 
 ```
-C: DELETE /repp/v1/domains/example.com HTTP/1.1
-C: Host: repp.example.com
+C: DELETE /repp/v1/domains/example.nl HTTP/1.1
+C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Basic amRvZTp0ZXN0
 C: Pragma: no-cache
@@ -974,7 +980,7 @@ C: X-REPP-cltrid: ABC-12345
 
 ```
 S: HTTP/1.1 200 OK
-S: Date: Sun, 10 Apr 2012 12:00:00 UTC
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 505

@@ -29,7 +29,12 @@ The GitHub interface supports creating pull requests using the Edit (✏) button
 
 ## Command Line Usage
 
-Formatted text and HTML versions of the draft can be built using.
+Requirements:
+
+- [mmark](https://mmark.miek.nl/)
+- [xml2rfc](https://github.com/ietf-tools/xml2rfc#installation)
+
+Formatted versions can be built using:
 
 ```
 cd src
