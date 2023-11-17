@@ -124,6 +124,12 @@ character case presented to develop a conforming implementation.
 The examples in this document assume that request and response messages
 are properly formatted XML documents.  
 
+In examples, lines starting with "C:" represent data sent by a
+REPP client and lines starting with "S:" represent data returned
+by a REPP server. Indentation and white space in examples
+are provided only to illustrate element relationships and are not
+REQUIRED features of this protocol.
+
 
 # RESTful transport for EPP or REPP
 
@@ -171,17 +177,17 @@ name, or a collection of objects. The complete set of objects available to
 client for registry operations MUST be identified by {context-
 root}/{version}/{collection}
 
-o  {context-root} is the base URL which MUST be specified by each
+- {context-root} is the base URL which MUST be specified by each
   registry. The {context-root} MAY be an empty, zero length string.
 
-o  {version} is a label which identifies the interface version.  This
+- {version} is a label which identifies the interface version.  This
   is the equivalent of the <version> element in the EPP RFCs. The version 
   used in a REPP URL MUST match the version used by EPP in the upper layer.
 
-o  {collection} MUST be substituted by "domains", "hosts" or
+- {collection} MUST be substituted by "domains", "hosts" or
   "contacts", referring to either [@!RFC5731], [@!RFC5732] or [@!RFC5733].
 
-o  A trailing slash MAY be added to each request.  Implementations
+- A trailing slash MAY be added to each request.  Implementations
   MUST consider requests which only differ with respect to this
   trailing slash as identical.
 
@@ -238,23 +244,17 @@ same order as the server receives them.
 REPP commands MUST be executed by using an HTTP method on a resource
 identified by an URL. The server MUST support the following "verbs" ([@!REST]).
 
-GET:  Request a representation of a resource or a collection of resources.
+- GET:  Request a representation of a resource or a collection of resources.
 
-PUT:  Update an existing resource.
+- PUT:  Update an existing resource.
 
-POST:  Create a new resource.
+- POST:  Create a new resource.
 
-DELETE:  Delete an existing resource.
+- DELETE:  Delete an existing resource.
 
-HEAD:  Check for the existence of a resource.
+- HEAD:  Check for the existence of a resource.
 
-OPTIONS:  Request a greeting.
-
-
-The server MUST not support the following "verbs"
-
-PATCH:  Partial updating of a resource is MUST not be allowed.
-
+- OPTIONS:  Request a greeting.
 
 ## REPP Request
 
@@ -332,6 +332,7 @@ X-REPP-cltrid:  This header is the equivalent of the <clTRID> element
   body with the EPP XML equivalent <clTRID> exists, both values MUST
   be consistent.
 
+ <!-- do week keep X-REPP-eppcode? -->
 X-REPP-eppcode:  This header is the equivalent of the <result code>
   element in te EPP RFCs and MUST be used accordingly. If an HTTP
   message-body with The EPP XML equivalent <result code> exists,
@@ -343,6 +344,13 @@ X-REPP-check-avail: An alternative for the "avail"
 
 X-REPP-check-reason: An optional alternative for the "object:reason"
   element in a check response and MUST be used accordingly.
+
+X-REPP-object-authInfo-value: The client MUST use this header when a command is used
+ on an object having associated authorization information, as described in section 3.1.3 of [@!RFC5730].
+
+X-REPP-object-authInfo-roid: The client MUST use this header when a roid attribute is required 
+as described in section 3.1.3 of [@!RFC5730].
+
 
 ### Generic Headers
 
@@ -406,11 +414,10 @@ Hello              | GET      | /
 Login              | N/A      | N/A        
 Logout             | N/A      | N/A        
 Check              | HEAD     | /{c}/{i}      
-Info               | GET      | /{c}/{i}       
-
+Info               | GET/POST | /{c}/{i}       
 Poll Request       | GET      | /messages      
 Poll Ack           | DELETE   | /messages/{i} 
-Transfer Query     | GET      | /{c}/{i}/transfer 
+Transfer Query     | GET/POST | /{c}/{i}/transfer 
 Create             | POST     | /{c}   
 Delete             | DELETE   | /{c}/{i}    
 Renew              | PUT      | /{c}/{i}/validity
@@ -424,7 +431,7 @@ Update             | PUT      | /{c}/{i}
   Allow for new commands not in the original RFC5730, need to add this to table and add footnote here
   [1] xxxx is not defined in [@!RFC5730] it is defined in this document as an additional mechanism for checking if there are any messages waiting in the queue.  
   -->
-  
+
 ## Hello
 
 - Request: GET /{context-root}/{version}
@@ -465,12 +472,12 @@ S:
 S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:   <greeting>
-S:     <!-- rest of the greeting response is omitted -->
+S:     <!-- The rest of the response is omitted here -->
 S:   </greeting>
 S: </epp>
 ```
 
-## Session Management Resources
+## Session Management
 
 One of the design goals of REPP is to increase the scalability of an EPP service.
 This means that session management as described in [@!RFC5730] is not supported, session management functions are delegated to the HTTP layer.
@@ -504,7 +511,7 @@ EPP result code.
 
 The concept of a session is no longer sued by REPP, therefore the Logout command MUST not be implemented by the server.
 
-## REPP Query Commands
+## Query Commands
 
    <!--TODO: ISSUE #9: How to handle authInfo data for INFO command (GET request)? -->
 Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semanticsfor content received in a GET request. 
@@ -646,7 +653,7 @@ S:      <msg>Command completed successfully</msg>
 S:    </result>
 S:    <resData>
 S:      <domain:infData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-S:         <!-- rest of the Info response is omitted -->
+S:         <!-- The rest of the response is omitted here -->
 S:      </domain:infData>
 S:    </resData>
 S:    <trID>
@@ -703,7 +710,7 @@ S:      <qDate>2000-06-08T22:00:00.0Z</qDate>
 S:      <msg>Transfer requested.</msg>
 S:    </msgQ>
 S:    <resData>
-S:       <!-- rest of the Poll response is omitted -->
+S:       <!-- The rest of the response is omitted here -->
 S:    </resData>
 S:    <trID>
 S:      <clTRID>ABC-12345</clTRID>
@@ -769,11 +776,47 @@ S:</epp>
 
 -  Response payload: Transfer respons.
 
-A <transfer> query MUST be performed with the HTTP GET method on the
+A Transfer Query command MUST be performed using the HTTP GET method on the nested
 transfer resource of a specific object instance.
 
+Example domain name Transfer Query request using authorization:
 
-## REPP Transform Commands
+```
+C: GET /repp/v1/domains/example.nl/transfer HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+c: X-REPP-cltrid: ABC-12345
+c: X-REPP-object-authInfo-value: SECRET-TOKEN
+c: X-REPP-object-authInfo-roid: CONTACT-12345
+c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+```
+
+Example Transfer Query response:
+
+```
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <resData>
+S:      <!-- The rest of the response is omitted here -->
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+```
+
+## Transform Commands
 
 ###  Create
 
@@ -987,13 +1030,7 @@ TODO
 
 # Examples
 
-In these examples, lines starting with "C:" represent data sent by a
-protocol client and lines starting with "S:" represent data returned
-by a REPP protocol server.  Indentation and white space in examples
-are provided only to illustrate element relationships and are not
-REQUIRED features of this protocol.
-
-
+TODO: move examples to section where related command is handled
 
 ##  Domain Create Example
 
