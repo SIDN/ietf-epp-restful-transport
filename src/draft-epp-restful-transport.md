@@ -458,7 +458,7 @@ Update             | PUT      | /{c}/{i}
 Extensions [1]     | *        | /extensions/*
 Table: Mapping of EPP Command to REPP Request
 
-[1] This mapping is used for command extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.3] 
+[1] This mapping is used for protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.3] 
   <!-- 
   Allow for new commands not in the original RFC5730, need to add this to table and add footnote here
   [1] xxxx is not defined in [@!RFC5730] it is defined in this document as an additional mechanism for checking if there are any messages waiting in the queue.  
@@ -1246,12 +1246,16 @@ on a unique object resource. The payload MUST contain an Update request as descr
 Example Update request:
 
 ```xml
-S: HTTP/1.1 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
-S: Server: Acme REPP server v1.0
-S: Content-Language: en
-S: Content-Length: 718
-S: Content-Type: application/epp+xml
+C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Content-Length: 252
 
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
@@ -1259,7 +1263,7 @@ C:  <command>
 C:    <update>
 C:      <domain:update
 C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-C:        <domain:name>example.com</domain:name>
+C:        <domain:name>example.nl</domain:name>
 C:           <!-- The rest of the response is omitted here -->
 C:      </domain:update>
 C:    </update>
@@ -1292,75 +1296,120 @@ S:  </response>
 S:</epp>
 ```
 
+## Extensions
+
+-  Request: * /extensions/*
+
+-  Request payload: *
+
+-  Response payload: *
+
+EPP protocol extensions, as defined in [@!RFC5730, secion 2.7.3] are supported using the generic "/extensions" resource.
+The HTTP method used for a extension is not defined but must follow the RESTful principles.
+
+Example Extension request:
+The example below, shows the use of the "Domain Cancel Delete" command as defined as a custom command in [@?SIDN-EXT] by the .nl domain registry operator. Where the registrar can use the HTPP DELETE method on a domain name resource to cancel an active domain delete transaction and move the domain from the quarantine state back to the active state.
+
+```xml
+C: DELETE /repp/v1/extensions/domains/example.nl/quarantine HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: X-REPP-cltrid: ABC-12345
+```
+
+Example Extension response:
+```xml
+S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 328
+S: Content-Type: application/epp+xml
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+```
+
+
 # Transport Considerations
 
-Section 2.1 of the EPP core protocol specification [@!RFC5730]
+[@!RFC5730, section 2.1] of the EPP protocol specification 
 describes considerations to be addressed by protocol transport
-mappings.  This document addresses each of the considerations using a
+mappings. This section addresses each of the considerations using a
 combination of features described in this document and features
 provided by HTTP as follows:
 
 -  HTTP is an application layer protocol which uses TCP as a
   transport protocol. TCP includes features to provide reliability,
-  flow control, ordered delivery, and congestion control.  Section
-  1.5 of  [@!RFC793] describes these features in detail; congestion
-  control principles are described further in  [@!RFC2581] and  [@!RFC2914].
+  flow control, ordered delivery, and congestion control
+  [@!RFC793, section 1.5] describes these features in detail; congestion
+  control principles are described further in [@!RFC2581] and [@!RFC2914].
   HTTP is a stateless protocol and as such it does not maintain any
-  client state or session.
+  client state.
 
--  The stateful nature of EPP is no longer preserved through managed
-   sessions.  There still is a controlled message exchanges because
-   HTTP uses TCP as transport layer protocol.
+-  The stateful nature of EPP is nomlonger preserved through EPP managed
+   sessions. The session management is delegated to the stateless HTTP layer.
+   Required EPP session information, such as authentication credentials
+   MUST be included in every HTTP request. This is required 
+   for the server to be able to process the request successfully.
 
 -  HTTP 1.1 allows persistent connections which can be used to send
    multiple HTTP requests to the server using the same connection.
-   The server MUST NOT allow persistent connections.
 
--  The server MUST NOT allow pipelining and return EPP result code
-   2002 if pipelining is detected.
+-  The server MAY allow pipelining.
 
 -  Batch-oriented processing (combining multiple EPP commands in a
    single HTTP request) MUST NOT be permitted.
 
--  Section 8 of this document describes features to frame EPP request
-   data by adding the data to an HTTP request message-body or
-   request-header.
-
 -  A request processing failure has no influence on the processing of
-   other requests.  The stateless nature of the server allows a
-   client to retry a failed request or send another request.
+   other requests. The stateless nature of the server allows a
+   client to retry a failed request or send a new request.
 
 
 # IANA Considerations
 
-TODO: This draft defines three resource collections; domains,
-contacts, hosts.  This may require an IANA RESTful EPP collection
-protocol registry.
+TODO: any?
 
 
 # Internationalization Considerations
 
-TODO
+TODO: any?
 
 # Security Considerations
 
   <!--TODO ISSUE 12: expand security section -->    
 
-[@!RFC5730] describes a <login> command for transmitting client
-credentials.  This command MUST NOT be used for RESTful EPP.  Due to
-the stateless nature of REST clients MUST transmit their credentials
-with each HTTP request. The validation of the user credentials must be
+[@!RFC5730] describes a Login command for transmitting client
+credentials. This command MUST NOT be used for REPP. Due to
+the stateless nature of REPP, the client MUST include the authentication credentials
+in each HTTP request. The validation of the user credentials must be
 performed by an out-of-band mechanism. Examples of authentication mechanisms are Basic
 and Digest access authentication [@!RFC2617] or OAuth [@!RFC5849].
 
- To protect data confidentiality and integrity, all data transport between the client
- and server must use TLS [@!RFC5246]. Section 9 of [@!RFC5734] describes the level of security
- that is REQUIRED.
+To protect data confidentiality and integrity, all data transport between the client
+and server MUST use TLS [@!RFC5246]. [@!RFC5734, Section 9] describes the level of security
+that is REQUIRED.
 
-EPP does not use XML encryption to protect messages.  Furthermore,
-RESTful EPP HTTP servers are vulnerable to common denial-of-service
-attacks.  Therefore, the security considerations of [@!RFC5734] also
-apply to RESTful EPP.
+EPP does not use XML encryption for protecting messages. Furthermore,
+REPP (HTTP) servers are vulnerable to common denial-of-service
+attacks. Therefore, the security considerations of [@!RFC5734] also
+apply to REPP.
 
   <!--TODO ISSUE #16: do we support changing password using /password  -->
 
@@ -1373,8 +1422,8 @@ meaningful in RESTful EPP and MUST NOT be used.
 | Code | Reason                                                     
 ------|------------------------------------------------------------
 | 1500 | The logout command is not used anymore.                    
-| 2002 | Commands can now be sent in any order.                     
-| 2100 | The REPP URL path includes the version.                                                  
+| 2100 | The REPP URL already includes the version.     
+| 2002 | Commands can now be sent in any order. TODO: is order guaranteed?                                                               
 | 2200 | The login command is not used anymore.                     
 
 
@@ -1391,6 +1440,16 @@ TODO
       <organization/>
     </author>
     <date year="2000"/>
+  </front>
+</reference>
+
+<reference anchor="SIDN-EXT" target="http://rxsd.domain-registry.nl/sidn-ext-epp-1.0.xsd">
+  <front>
+    <title>Extensible Provisioning Protocol v1.0 schema .NL extensions</title>
+    <author>
+      <organization>SIDN</organization>
+    </author>
+    <date year="2019"/>
   </front>
 </reference>
 
