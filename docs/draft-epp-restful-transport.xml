@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- name="GENERATOR" content="github.com/mmarkdown/mmark Mmark Markdown Processor - mmark.miek.nl" -->
-<rfc version="3" ipr="trust200902" docName="draft-epp-restful-transport-latest" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true">
+<rfc version="3" ipr="trust200902" docName="draft-wullink-restful-epp-01" submissionType="IETF" category="std" xml:lang="en" xmlns:xi="http://www.w3.org/2001/XInclude" indexInclude="true" tocDepth="4">
 
 <front>
-<title abbrev="RESTful Transport for EPP">Extensible Provisioning Protocol (EPP) RESTful Transport</title><seriesInfo value="draft-epp-restful-transport-latest" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
+<title abbrev="RESTful Transport for EPP">Extensible Provisioning Protocol (EPP) RESTful Transport</title><seriesInfo value="draft-wullink-restful-epp-01" stream="IETF" status="standard" name="Internet-Draft"></seriesInfo>
 <author initials="M." surname="Wullink" fullname="Maarten Wullink"><organization>SIDN Labs</organization><address><postal><street></street>
 </postal><email>maarten.wullink@sidn.nl</email>
 <uri>https://sidn.nl/</uri>
@@ -129,6 +129,22 @@ interaction between an EPP client and an EPP server more robust and
 efficient.</t>
 </section>
 
+<section anchor="epp-extension-framework"><name>EPP Extension Framework</name>
+<t>EPP provides an extension framework, <xref target="RFC3735" sectionFormat="bare" section="Section 2"></xref>, describes how to extend EPP by adding
+new features at the protocol, object and command-response levels.
+REPP affects the following levels:</t>
+<t>Protocol Extension: REPP does not use the &quot;command&quot;
+  concept, because the &quot;command&quot; concept is part of a RPC style and
+  not of a RESTful style. A REST URL and HTTP method combination have
+  replaced the command structure. The <xref target="command-mapping"></xref> section describes and extension
+  resource for use with existing and future command extensions.</t>
+<t>Object extension: REPP does not define any new object level
+  extensions. Any existing object level EPP extensions can be used.</t>
+<t>Command-Response extension:
+  RESTful EPP reuses the existing request and response messages defined in the
+  EPP RFCs.</t>
+</section>
+
 <section anchor="resource-naming-convention"><name>Resource Naming Convention</name>
 <t>A resource can be a single uniquely object identifier e.g. a domain
 name, or a collection of objects. The complete set of objects available to
@@ -170,7 +186,7 @@ identifier (for example <eref target="domain:name">domain:name</eref>, <eref tar
 in the HTTP message-body does not match the {id} object identifier in the URL.</t>
 </section>
 
-<section anchor="data-format"><name>Data format</name>
+<section anchor="data-format"><name>Data Format</name>
 <t>TODO Describe how REP MUST be data format agnostic and support multiple data formats.
 XML is already defined, but future JSON mappings MUDST also be supported.</t>
 <t>now using http header: Accept: application/epp+xml
@@ -279,10 +295,12 @@ X-REPP-eppcode:  This header is the equivalent of the &lt;result code&gt;
   MUST be used accordingly.</t>
 <t>X-REPP-check-reason: An optional alternative for the &quot;object:reason&quot;
   element in a check response and MUST be used accordingly.</t>
-<t>X-REPP-object-authInfo-value: The client MUST use this header when a command is used
+<t>&lt;!--
+X-REPP-object-authInfo-value: The client MUST use this header when a command is used
  on an object having associated authorization information, as described in section 3.1.3 of <xref target="RFC5730"></xref>.</t>
 <t>X-REPP-object-authInfo-roid: The client MUST use this header when a roid attribute is required
-as described in section 3.1.3 of <xref target="RFC5730"></xref>.</t>
+as described in section 3.1.3 of <xref target="RFC5730"></xref>.
+  --&gt;</t>
 </section>
 
 <section anchor="generic-headers"><name>Generic Headers</name>
@@ -327,11 +345,12 @@ All resource URLs in the table are assumed to use the prefix: &quot;/{context-ro
   &quot;domains&quot;, &quot;hosts&quot;, &quot;contacts&quot; or &quot;messages&quot;.</t>
 <t>{i}:  An abbreviation for {id}:  this MUST be substituted with the value of a domain name, hostname, contact-id
   or a message-id.</t>
-<t>Command mapping from EPP to REPP.</t>
-<table>
+<t>TODO: add resource extension commands for such as nl cancel-delete</t>
+<table><name>Mapping of EPP Command to REPP Request
+</name>
 <thead>
 <tr>
-<th>EPP command</th>
+<th>Command</th>
 <th>Method</th>
 <th>Resource</th>
 </tr>
@@ -381,12 +400,6 @@ All resource URLs in the table are assumed to use the prefix: &quot;/{context-ro
 </tr>
 
 <tr>
-<td>Transfer Query</td>
-<td>GET/POST</td>
-<td>/{c}/{i}/transfer</td>
-</tr>
-
-<tr>
 <td>Create</td>
 <td>POST</td>
 <td>/{c}</td>
@@ -401,31 +414,37 @@ All resource URLs in the table are assumed to use the prefix: &quot;/{context-ro
 <tr>
 <td>Renew</td>
 <td>PUT</td>
-<td>/{c}/{i}/validity</td>
+<td>/{c}/{i}/period</td>
 </tr>
 
 <tr>
 <td>Transfer</td>
 <td>POST</td>
-<td>/{c}/{i}/transfer</td>
+<td>/{c}/{i}/transfers</td>
+</tr>
+
+<tr>
+<td>Transfer Query</td>
+<td>GET/POST</td>
+<td>/{c}/{i}/transfers/latest</td>
 </tr>
 
 <tr>
 <td>Transfer Cancel</td>
 <td>DELETE</td>
-<td>/{c}/{i}/transfer</td>
+<td>/{c}/{i}/transfers/latest</td>
 </tr>
 
 <tr>
 <td>Transfer Approve</td>
 <td>PUT</td>
-<td>/{c}/{i}/transfer</td>
+<td>/{c}/{i}/transfers/latest</td>
 </tr>
 
 <tr>
 <td>Transfer Reject</td>
 <td>DELETE</td>
-<td>/{c}/{i}/transfer</td>
+<td>/{c}/{i}/transfers/latest</td>
 </tr>
 
 <tr>
@@ -433,8 +452,15 @@ All resource URLs in the table are assumed to use the prefix: &quot;/{context-ro
 <td>PUT</td>
 <td>/{c}/{i}</td>
 </tr>
+
+<tr>
+<td>Extensions [1]</td>
+<td>*</td>
+<td>/extensions/*</td>
+</tr>
 </tbody>
-</table><t></t>
+</table><t>[1] This mapping is used for command extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.3]
+  </t>
 
 <section anchor="hello"><name>Hello</name>
 
@@ -446,7 +472,7 @@ All resource URLs in the table are assumed to use the prefix: &quot;/{context-ro
 <li><t>Response payload: Greeting response</t>
 </li>
 </ul>
-<t>The server MUST send a Greeting response, as defined in section 2.4 of <xref target="RFC5730"></xref> in response
+<t>The server MUST send a Greeting response, as defined in <xref target="RFC5730" sectionFormat="of" section="2.4"></xref> in response
 to request using the HTTP GET method on the root &quot;/&quot; resource.</t>
 <t>The version information returned by the server in the Hello response MUST match the version used in the
 URL of the REPP server.</t>
@@ -460,7 +486,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-c: X-REPP-cltrid: ABC-12345
+C: X-REPP-cltrid: ABC-12345
 ]]>
 </artwork>
 <t>Example Hello response:</t>
@@ -514,7 +540,7 @@ EPP result code.</t>
 </section>
 </section>
 
-<section anchor="query-commands"><name>Query Commands</name>
+<section anchor="query"><name>Query</name>
 <t>
 Sending content using an HTTP GET request is discouraged in <xref target="RFC9110"></xref>, there exists no generally defined semanticsfor content received in a GET request.</t>
 <t>A REPP client MAY use the HTTP GET method for executing a query command only when no request data has to be added to the HTTP message-body. When an EPP object requires additional authInfo information, as described in [RFC5731] and [RFC5733], the client MUST use the HTTP POST method and add the query command content to the HTTP message-body.</t>
@@ -557,8 +583,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-c: X-REPP-cltrid: ABC-12345
-c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: X-REPP-cltrid: ABC-12345
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ]]>
 </artwork>
 <t>Example Check response:</t>
@@ -633,8 +659,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-c: X-REPP-cltrid: ABC-12345
-c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: X-REPP-cltrid: ABC-12345
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ]]>
 </artwork>
 <t>Example Info response:</t>
@@ -691,7 +717,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-c: X-REPP-cltrid: ABC-12345
+C: X-REPP-cltrid: ABC-12345
 ]]>
 </artwork>
 <t>Example Poll response:</t>
@@ -746,7 +772,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-c: X-REPP-cltrid: ABC-12345
+C: X-REPP-cltrid: ABC-12345
 ]]>
 </artwork>
 <t>Example Poll Ack response:</t>
@@ -776,20 +802,31 @@ S:</epp>
 </section>
 
 <section anchor="transfer-query"><name>Transfer Query</name>
+<t>The Transfer Query request uses the special &quot;latest&quot; resource to refer to the
+latest active object transfer.</t>
 
 <ul>
-<li><t>Request: GET {collection}/{id}/transfer</t>
+<li><t>Request: GET {collection}/{id}/transfers/latest</t>
 </li>
-<li><t>Request payload:</t>
+<li><t>Request payload: N/A</t>
 </li>
 <li><t>Response payload: Transfer respons.</t>
 </li>
 </ul>
-<t>A Transfer Query command MUST be performed using the HTTP GET method on the nested
-transfer resource of a specific object instance.</t>
-<t>Example domain name Transfer Query request using authorization:</t>
+<t>If the requested object has associated authorization information then the HTTP GET method
+MAY be used, otherwise the HTTP POST method MUST be used.</t>
 
-<artwork><![CDATA[C: GET /repp/v1/domains/example.nl/transfer HTTP/1.1
+<ul>
+<li><t>Request: POST {collection}/{id}/transfers/latest</t>
+</li>
+<li><t>Request payload: Transfer Query request</t>
+</li>
+<li><t>Response payload: Transfer Query response.</t>
+</li>
+</ul>
+<t>Example domain name Transfer Query request:</t>
+
+<sourcecode type="xml"><![CDATA[C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -797,15 +834,19 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-c: X-REPP-cltrid: ABC-12345
-c: X-REPP-object-authInfo-value: SECRET-TOKEN
-c: X-REPP-object-authInfo-roid: CONTACT-12345
-c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: X-REPP-cltrid: ABC-12345
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ]]>
-</artwork>
+</sourcecode>
 <t>Example Transfer Query response:</t>
 
-<artwork><![CDATA[S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Length: 230
+S: Content-Type: application/epp+xml
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
@@ -821,45 +862,138 @@ S:    </trID>
 S:  </response>
 S:</epp>
 ]]>
-</artwork>
+</sourcecode>
 </section>
 </section>
 
-<section anchor="transform-commands"><name>Transform Commands</name>
+<section anchor="transform"><name>Transform</name>
 
 <section anchor="create"><name>Create</name>
 
 <ul>
-<li><t>Request: POST {collection}/</t>
+<li><t>Request: POST /{collection}</t>
 </li>
-<li><t>Request payload: Object &lt;create&gt;.</t>
+<li><t>Request payload: Object Create request</t>
 </li>
-<li><t>Response payload: Object &lt;create&gt; response.</t>
+<li><t>Response payload: Object Create response</t>
 </li>
 </ul>
-<t>A client MUST create a new object with the HTTP POST method in
-combination with an object collection.</t>
+<t>A client MUST create a new object using the HTTP POST method on an object collection resource.</t>
+<t>Example Domain Create request:</t>
+
+<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/ HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Content-Length: 220
+C:
+C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:  <command>
+C:    <create>
+C:      <domain:create
+C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:        <domain:name>example.nl</domain:name>
+C:        <!-- The rest of the request is omitted here -->
+C:      </domain:create>
+C:    </create>
+C:    <clTRID>ABC-12345</clTRID>
+C:  </command>
+C:</epp>
+]]>
+</sourcecode>
+<t>Example Domain Create response:</t>
+
+<artwork><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 642
+S: Content-Type: application/epp+xml
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:   <response>
+S:      <result code="1000">
+S:         <msg>Command completed successfully</msg>
+S:      </result>
+S:      <resData>
+S:         <domain:creData
+S:            <!-- The rest of the response is omitted here -->
+S:         </domain:creData>
+S:      </resData>
+S:      <trID>
+S:         <clTRID>ABC-12345</clTRID>
+S:         <svTRID>54321-XYZ</svTRID>
+S:      </trID>
+S:   </response>
+S:</epp>
+]]>
+</artwork>
 </section>
 
 <section anchor="delete"><name>Delete</name>
 
 <ul>
-<li><t>Request: DELETE {collection}/{id}</t>
+<li><t>Request: DELETE /{collection}/{id}</t>
 </li>
 <li><t>Request payload: N/A</t>
 </li>
-<li><t>Response payload: Object &lt;delete&gt; response.</t>
+<li><t>Response payload: Object Delete response</t>
 </li>
 </ul>
-<t>Deleting an object from the registry database MUST be performed with
-the HTTP DELETE method on a REST resource specifying a specific
+<t>Deleting an object from the registry database MUST be performed using
+the HTTP DELETE method on a REST resource identifying a unique
 object instance.</t>
+<t>Example Domain Delete request:</t>
+
+<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-cltrid: ABC-12345
+]]>
+</artwork>
+<t>Example Domain Delete response:</t>
+
+<artwork><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 505
+S: Content-Type: application/epp+xml
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:   <response>
+S:      <result code="1000">
+S:         <msg>Command completed successfully</msg>
+S:      </result>
+S:      <trID>
+S:         <clTRID>ABC-12345</clTRID>
+S:         <svTRID>XYZ-12345</svTRID>
+S:       </trID>
+S:   </response>
+S:</epp>
+]]>
+</artwork>
 </section>
 
 <section anchor="renew"><name>Renew</name>
 
 <ul>
-<li><t>Request: PUT {collection}/{id}/validity</t>
+<li><t>Request: PUT /{collection}/{id}/period</t>
 </li>
 <li><t>Request payload: Object &lt;renew&gt;.</t>
 </li>
@@ -867,13 +1001,249 @@ object instance.</t>
 </li>
 </ul>
 <t>Renewing an object is only specified by <xref target="RFC5731"></xref>, the &lt;renew&gt;
-command has been mapped to a validity resource.</t>
+command has been mapped to a period resource.</t>
+<t>Example Renew request:</t>
+
+<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/period HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Content-Length: 325
+C: 
+C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:  <command>
+C:    <renew>
+C:      <domain:renew
+C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:        <domain:name>example.nl</domain:name>
+C:        <domain:curExpDate>2023-11-17</domain:curExpDate>
+C:        <domain:period unit="y">1</domain:period>
+C:      </domain:renew>
+C:    </renew>
+C:    <clTRID>ABC-12345</clTRID>
+C:  </command>
+C:</epp>
+]]>
+</sourcecode>
+<t>Example Renew response:</t>
+
+<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 505
+S: Content-Type: application/epp+xml
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <resData>
+S:      <!-- The rest of the response is omitted here -->
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+]]>
+</sourcecode>
+</section>
+
+<section anchor="transfer"><name>Transfer</name>
+<t>Transferring an object from one sponsoring client to another is only
+specified in <xref target="RFC5731"></xref> and <xref target="RFC5733"></xref>.  The &lt;transfer&gt; command has
+been mapped to a transfer resource.</t>
+<t>The semantics of the HTTP DELETE method are determined by the role of
+the client executing the method. For the current sponsoring
+registrar the DELETE method is defined as &quot;reject transfer&quot;. For the
+new sponsoring registrar the DELETE method is defined as &quot;cancel
+transfer&quot;.</t>
+
+<section anchor="create-1"><name>Create</name>
+
+<ul>
+<li><t>Request: POST /{collection}/{id}/transfers</t>
+</li>
+<li><t>Request payload: Optional Transfer Approve request</t>
+</li>
+<li><t>Response Payload: Transfer response.</t>
+</li>
+</ul>
+<t>To start a new object transfer, the client MUST use the HTTP POST method on a unique domain name or
+contact object instance. If the server only requires the domain name to be able to create a new transfer, then<br />
+the client MAY choose to send an empty HTTP message-body. <xref target="RFC5730" sectionFormat="of" section="3.2.4"></xref> described additional
+information the server might require.</t>
+<t>Example Create request using no object authorization:</t>
+
+<sourcecode type="http"><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-cltrid: ABC-12345
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+]]>
+</sourcecode>
+<t>Example Create request using object authorization:</t>
+
+<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Content-Length: 252
+
+C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:  <command>
+C:    <transfer op="request">
+C:      <domain:transfer
+C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:        <domain:name>example.nl</domain:name>
+C:        <domain:authInfo>
+C:          <domain:pw roid="DOM-12345">kds78jhbfdsk</domain:pw>
+C:        </domain:authInfo>
+C:      </domain:transfer>
+C:    </transfer>
+C:    <clTRID>ABC-12345</clTRID>
+C:  </command>
+C:</epp>
+]]>
+</sourcecode>
+<t>Example Transfer response:</t>
+
+<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 328
+S: Content-Type: application/epp+xml
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1001">
+S:      <msg>Command completed successfully; action pending</msg>
+S:    </result>
+S:    <resData>
+S:      <!-- The rest of the response is omitted here -->
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+]]>
+</sourcecode>
+</section>
+
+<section anchor="cancel"><name>Cancel</name>
+
+<ul>
+<li><t>Request: DELETE /{collection}/{id}/transfers/latest</t>
+</li>
+<li><t>Request payload: N/A</t>
+</li>
+<li><t>Response payload: Transfer cancel response message.</t>
+</li>
+</ul>
+<t>The new sponsoring client MUST use the HTTP DELETE method to cancel a
+requested transfe.</t>
+<t>Example Cancel request:</t>
+
+<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-cltrid: ABC-12345
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+]]>
+</artwork>
+</section>
+
+<section anchor="reject"><name>Reject</name>
+
+<ul>
+<li><t>Request: DELETE /{collection}/{id}/transfers/latest</t>
+</li>
+<li><t>Request payload:  Optional Transfer Rject request</t>
+</li>
+<li><t>Response payload: Transfer response</t>
+</li>
+</ul>
+<t>The current sponsoring client MUST use the HTTP DELETE method to
+reject a transfer requested by the new sponsoring client.</t>
+<t>Example Reject request:</t>
+
+<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-cltrid: ABC-12345
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+]]>
+</artwork>
+</section>
+
+<section anchor="approve"><name>Approve</name>
+
+<ul>
+<li><t>Request: PUT /{collection}/{id}/transfers/latest</t>
+</li>
+<li><t>Request payload: Optional Transfer Approve request</t>
+</li>
+<li><t>Response payload: Transfer response.</t>
+</li>
+</ul>
+<t>The current sponsoring client MUST use the HTTP PUT method to approve
+a transfer requested by the new sponsoring client.</t>
+<t>Example Approve request:</t>
+
+<artwork><![CDATA[C: PUT /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+C: Host: repp.example.nl
+C: Cache-Control: no-cache
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Encoding: gzip,deflate
+C: Accept-Language: en
+C: Accept-Charset: utf-8
+C: X-REPP-cltrid: ABC-12345
+C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+]]>
+</artwork>
+</section>
 </section>
 
 <section anchor="update"><name>Update</name>
 
 <ul>
-<li><t>Request: PUT {collection}/{id}</t>
+<li><t>Request: PUT /{collection}/{id}</t>
 </li>
 <li><t>Request payload: Object:update.</t>
 </li>
@@ -883,69 +1253,6 @@ command has been mapped to a validity resource.</t>
 <t>An object &lt;update&gt; request MUST be performed with the HTTP PUT method
 on a specific object resource.  The payload MUST contain an &lt;object:
 update&gt; described in the EPP RFCs.</t>
-</section>
-
-<section anchor="transfer"><name>Transfer</name>
-<t>Transferring an object from one sponsoring client to another is only
-   specified in <xref target="RFC5731"></xref> and <xref target="RFC5733"></xref>.  The &lt;transfer&gt; command has
-   been mapped to a transfer resource.</t>
-<t>The semantics of the HTTP DELETE method are determined by the role of
-   the client executing the method.  For the current sponsoring
-   registrar the DELETE method is defined as &quot;reject transfer&quot;.  For the
-   new sponsoring registrar the DELETE method is defined as &quot;cancel
-   transfer&quot;.</t>
-
-<section anchor="create-op"><name>Create Op</name>
-<t>o  Request: POST {collection}/{id}/transfer</t>
-<t>o  Request payload: <eref target="object:transfer">object:transfer</eref>.</t>
-<t>o  Response Payload: Transfer start response.</t>
-<t>Initiating a transfer MUST be done by creating a new &quot;transfer&quot;
-resource with the HTTP POST method on a specific domain name or
-contact object instance.  The server MAY require authorization
-information to validate the transfer request.</t>
-</section>
-
-<section anchor="cancel-op"><name>Cancel Op</name>
-
-<ul>
-<li><t>Request: DELETE {collection}/{id}/transfer</t>
-</li>
-<li><t>Request payload: N/A</t>
-</li>
-<li><t>Response payload: Transfer cancel response message.</t>
-</li>
-</ul>
-<t>The new sponsoring client MUST use the HTTP DELETE method to cancel a
-requested transfer.</t>
-</section>
-
-<section anchor="approve-op"><name>Approve Op</name>
-
-<ul>
-<li><t>Request: PUT {collection}/{id}/transfer</t>
-</li>
-<li><t>Request payload: N/A</t>
-</li>
-<li><t>Response payload: Transfer approve response message.</t>
-</li>
-</ul>
-<t>The current sponsoring client MUST use the HTTP PUT method to approve
-a transfer requested by the new sponsoring client.</t>
-</section>
-
-<section anchor="reject-op"><name>Reject Op</name>
-
-<ul>
-<li><t>Request: DELETE {collection}/{id}/transfer</t>
-</li>
-<li><t>Request payload: N/A</t>
-</li>
-<li><t>Response payload: Transfer reject response message</t>
-</li>
-</ul>
-<t>The current sponsoring client MUST use the HTTP DELETE method to
-reject a transfer requested by the new sponsoring client.</t>
-</section>
 </section>
 </section>
 </section>
@@ -1076,6 +1383,7 @@ meaningful in RESTful EPP and MUST NOT be used.</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2617.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2914.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3375.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3735.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5730.xml"/>
@@ -1087,124 +1395,6 @@ meaningful in RESTful EPP and MUST NOT be used.</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.793.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9110.xml"/>
 </references>
-
-<section anchor="examples"><name>Examples</name>
-<t>TODO: move examples to section where related command is handled</t>
-
-<section anchor="domain-create-example"><name>Domain Create Example</name>
-
-<section anchor="domain-create-request"><name>Domain Create Request</name>
-<t>TODO: remove extension from example below</t>
-
-<artwork><![CDATA[C: POST /repp/v1/domains/ HTTP/1.1
-C: Host: repp.example.nl
-C: Cache-Control: no-cache
-C: Authorization: Basic amRvZTp0ZXN0
-C: Accept-Language: en
-C: Accept-Charset: utf-8
-C: Accept: application/epp+xml
-C: X-REPP-cltrid: ABC-12345
-c: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
-C: Content-Type: text/plain
-C: Content-Length: 543
-
-C: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
-C:      xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-C:  <extension>
-C:   <re:rest xmlns:re="urn:ietf:params:xml:ns:restful-epp-1.0">
-C:    <domain:create>
-C:     <!-- Object specific elements-->
-C:    </domain:create>
-C:   </re:rest>
-C:  </extension>
-C: </epp>
-]]>
-</artwork>
-</section>
-
-<section anchor="domain-create-response"><name>Domain Create Response:</name>
-
-<artwork><![CDATA[S: HTTP/1.1 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
-S: Server: Acme REPP server v1.0
-S: Content-Language: en
-S: Content-Length: 642
-S: X-REPP-cltrid: ABC-12345
-S: X-REPP-svtrid: 54321-XYZ
-S: X-REPP-eppcode: 1000
-S: Content-Type: application/epp+xml
-S: Connection: close
-
-S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
-S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-S:   <response>
-S:      <result code="1000">
-S:         <msg>Command completed successfully</msg>
-S:      </result>
-S:      <resData>
-S:         <domain:creData
-S:             <!-- Object specific elements-->
-S:         </domain:creData>
-S:      </resData>
-S:      <trID>
-S:         <clTRID>ABC-12345</clTRID>
-S:         <svTRID>54321-XYZ</svTRID>
-S:      </trID>
-S:   </response>
-S:</epp>
-]]>
-</artwork>
-</section>
-</section>
-
-<section anchor="domain-delete-example"><name>Domain Delete Example</name>
-
-<section anchor="domain-delete-request"><name>Domain Delete Request:</name>
-
-<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl HTTP/1.1
-C: Host: repp.example.nl
-C: Cache-Control: no-cache
-C: Authorization: Basic amRvZTp0ZXN0
-C: Accept-Language: en
-C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
-]]>
-</artwork>
-</section>
-
-<section anchor="domain-delete-response"><name>Domain Delete Response:</name>
-
-<artwork><![CDATA[S: HTTP/1.1 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
-S: Server: Acme REPP server v1.0
-S: Content-Language: en
-S: Content-Length: 505
-S: X-REPP-cltrid: ABC-12345
-S: X-REPP-svtrid: 54321-XYZ
-S: X-REPP-eppcode: 1000
-S: Content-Type: application/epp+xml
-S: Connection: close
-
-S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
-S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-S:   <response>
-S:      <result code="1000">
-S:         <msg>Command completed successfully</msg>
-S:      </result>
-S:      <trID>
-S:         <clTRID>ABC-12345</clTRID>
-S:         <svTRID>54321-XYZ</svTRID>
-S:       </trID>
-S:   </response>
-S:</epp>
-]]>
-</artwork>
-</section>
-</section>
-</section>
 
 </back>
 
