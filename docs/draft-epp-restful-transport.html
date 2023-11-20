@@ -2720,7 +2720,7 @@ contact object instance. If the server only requires the domain name to be able 
 the client MAY choose to send an empty HTTP message-body. <span><a href="https://rfc-editor.org/rfc/rfc5730#section-3.2.4" class="relref">Section 3.2.4</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> described additional
 information the server might require.<a href="#section-10.4.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-10.4.4.1-3">Example Create request using no object authorization:<a href="#section-10.4.4.1-3" class="pilcrow">¶</a></p>
-<div class="lang-http sourcecode" id="section-10.4.4.1-4">
+<div class="alignLeft art-text artwork" id="section-10.4.4.1-4">
 <pre>C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
@@ -2917,9 +2917,57 @@ C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
               <p id="section-10.4.5-1.3.1">Response payload: Update response message<a href="#section-10.4.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-10.4.5-2">An object &lt;update&gt; request MUST be performed with the HTTP PUT method
-on a specific object resource.  The payload MUST contain an &lt;object:
-update&gt; described in the EPP RFCs.<a href="#section-10.4.5-2" class="pilcrow">¶</a></p>
+<p id="section-10.4.5-2">An object Update request MUST be performed with the HTTP PUT method
+on a unique object resource. The payload MUST contain an Update request as described in the EPP RFCs.<a href="#section-10.4.5-2" class="pilcrow">¶</a></p>
+<p id="section-10.4.5-3">Example Update request:<a href="#section-10.4.5-3" class="pilcrow">¶</a></p>
+<div class="lang-xml sourcecode" id="section-10.4.5-4">
+<pre>S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 718
+S: Content-Type: application/epp+xml
+
+C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+C:&lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
+C:  &lt;command&gt;
+C:    &lt;update&gt;
+C:      &lt;domain:update
+C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0"&gt;
+C:        &lt;domain:name&gt;example.com&lt;/domain:name&gt;
+C:           &lt;!-- The rest of the response is omitted here --&gt;
+C:      &lt;/domain:update&gt;
+C:    &lt;/update&gt;
+C:    &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
+C:  &lt;/command&gt;
+C:&lt;/epp&gt;
+
+</pre><a href="#section-10.4.5-4" class="pilcrow">¶</a>
+</div>
+<p id="section-10.4.5-5">Example Update response:<a href="#section-10.4.5-5" class="pilcrow">¶</a></p>
+<div class="lang-xml sourcecode" id="section-10.4.5-6">
+<pre>S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 328
+S: Content-Type: application/epp+xml
+
+S:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+S:&lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
+S:  &lt;response&gt;
+S:    &lt;result code="1000"&gt;
+S:      &lt;msg&gt;Command completed successfully&lt;/msg&gt;
+S:    &lt;/result&gt;
+S:    &lt;trID&gt;
+S:      &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
+S:      &lt;svTRID&gt;XYZ-12345&lt;/svTRID&gt;
+S:    &lt;/trID&gt;
+S:  &lt;/response&gt;
+S:&lt;/epp&gt;
+
+</pre><a href="#section-10.4.5-6" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 </section>

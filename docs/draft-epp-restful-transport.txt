@@ -117,14 +117,14 @@ Internet-Draft          RESTful Transport for EPP          November 2023
          10.4.4.3.  Reject . . . . . . . . . . . . . . . . . . . . .  30
          10.4.4.4.  Approve  . . . . . . . . . . . . . . . . . . . .  30
        10.4.5.  Update . . . . . . . . . . . . . . . . . . . . . . .  31
-   11. Transport Considerations  . . . . . . . . . . . . . . . . . .  31
-   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  32
-   13. Internationalization Considerations . . . . . . . . . . . . .  32
-   14. Security Considerations . . . . . . . . . . . . . . . . . . .  32
-   15. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  32
-   16. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  33
-   17. Normative References  . . . . . . . . . . . . . . . . . . . .  33
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  35
+   11. Transport Considerations  . . . . . . . . . . . . . . . . . .  32
+   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  33
+   13. Internationalization Considerations . . . . . . . . . . . . .  33
+   14. Security Considerations . . . . . . . . . . . . . . . . . . .  33
+   15. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  33
+   16. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  34
+   17. Normative References  . . . . . . . . . . . . . . . . . . . .  34
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  36
 
 1.  Introduction
 
@@ -1690,9 +1690,73 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
    -  Response payload: Update response message
 
-   An object <update> request MUST be performed with the HTTP PUT method
-   on a specific object resource.  The payload MUST contain an <object:
-   update> described in the EPP RFCs.
+   An object Update request MUST be performed with the HTTP PUT method
+   on a unique object resource.  The payload MUST contain an Update
+   request as described in the EPP RFCs.
+
+   Example Update request:
+
+   S: HTTP/1.1 200 OK
+   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Server: Acme REPP server v1.0
+   S: Content-Language: en
+   S: Content-Length: 718
+   S: Content-Type: application/epp+xml
+
+   C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+   C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   C:  <command>
+   C:    <update>
+   C:      <domain:update
+   C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+   C:        <domain:name>example.com</domain:name>
+   C:           <!-- The rest of the response is omitted here -->
+   C:      </domain:update>
+   C:    </update>
+   C:    <clTRID>ABC-12345</clTRID>
+   C:  </command>
+   C:</epp>
+
+   Example Update response:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Davids           Expires 23 May 2024                 [Page 31]
+
+Internet-Draft          RESTful Transport for EPP          November 2023
+
+
+   S: HTTP/1.1 200 OK
+   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Server: Acme REPP server v1.0
+   S: Content-Language: en
+   S: Content-Length: 328
+   S: Content-Type: application/epp+xml
+
+   S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:  <response>
+   S:    <result code="1000">
+   S:      <msg>Command completed successfully</msg>
+   S:    </result>
+   S:    <trID>
+   S:      <clTRID>ABC-12345</clTRID>
+   S:      <svTRID>XYZ-12345</svTRID>
+   S:    </trID>
+   S:  </response>
+   S:</epp>
 
 11.  Transport Considerations
 
@@ -1721,22 +1785,21 @@ Internet-Draft          RESTful Transport for EPP          November 2023
    -  The server MUST NOT allow pipelining and return EPP result code
       2002 if pipelining is detected.
 
+
+
+
+
+Wullink & Davids           Expires 23 May 2024                 [Page 32]
+
+Internet-Draft          RESTful Transport for EPP          November 2023
+
+
    -  Batch-oriented processing (combining multiple EPP commands in a
       single HTTP request) MUST NOT be permitted.
 
    -  Section 8 of this document describes features to frame EPP request
       data by adding the data to an HTTP request message-body or
       request-header.
-
-
-
-
-
-
-Wullink & Davids           Expires 23 May 2024                 [Page 31]
-
-Internet-Draft          RESTful Transport for EPP          November 2023
-
 
    -  A request processing failure has no influence on the processing of
       other requests.  The stateless nature of the server allows a
@@ -1782,14 +1845,7 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
 
 
-
-
-
-
-
-
-
-Wullink & Davids           Expires 23 May 2024                 [Page 32]
+Wullink & Davids           Expires 23 May 2024                 [Page 33]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
@@ -1845,7 +1901,7 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
 
 
-Wullink & Davids           Expires 23 May 2024                 [Page 33]
+Wullink & Davids           Expires 23 May 2024                 [Page 34]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
@@ -1901,7 +1957,7 @@ Internet-Draft          RESTful Transport for EPP          November 2023
 
 
 
-Wullink & Davids           Expires 23 May 2024                 [Page 34]
+Wullink & Davids           Expires 23 May 2024                 [Page 35]
 
 Internet-Draft          RESTful Transport for EPP          November 2023
 
@@ -1957,4 +2013,4 @@ Authors' Addresses
 
 
 
-Wullink & Davids           Expires 23 May 2024                 [Page 35]
+Wullink & Davids           Expires 23 May 2024                 [Page 36]

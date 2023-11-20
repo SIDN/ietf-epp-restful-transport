@@ -1085,7 +1085,7 @@ the client MAY choose to send an empty HTTP message-body. <xref target="RFC5730"
 information the server might require.</t>
 <t>Example Create request using no object authorization:</t>
 
-<sourcecode type="http"><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+<artwork><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1096,7 +1096,7 @@ C: Accept-Charset: utf-8
 C: X-REPP-cltrid: ABC-12345
 C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ]]>
-</sourcecode>
+</artwork>
 <t>Example Create request using object authorization:</t>
 
 <sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
@@ -1250,9 +1250,55 @@ C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 <li><t>Response payload: Update response message</t>
 </li>
 </ul>
-<t>An object &lt;update&gt; request MUST be performed with the HTTP PUT method
-on a specific object resource.  The payload MUST contain an &lt;object:
-update&gt; described in the EPP RFCs.</t>
+<t>An object Update request MUST be performed with the HTTP PUT method
+on a unique object resource. The payload MUST contain an Update request as described in the EPP RFCs.</t>
+<t>Example Update request:</t>
+
+<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 718
+S: Content-Type: application/epp+xml
+
+C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:  <command>
+C:    <update>
+C:      <domain:update
+C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+C:        <domain:name>example.com</domain:name>
+C:           <!-- The rest of the response is omitted here -->
+C:      </domain:update>
+C:    </update>
+C:    <clTRID>ABC-12345</clTRID>
+C:  </command>
+C:</epp>
+]]>
+</sourcecode>
+<t>Example Update response:</t>
+
+<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 328
+S: Content-Type: application/epp+xml
+
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+]]>
+</sourcecode>
 </section>
 </section>
 </section>
