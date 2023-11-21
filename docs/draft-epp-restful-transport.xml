@@ -16,8 +16,8 @@
 
 <abstract>
 <t>This document specifies a 'RESTful transport for EPP' (REPP) with the
-aim to improve efficiency and interoperability of EPP.</t>
-<t>This document includes a mapping of <xref target="RFC5730"></xref> EPP commands to an HTTP based (RESTful)
+aim of improving the efficiency and interoperability of EPP.</t>
+<t>This document includes a mapping of <xref target="RFC5730"></xref> EPP commands to an RESTful HTTP based
 interface.  Existing semantics and mappings as defined in <xref target="RFC5731"></xref>,
 <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are largely retained and reusable in RESTful
 EPP.</t>
@@ -76,7 +76,7 @@ this document.</t>
 <t>URL - A Uniform Resource Locator as defined in <xref target="RFC3986"></xref>.</t>
 <t>Resource - A network data object or service that can be identified
 by a URL.</t>
-<t>Command mapping - The mapping of <xref target="RFC5730"></xref> EPP commands to
+<t>Command Mapping - A mapping of <xref target="RFC5730"></xref> EPP commands to
 RESTful EPP.</t>
 </section>
 
@@ -186,14 +186,7 @@ identifier (for example <eref target="domain:name">domain:name</eref>, <eref tar
 in the HTTP message-body does not match the {id} object identifier in the URL.</t>
 </section>
 
-<section anchor="data-format"><name>Data Format</name>
-<t>TODO Describe how REP MUST be data format agnostic and support multiple data formats.
-XML is already defined, but future JSON mappings MUDST also be supported.</t>
-<t>now using http header: Accept: application/epp+xml
-MUST support other content-types e.g.: application/epp+json</t>
-</section>
-
-<section anchor="message-exchange"><name>Message Exchange</name>
+<section anchor="http-usage"><name>HTTP Usage</name>
 <t>A <xref target="RFC5730"></xref> EPP request includes a command- and object mapping to which a
 command must be applied. REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section  <xref target="http-method"></xref> provides a overview of each the behaviour assinged to each method.
 REPP requests are expressed by using an URL resource, an HTTP method and optionally an HTTP header and message body.</t>
@@ -204,7 +197,7 @@ request as defined in Section 9. </t>
 requests MUST be processed independently of each other and in the
 same order as the server receives them.</t>
 
-<section anchor="http-method"><name>HTTP Method Definition</name>
+<section anchor="http-method"><name>Method Definition</name>
 <t>REPP commands MUST be executed by using an HTTP method on a resource
 identified by an URL. The server MUST support the following &quot;verbs&quot; (<xref target="REST"></xref>).</t>
 
@@ -224,17 +217,29 @@ identified by an URL. The server MUST support the following &quot;verbs&quot; (<
 </ul>
 </section>
 
-<section anchor="repp-request"><name>REPP Request</name>
+<section anchor="media-types"><name>Media types</name>
+<t></t>
+<t>TODO Describe how REP MUST be data format agnostic and support multiple data formats.
+XML is already defined, but future JSON mappings MUDST also be supported.</t>
+<t>now using http header: Accept: application/epp+xml
+MUST support other content-types e.g.: application/epp+json</t>
+</section>
+
+<section anchor="response-status-codes"><name>Response Status Codes</name>
+<t>TODO:
+see for example: <eref target="https://datatracker.ietf.org/doc/html/rfc7480">https://datatracker.ietf.org/doc/html/rfc7480</eref></t>
+</section>
+
+<section anchor="request"><name>Request</name>
 <t>TODO: add text that due to stateless nature a request must contain all
 data required to execute command. includes data previously part of client session (login)</t>
 
-<section anchor="epp-data"><name>EPP Data</name>
-<t>The payload data for a REPP request MAY be transmitted to the
-server using the POST, PUT and GET HTTP methods.</t>
-<t>POST and PUT:  Payload data, when required, MUST be added to the
-  message-body.</t>
-<t>GET:  When payload data is required, it concerns &lt;authInfo&gt;.  This
-  SHALL be put in the &quot;X-REPP-auth-info&quot; HTTP request-header.</t>
+<section anchor="epp-content"><name>EPP content</name>
+<t>In contrast to EPP over TCP <xref target="RFC5734"></xref>, REPP does not always
+require a EPP request message to be sent to the server, the information encoded in the URL and request headers
+is sufficient for the server to be able to successfully proceses some request, such the Object Info request.</t>
+<t>When an EPP request does require an EPP request message, the client MUST use the HTTP POST or PUT methods and
+add the request content to the HTTP message-body.</t>
 </section>
 
 <section anchor="repp-request-headers"><name>REPP Request Headers</name>
@@ -251,24 +256,21 @@ the &quot;X-REPP-&quot; prefix.</t>
 </section>
 
 <section anchor="generic-http-headers"><name>Generic HTTP Headers</name>
-<t>Generic HTTP headers MAY be used as defined in HTTP/1.1 <xref target="RFC2616"></xref>.  For
-REPP, the following general-headers are REQUIRED in HTTP requests.</t>
-<t>Accept-Language:  This request-header is equivalent to the &lt;lang&gt;
-  element in the EPP &lt;login&gt; command, expect that the usage of this
-  header by the client is OPTIONAL.  The server MUST support the use
+<t>Generic HTTP headers as defined in HTTP/1.1 <xref target="RFC2616"></xref>,
+the following general-headers are REQUIRED in REPP HTTP requests.</t>
+<t>Accept-Language:  This request-header is equivalent to the &quot;lang&quot;
+  element in the EPP Login command. The server MUST support the use
   of HTTP Accept-Language header in client requests.  The client MAY
-  issue a &lt;hello&gt; to discover the languages known by the server.
+  issue a Hello request to discover the languages supported by the server.
   Multiple servers in a load-balanced environment SHOULD reply with
-  consistent &lt;lang&gt; elements in a &lt;greeting&gt;.  Clients SHOULD NOT
-  expect that obtained &lt;lang&gt; information remains consistent between
-  different requests.  Languages not supported by the server default
-  to &quot;en&quot;.</t>
-<t></t>
-<t>Content-Type: ...</t>
+  consistent &quot;lang&quot; elements in the Greeting response.
+  The value of the Accept-Language header does not have to match any of the languages from Hello response.
+  When the server receives a request using an unsupported langauge, the server MUST respond using the default language configured for the server,
+  this differs from the server behaviour described in <xref target="RFC5730" sectionFormat="of" section="2.9.1.1"></xref>.</t>
 </section>
 </section>
 
-<section anchor="repp-response"><name>REPP Response</name>
+<section anchor="response"><name>Response</name>
 <t>The server response contains an HTTP Status-Code, HTTP
 response-headers and it MAY contain an EPP response message in the HTTP
 message-body.</t>
@@ -295,12 +297,6 @@ X-REPP-eppcode:  This header is the equivalent of the &lt;result code&gt;
   MUST be used accordingly.</t>
 <t>X-REPP-check-reason: An optional alternative for the &quot;object:reason&quot;
   element in a check response and MUST be used accordingly.</t>
-<t>&lt;!--
-X-REPP-object-authInfo-value: The client MUST use this header when a command is used
- on an object having associated authorization information, as described in section 3.1.3 of <xref target="RFC5730"></xref>.</t>
-<t>X-REPP-object-authInfo-roid: The client MUST use this header when a roid attribute is required
-as described in section 3.1.3 of <xref target="RFC5730"></xref>.
-  --&gt;</t>
 </section>
 
 <section anchor="generic-headers"><name>Generic Headers</name>
@@ -332,7 +328,7 @@ EPP command result contains an error, but the HTTP request was successful.</t>
 
 <section anchor="command-mapping"><name>Command Mapping</name>
 <t>This section describes the details of the REST interface by referring
-to the <xref target="RFC5730"></xref> Section 2.9 Protocol Commands and defining how these
+to the <xref target="RFC5730" sectionFormat="of" section="2.9"></xref> Protocol Commands and defining how these
 are mapped to RESTful requests.</t>
 <t>Each RESTful operation consists of four parts: 1. the resource, 2.
 the HTTP method 3. the request payload, which is the HTTP message-
@@ -1401,7 +1397,8 @@ client to retry a failed request or send a new request.</t>
 </section>
 
 <section anchor="internationalization-considerations"><name>Internationalization Considerations</name>
-<t>TODO: any?</t>
+<t>TODO: any?
+Accept-Language in HTTP Header</t>
 </section>
 
 <section anchor="security-considerations"><name>Security Considerations</name>
@@ -1425,7 +1422,8 @@ apply to REPP.</t>
 <section anchor="obsolete-epp-result-codes"><name>Obsolete EPP Result Codes</name>
 <t>The following result codes specified in <xref target="RFC5730"></xref> are no longer
 meaningful in RESTful EPP and MUST NOT be used.</t>
-<table>
+<table><name>Obsolete EPP result codes
+</name>
 <thead>
 <tr>
 <th>Code</th>
