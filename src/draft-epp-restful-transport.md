@@ -45,9 +45,8 @@ interface.  Existing semantics and mappings as defined in [@!RFC5731],
 [@!RFC5732] and [@!RFC5733] are largely retained and reusable in RESTful
 EPP.
 
-REPP allows for a stateless server implementation, no session data is stored on the EPP server.
-Each request from a client to the server MUST contain all of the information necessary
-for the server to process the request.
+REPP allows for a stateless server implementation, no session data is maintained on the EPP server,
+this allows for a better scalable EPP service.
 
 {mainmatter}
 
@@ -115,6 +114,11 @@ by a URL.
 Command Mapping - A mapping of [@!RFC5730] EPP commands to
 RESTful EPP.
 
+REPP client - An HTTP user agent performing an REPP request 
+
+REPP server - An HTTP server resposible for processing requests and returning
+a result in any supported media type.
+
 
 # Conventions Used in This Document
 
@@ -132,50 +136,37 @@ are provided only to illustrate element relationships and are not
 REQUIRED features of this protocol.
 
 
-# RESTful transport for EPP or REPP
+# Design Considerations
 
-RESTful transport for EPP (REPP) is designed to solve,
-in the spirit of [@!RFC3375], the drawbacks
-as mentioned in the next paragraph and yet maintain compatibility
-with existing object mapping definitions.
+RESTful transport for EPP (REPP) is designed to improve the ease of design, development, deployment and management
+of an EPP service, while maintaining compatibility with the existing EPP RFCs.
+This section describes the main design criteria.
 
-The design intent is to provide a clear, clean and self-explanatory
-interface that can easily be integrated with existing software
-systems.  On the basis of these principles a [REST] architectural
-style was chosen. A client interacts with a REPP server via HTTP
-requests.
+- Provide a clear, clean, easy to use and self-explanatory
+  interface that can easily be integrated into existing software
+  systems. On the basis of these principles a [REST] architectural
+  style was chosen, where a client interacts with a REPP server via HTTP.
 
-A server implementing REPP, MUST NOT keep any client state.
-Every client request needs to provide all of the information necessary 
-to process the request.
+  The main benefit of using HTTP is the widespread availabillity of knowledge about developing
+  and deploying HTTP based services. 
 
-REPP conforms to the EPP transport mapping considerations as defined in
-[@!RFC5730], Section 2.1.  With REPP, the EPP [@!RFC5730] commands
-are mapped to REST URL resources. 
+- Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
+  load balancing. Load balancing at the level of request messages is more efficient compared to load balancing balancing TCP sessions.
+  A TCP session may be used to transmit multiple request messages and these are processed by a single server and not load balanced across a pool of servers.
 
-  <!--TODO: Add text that REPP tries to mimies the use of request and response messages in http message-body
-   and some epp commands are not supported
-   and maybe we can think of some new commands?
-  -->
+ - Stateless, [@!RFC5734] requires a stateful session between a client and the  
+  EPP server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state.
+  Every client request needs to provide all of the information necessary for the server to successfully process the request.
 
-# Drawbacks Associated with Stateful EPP
+- Security, allow for the use of available authentication and authorization solutions for HTTP based APIs.  
 
-[@!RFC5734] requires a stateful session between a client and the
-EPP server.  This is accomplished by setting up a session with
-a <login> and keeping it alive for some time until issuing a
-<logout>.  This may pose challenges in load-balanced environments,
-when a running session for whatever reason suddenly has to be
-switched from one EPP server to another and state is kept on a per
-server basis.
-
-[@!RFC5734] EPP sessions can wind up in a state where they are no
-longer linked to an active TCP connection, especially in an
-environment where TCP connectivity is flaky.  This may raise problems
-in situations where session limits are enforced.
-
-REPP is designed to avoid these drawbacks, hence making the
-interaction between an EPP client and an EPP server more robust and
-efficient.
+- Support for multiple resource representation media types and provide a mechanism for 
+  the client to signal the server what media type the server should use. This document only describes the use of [XML]
+  but use of of response media types such as JSON [@!RFC7159] should also be possible.
+  
+- Compatibility with existing EPP RFCs.
+- Optional use of EPP request messages when the semantics of a resource URL and HTTP method
+  match the contents of an EPP request.
 
 
 # EPP Extension Framework
@@ -257,6 +248,9 @@ An HTTP request MUST contain no more than one EPP command.  HTTP
 requests MUST be processed independently of each other and in the
 same order as the server receives them.
 
+A client MAY use the "Connection" header to request for the server to not close the existing connection, so it can be used for 
+future requests. The server MAY choose not to honor this request.
+
 ## Method Definition {#http-method}
 
 REPP commands MUST be executed by using an HTTP method on a resource
@@ -284,11 +278,6 @@ XML is already defined, but future JSON mappings MUDST also be supported.
 now using http header: Accept: application/epp+xml
 MUST support other content-types e.g.: application/epp+json
 
-## Response Status Codes
-
-TODO: 
-see for example: https://datatracker.ietf.org/doc/html/rfc7480
-
 ## Request
 
 TODO: add text that due to stateless nature a request must contain all
@@ -308,16 +297,16 @@ add the request content to the HTTP message-body.
 ### REPP Request Headers
 
 HTTP request-headers are used to transmit additional or optional
-request data to the server.  All REPP HTTP headers must have
-the "X-REPP-" prefix.
+request data to the server. All REPP HTTP headers must have
+the "REPP-" prefix, following the recommendations from [@!RFC6648].
 
-X-REPP-cltrid:  The client transaction identifier is the equivalent
+REPP-cltrid:  The client transaction identifier is the equivalent
   of the <clTRID> element in the EPP RFCs and MUST be used
   accordingly.  When this header is present in a client request, an
   equivalent element in the message-body MAY also be present, but
   MUST than be consistent with the header.
 
-X-REPP-svcs: The namespace used by the client in the EPP request document
+REPP-svcs: The namespace used by the client in the EPP request document
   in the message-body of the HTTP request.
 
 ### Generic HTTP Headers
@@ -335,6 +324,9 @@ Accept-Language:  This request-header is equivalent to the "lang"
   When the server receives a request using an unsupported langauge, the server MUST respond using the default language configured for the server,
   this differs from the server behaviour described in [@!RFC5730, section 2.9.1.1].
 
+TODO:
+Connection: ...
+
 ## Response
 
 The server response contains an HTTP Status-Code, HTTP
@@ -344,30 +336,30 @@ message-body.
 ### REPP Response Headers
 
 HTTP response-headers are used to transmit additional response data
-to the client.  All HTTP headers used by REPP MUST use the "X-REPP-"
+to the client.  All HTTP headers used by REPP MUST use the "REPP-"
 prefix.
 
-X-REPP-svtrid:  This header is the equivalent of the <svTRID> element
+REPP-svtrid:  This header is the equivalent of the <svTRID> element
   in the EPP RFCs and MUST be used accordingly.  If an HTTP message-
   body with the EPP XML equivalent <svTRID> exists, both values MUST
   be consistent.
 
-X-REPP-cltrid:  This header is the equivalent of the <clTRID> element
+REPP-cltrid:  This header is the equivalent of the <clTRID> element
   in the EPP RFCs and MUST be used accordingly.  If an HTTP message-
   body with the EPP XML equivalent <clTRID> exists, both values MUST
   be consistent.
 
- <!-- do we keep X-REPP-eppcode? -->
-X-REPP-eppcode:  This header is the equivalent of the <result code>
+ <!-- do we keep REPP-eppcode? -->
+REPP-eppcode:  This header is the equivalent of the <result code>
   element in te EPP RFCs and MUST be used accordingly. If an HTTP
   message-body with The EPP XML equivalent <result code> exists,
   both values MUST be consistent.
 
-X-REPP-check-avail: An alternative for the "avail"
+REPP-check-avail: An alternative for the "avail"
   attribute of the <object:name> element in a check response and
   MUST be used accordingly.
 
-X-REPP-check-reason: An optional alternative for the "object:reason"
+REPP-check-reason: An optional alternative for the "object:reason"
   element in a check response and MUST be used accordingly.
 
 
@@ -384,6 +376,10 @@ Cache-Control:  ...  TBD: the idea is to prohibit
   <!--TODO ISSUE 11: How to handle connections -->   
 Connection:  ....
 
+## Response Status Codes
+
+TODO: 
+see for example: https://datatracker.ietf.org/doc/html/rfc7480
 
  ## Error Handling
 
@@ -395,7 +391,7 @@ error can be combined with an HTTP request with Status-Code 200 when the
 EPP command result contains an error, but the HTTP request was successful.
 
 EPP result code:  MUST only return EPP result information relating to
-  the EPP protocol.  The HTTP header "X-REPP-eppcode" MAY be used
+  the EPP protocol.  The HTTP header "REPP-eppcode" MAY be used
   to add EPP result information to the HTTP layer.
   
 HTTP Status-Code:  MUST only return status information related to the
@@ -406,9 +402,9 @@ HTTP Status-Code:  MUST only return status information related to the
 
 # Command Mapping {#command-mapping}
 
-This section describes the details of the REST interface by referring
-to the [@!RFC5730, section 2.9] Protocol Commands and defining how these
-are mapped to RESTful requests.
+REPP conforms to the EPP transport mapping considerations as defined in
+[@!RFC5730, section 2.1] The EPP [@!RFC5730] commands
+are mapped to RESTful operation. 
 
 Each RESTful operation consists of four parts: 1. the resource, 2.
 the HTTP method 3. the request payload, which is the HTTP message-
@@ -429,7 +425,7 @@ TODO: add resource extension commands for such as nl cancel-delete
 
 Command            | Method   | Resource   
 -------------------|----------|------------
-Hello              | GET      | /         
+Hello              | OPTIONS  | /         
 Login              | N/A      | N/A        
 Logout             | N/A      | N/A        
 Check              | HEAD     | /{c}/{i}      
@@ -456,9 +452,9 @@ Table: Mapping of EPP Command to REPP Request
 
 ## Hello
 
-- Request: GET /{context-root}/{version}
+- Request: OPTIONS /{context-root}/{version}
 
-- Request payload: Optional Hello request
+- Request payload: N/A
 
 - Response payload: Greeting response
 
@@ -468,10 +464,10 @@ to request using the HTTP GET method on the root "/" resource.
 The version information returned by the server in the Hello response MUST match the version used in the 
 URL of the REPP server.
 
-Example Hello request with an empty message-body:
+Example Hello request:
 
 ```
-C: GET /repp/v1/ HTTP/1.1
+C: OPTIONS /repp/v1/ HTTP/1.1
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -479,7 +475,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
+C: REPP-cltrid: ABC-12345
+C: Connection: keep-alive
 ```
 
 Example Hello response:
@@ -510,10 +507,12 @@ available HTTP authentication mechanisms, such as those described in [@!RFC2617]
 
 ###  Login
 
-The Login command defined in [@!RFC5730] is used to configure a session and is part of the stateful nature of the EPP protocol. A REPP server is stateless and MUST not maintain any client state and MUST not implement the Login command. The client MUST add all the information to a REPP request that is required for the server to be able to properly process the request.
+The Login command defined in [@!RFC5730] is used to configure a session and is part of the stateful nature of the EPP protocol.
+A REPP server is stateless and MUST not maintain any client state and MUST NOT support the Login command.
+The client MUST include all the information in a REPP request that is required for the server to be able to properly process the request.
 
   <!--TODO ISSUE #16: do we support changing password using /password  -->
-Data attributes from the [@!RFC5730] Login command are either no longer used or are transferred to the server using a HTTP-header.
+Data attributes from the [@!RFC5730] Login command are either no longer used or are moved to the HTTP layer using a HTTP-header.
 
 -  clID: No longer used
 -  pw:  No longer used
@@ -522,10 +521,10 @@ Data attributes from the [@!RFC5730] Login command are either no longer used or 
     server URL.
 - lang: This attribute has been replaced by the Accept-Language HTTP
     request-header.
-- svcs: This attribute has been replaced by 1 or more X-REPP-svcs HTTP
+- svcs: This attribute has been replaced by 1 or more REPP-svcs HTTP
     request-headers.
 
-The server MUST check the namespace used in all X-REPP-svcs HTTP
+The server MUST check the namespace used in all REPP-svcs HTTP
 request-header. An unsupported namespace MUST result in the appropriate
 EPP result code.
 
@@ -548,7 +547,7 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 
 -  Response payload: N/A
 
-The server MUST support the HTTP HEAD method for the Check command, the client and the server MUST not add any content to the HTTP message-body. The response MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of the X-REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.
+The server MUST support the HTTP HEAD method for the Check command, the client and the server MUST not add any content to the HTTP message-body. The response MUST contain the REPP-check-avail and MAY contain the REPP-check-reason header. The value of the REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.
 
 A Check request using the HTTP HEAD method is limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked. 
 
@@ -556,7 +555,7 @@ A Check request using the HTTP HEAD method is limited to checking only a single 
   but we already use this for Info command, so need other resource for check? 
 
  the server MAY also support the HTTP GET method. If the HTTP HEAD method is used, the client and the server MUST not add any content to the HTTP message-body. If the HTTP GET method is used the client and the server MUST add the Check content to the message-body. 
-The HTTP response for a request using the HTTP GET method, MUST contain the X-REPP-check-avail and MAY contain the X-REPP-check-reason header. The value of  X-REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.
+The HTTP response for a request using the HTTP GET method, MUST contain the REPP-check-avail and MAY contain the REPP-check-reason header. The value of  REPP-check-avail header MUST be "1" or "0" as described in the EPP RFCs, depending on whether the object can be provisioned or not.
 
 A Check request using the HTTP HEAD method is limited to checking only a single resource {id}. This may seem a step backwards when compared to the Check command defined in the EPP RFCs where multiple object-ids are allowed inside a Check command. The RESTful Check command can be load balanced more efficiently when the request contains only a single resource {id} that needs to be checked. When the HTTP GET method is used, the EPP request in the message-body MUST also be limited to a single object to check. The server MUST return EPP result code 2002, when the Check request contains more than 1 object to check. 
 
@@ -580,8 +579,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-cltrid: ABC-12345
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ```
 
 Example Check response:
@@ -591,10 +590,10 @@ S: HTTP/1.1 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 0
-S: X-REPP-cltrid: ABC-12345
-S: X-REPP-svtrid: XYZ-12345
-S: X-REPP-check-avail: 0
-S: X-REPP-check-reason: In use
+S: REPP-cltrid: ABC-12345
+S: REPP-svtrid: XYZ-12345
+S: REPP-check-avail: 0
+S: REPP-check-reason: In use
 ```
 
 ### Info
@@ -654,8 +653,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-cltrid: ABC-12345
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ```
 
 Example Info response:
@@ -709,7 +708,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
+C: REPP-cltrid: ABC-12345
 ```
 
 Example Poll response:
@@ -762,7 +761,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
+C: REPP-cltrid: ABC-12345
 ```
 
 Example Poll Ack response:
@@ -823,8 +822,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-cltrid: ABC-12345
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ```
 
 Example Transfer Query response:
@@ -877,7 +876,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 220
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -949,7 +948,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
+C: REPP-cltrid: ABC-12345
 ```
 
 Example Domain Delete response:
@@ -999,7 +998,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 325
 C: 
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -1081,8 +1080,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-cltrid: ABC-12345
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ```
 
 Example Create request using object authorization:
@@ -1096,7 +1095,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 252
 
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -1166,8 +1165,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-cltrid: ABC-12345
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ```
 
 #### Reject
@@ -1192,8 +1191,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-cltrid: ABC-12345
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ```
 
 #### Approve
@@ -1218,8 +1217,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-cltrid: ABC-12345
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-cltrid: ABC-12345
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 ```
 
 ### Update
@@ -1244,7 +1243,7 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 252
 
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -1309,8 +1308,8 @@ C: Accept: application/epp+xml
 C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
-C: X-REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
-C: X-REPP-cltrid: ABC-12345
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-cltrid: ABC-12345
 ```
 
 Example Extension response:
@@ -1444,3 +1443,12 @@ TODO
   </front>
 </reference>
 
+<reference anchor="XML" target="https://www.w3.org/TR/xml">
+  <front>
+    <title>Extensible Markup Language (XML) 1.0 (Fifth Edition)</title>
+    <author>
+      <organization>W3C</organization>
+    </author>
+    <date year="2013"/>
+  </front>
+</reference>
