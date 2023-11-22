@@ -46,7 +46,7 @@ interface.  Existing semantics and mappings as defined in [@!RFC5731],
 EPP.
 
 REPP allows for a stateless server implementation, no session data is maintained on the EPP server,
-this allows for a better scalable EPP service.
+this allows for a better scalable EPP service by enabling load balancing at the per request level.
 
 {mainmatter}
 
@@ -171,18 +171,18 @@ This section describes the main design criteria.
 
 # EPP Extension Framework
 
-EPP provides an extension framework, [@!RFC3735, Section 2], describes how to extend EPP by adding
-new features at the protocol, object and command-response levels.
-REPP affects the following levels:
+[@!RFC3735, Section 2] describes how the EPP extension framework can be used to extend
+EPP functionality by adding new features at the protocol, object and command-response level.
+This section describes the impact of REPP on each of the extension levels:
 
 Protocol Extension: REPP does not use the "command"
   concept, because the "command" concept is part of a RPC style and
-  not of a RESTful style. A REST URL and HTTP method combination have
-  replaced the command structure. The (#command-mapping) section describes and extension 
+  not of a RESTful style. A REST URL resource and HTTP method combination have
+  replaced the command structure. The (#command-mapping) section describes an extension 
   resource for use with existing and future command extensions.
 
 Object extension: REPP does not define any new object level
-  extensions. Any existing object level EPP extensions can be used.
+  extensions. Any existing and future object level EPP extensions can be used.
 
 Command-Response extension: 
   RESTful EPP reuses the existing request and response messages defined in the
@@ -205,20 +205,20 @@ root}/{version}/{collection}
 - {collection} MUST be substituted by "domains", "hosts" or
   "contacts", referring to either [@!RFC5731], [@!RFC5732] or [@!RFC5733].
 
-- A trailing slash MAY be added to each request.  Implementations
+- A trailing slash MAY be added to each request. Implementations
   MUST consider requests which only differ with respect to this
   trailing slash as identical.
 
-A specific object instance MUST be identified by {context-root}/
+A specific EPP object instance MUST be identified by {context-root}/
 {version}/{collection}/{id} where {id} is a unique object identifier
 described in EPP RFCs.
 
-An example domain name resource, for example.nl, would look like this:
+An example domain name resource, for domain name example.nl, would look like this:
 
 /repp/v1/domains/example.nl
 
-The level below a collection MUST be used to identify an object
-instance, the level below an object instance MUST be used to identify
+The path segment after a collection path segment MUST be used to identify an object
+instance, the  path segment after an object instance MUST be used to identify
 attributes of the object instance.
 
 <!--TODO ISSUE 7: No need for XML payload for GET requests when URL identifies object -->
@@ -235,18 +235,14 @@ in the HTTP message-body does not match the {id} object identifier in the URL.
 
 # HTTP Usage
 
-A [@!RFC5730] EPP request includes a command- and object mapping to which a
-command must be applied. REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section  (#http-method) provides a overview of each the behaviour assinged to each method.
-REPP requests are expressed by using an URL resource, an HTTP method and optionally an HTTP header and message body.
+REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section (#http-method) provides a overview of each the behaviour assinged to each method. REPP requests are expressed by using an URL resource, an HTTP method, zero or more HTTP headers and a optional message body.
 
-Data (payload) belonging to a request or response is added to the HTTP message-
-body or sent as using an HTTP header, depending on the nature of the
-request as defined in Section 9. <!--TODO: correct section number -->
+Request and response messagesare included in the HTTP message body.
 
 <!--TODO ISSUE 10: allow for out of order processing -->
-An HTTP request MUST contain no more than one EPP command.  HTTP
+An REPP HTTP request MUST contain at most a single EPP command. HTTP
 requests MUST be processed independently of each other and in the
-same order as the server receives them.
+same order as received by the server.
 
 A client MAY use the "Connection" header to request for the server to not close the existing connection, so it can be used for 
 future requests. The server MAY choose not to honor this request.
