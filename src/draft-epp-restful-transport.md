@@ -140,15 +140,12 @@ REQUIRED features of this protocol.
 
 RESTful transport for EPP (REPP) is designed to improve the ease of design, development, deployment and management
 of an EPP service, while maintaining compatibility with the existing EPP RFCs.
-This section describes the main design criteria.
+This section lists the main design criteria.
 
 - Provide a clear, clean, easy to use and self-explanatory
   interface that can easily be integrated into existing software
   systems. On the basis of these principles a [REST] architectural
   style was chosen, where a client interacts with a REPP server via HTTP.
-
-  The main benefit of using HTTP is the widespread availabillity of knowledge about developing
-  and deploying HTTP based services. 
 
 - Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
   load balancing. Load balancing at the level of request messages is more efficient compared to load balancing balancing TCP sessions.
@@ -158,11 +155,12 @@ This section describes the main design criteria.
   EPP server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state.
   Every client request needs to provide all of the information necessary for the server to successfully process the request.
 
-- Security, allow for the use of available authentication and authorization solutions for HTTP based APIs.  
+- Security, allow for the use of authentication and authorization solutions available 
+  for HTTP based APIs.  
 
-- Support for multiple resource representation media types and provide a mechanism for 
-  the client to signal the server what media type the server should use. This document only describes the use of [XML]
-  but use of of response media types such as JSON [@!RFC7159] should also be possible.
+- Content negotion, A server may choose to include support for multiple media types.
+  The client must be able to signal the server what media type the should use for decoding request content en for encoding response content. This document only describes the use of [XML]
+  but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
 - Compatibility with existing EPP RFCs.
 - Optional use of EPP request messages when the semantics of a resource URL and HTTP method
@@ -290,7 +288,7 @@ When an EPP request does require an EPP request message, the client MUST use the
 add the request content to the HTTP message-body.
 
 
-### REPP Request Headers
+### REPP Headers
 
 HTTP request-headers are used to transmit additional or optional
 request data to the server. All REPP HTTP headers must have
@@ -302,12 +300,14 @@ REPP-cltrid:  The client transaction identifier is the equivalent
   equivalent element in the message-body MAY also be present, but
   MUST than be consistent with the header.
 
-REPP-svcs: The namespace used by the client in the EPP request document
-  in the message-body of the HTTP request.
+REPP-svcs: The namespace used by the client in the EPP request message. The client MUST use this header
+if the media type used by the client requires the server to know what namespaces are used.
+Such as is the case for XML-based request messages.
+The header value MAY contain multiple comma separated namespaces
 
-### Generic HTTP Headers
+### Generic Headers
 
-Generic HTTP headers as defined in HTTP/1.1 [@!RFC2616], 
+Generic HTTP headers as defined in HTTP/2 [@!RFC2616], 
 the following general-headers are REQUIRED in REPP HTTP requests.
 
 Accept-Language:  This request-header is equivalent to the "lang"
@@ -329,7 +329,7 @@ The server response contains an HTTP Status-Code, HTTP
 response-headers and it MAY contain an EPP response message in the HTTP
 message-body.
 
-### REPP Response Headers
+### REPP Headers
 
 HTTP response-headers are used to transmit additional response data
 to the client.  All HTTP headers used by REPP MUST use the "REPP-"
@@ -345,11 +345,10 @@ REPP-cltrid:  This header is the equivalent of the <clTRID> element
   body with the EPP XML equivalent <clTRID> exists, both values MUST
   be consistent.
 
- <!-- do we keep REPP-eppcode? -->
-REPP-eppcode:  This header is the equivalent of the <result code>
-  element in te EPP RFCs and MUST be used accordingly. If an HTTP
-  message-body with The EPP XML equivalent <result code> exists,
-  both values MUST be consistent.
+ <!-- do we keep REPP-eppcode? yes but only for responses with empty message body issue #20 -->
+REPP-eppcode:  This header is the equivalent of the result code used
+  in the EPP RFCs and MUST be used accordingly. This header MUST only 
+  be used when an REPP response HTTP message-body has no content.
 
 REPP-check-avail: An alternative for the "avail"
   attribute of the <object:name> element in a check response and
@@ -361,7 +360,7 @@ REPP-check-reason: An optional alternative for the "object:reason"
 
 ### Generic Headers
 
-Generic HTTP headers MAY be used as defined in HTTP/1.1 [@!RFC2616]. For
+Generic HTTP headers MAY be used as defined in HTTP/2 [@!RFC2616]. For
 REPP, the following general-headers are REQUIRED in HTTP responses.
 
   <!--TODO ISSUE 10: How to handle caching -->   
@@ -463,7 +462,7 @@ URL of the REPP server.
 Example Hello request:
 
 ```
-C: OPTIONS /repp/v1/ HTTP/1.1
+C: OPTIONS /repp/v1/ HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -473,12 +472,13 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: Connection: keep-alive
+
 ```
 
 Example Hello response:
 
 ```
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 799
@@ -517,10 +517,10 @@ Data attributes from the [@!RFC5730] Login command are either no longer used or 
     server URL.
 - lang: This attribute has been replaced by the Accept-Language HTTP
     request-header.
-- svcs: This attribute has been replaced by 1 or more REPP-svcs HTTP
-    request-headers.
+- svcs: This attribute has been replaced by the REPP-svcs HTTP
+    request-header.
 
-The server MUST check the namespace used in all REPP-svcs HTTP
+The server MUST check the namespaces used in all REPP-svcs HTTP
 request-header. An unsupported namespace MUST result in the appropriate
 EPP result code.
 
@@ -567,7 +567,7 @@ Request with a request message:
 Example Check request for a domain name:
 
 ```
-C: HEAD /repp/v1/domains/example.nl HTTP/1.1
+C: HEAD /repp/v1/domains/example.nl HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -577,12 +577,13 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ```
 
 Example Check response:
 
 ```
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 0
@@ -590,6 +591,7 @@ S: REPP-cltrid: ABC-12345
 S: REPP-svtrid: XYZ-12345
 S: REPP-check-avail: 0
 S: REPP-check-reason: In use
+S: REPP-result-code: 1000
 ```
 
 ### Info
@@ -641,7 +643,7 @@ labels.
 Example domain Info including all hosts, without authorization data:
 
 ```
-C: GET /repp/v1/domains/example.nl/hosts/all HTTP/1.1
+C: GET /repp/v1/domains/example.nl/hosts/all HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -651,12 +653,13 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ```
 
 Example Info response:
 
 ```
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 424
@@ -696,7 +699,7 @@ request the message at the head of the queue.
 
 Example Poll request:
 ```
-C: GET /repp/v1/messages HTTP/1.1
+C: GET /repp/v1/messages HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -705,12 +708,13 @@ C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
+
 ```
 
 Example Poll response:
 
 ```
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 312
@@ -749,7 +753,7 @@ A client MUST use the HTTP DELETE method on a message instance to acknowledge th
 
 Example Poll Ack request:
 ```
-C: GET /repp/v1/messages/12345 HTTP/1.1
+C: GET /repp/v1/messages/12345 HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -758,12 +762,13 @@ C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
+
 ```
 
 Example Poll Ack response:
 
 ```
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 312
@@ -810,7 +815,7 @@ Example domain name Transfer Query request:
 
 
 ```xml
-C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -820,12 +825,13 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ```
 
 Example Transfer Query response:
 
 ```xml
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 230
@@ -864,7 +870,7 @@ A client MUST create a new object using the HTTP POST method on an object collec
 Example Domain Create request:
 
 ```xml
-C: POST /repp/v1/domains/ HTTP/1.1
+C: POST /repp/v1/domains/ HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -893,7 +899,7 @@ C:</epp>
 Example Domain Create response:
 
 ```
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -936,7 +942,7 @@ object instance.
 Example Domain Delete request:
 
 ```
-C: DELETE /repp/v1/domains/example.nl HTTP/1.1
+C: DELETE /repp/v1/domains/example.nl HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -945,12 +951,13 @@ C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
+
 ```
 
 Example Domain Delete response:
 
 ```
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -986,7 +993,7 @@ command has been mapped to a period resource.
 Example Renew request:
 
 ```xml
-C: POST /repp/v1/domains/example.nl/period HTTP/1.1
+C: POST /repp/v1/domains/example.nl/period HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1016,7 +1023,7 @@ C:</epp>
 Example Renew response:
 
 ```xml
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -1068,7 +1075,7 @@ information the server might require.
 Example Create request using no object authorization:
 
 ```
-C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1078,12 +1085,13 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ```
 
 Example Create request using object authorization:
 
 ```xml
-C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1114,7 +1122,7 @@ C:</epp>
 Example Transfer response:
 
 ```xml
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -1153,7 +1161,7 @@ requested transfe.
 Example Cancel request:
 
 ```
-C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1163,6 +1171,7 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ```
 
 #### Reject
@@ -1179,7 +1188,7 @@ reject a transfer requested by the new sponsoring client.
 Example Reject request:
 
 ```
-C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1189,6 +1198,7 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ```
 
 #### Approve
@@ -1205,7 +1215,7 @@ a transfer requested by the new sponsoring client.
 Example Approve request:
 
 ```
-C: PUT /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+C: PUT /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1215,6 +1225,7 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ```
 
 ### Update
@@ -1231,7 +1242,7 @@ on a unique object resource. The payload MUST contain an Update request as descr
 Example Update request:
 
 ```xml
-C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1260,7 +1271,7 @@ C:</epp>
 Example Update response:
 
 ```xml
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -1296,7 +1307,7 @@ Example Extension request:
 The example below, shows the use of the "Domain Cancel Delete" command as defined as a custom command in [@?SIDN-EXT] by the .nl domain registry operator. Where the registrar can use the HTPP DELETE method on a domain name resource to cancel an active domain delete transaction and move the domain from the quarantine state back to the active state.
 
 ```xml
-C: DELETE /repp/v1/extensions/domains/example.nl/quarantine HTTP/1.1
+C: DELETE /repp/v1/extensions/domains/example.nl/quarantine HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1306,11 +1317,12 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: REPP-cltrid: ABC-12345
+
 ```
 
 Example Extension response:
 ```xml
-S: HTTP/1.1 200 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
