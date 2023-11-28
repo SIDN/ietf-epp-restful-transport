@@ -22,7 +22,7 @@ interface.  Existing semantics and mappings as defined in <xref target="RFC5731"
 <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are largely retained and reusable in RESTful
 EPP.</t>
 <t>REPP allows for a stateless server implementation, no session data is maintained on the EPP server,
-this allows for a better scalable EPP service.</t>
+this allows for a better scalable EPP service by enabling load balancing at the per request level.</t>
 </abstract>
 
 </front>
@@ -98,18 +98,14 @@ REQUIRED features of this protocol.</t>
 <section anchor="design-considerations"><name>Design Considerations</name>
 <t>RESTful transport for EPP (REPP) is designed to improve the ease of design, development, deployment and management
 of an EPP service, while maintaining compatibility with the existing EPP RFCs.
-This section describes the main design criteria.</t>
-
-<ul spacing="compact">
-<li>Provide a clear, clean, easy to use and self-explanatory
-interface that can easily be integrated into existing software
-systems. On the basis of these principles a [REST] architectural
-style was chosen, where a client interacts with a REPP server via HTTP.</li>
-</ul>
-<t>The main benefit of using HTTP is the widespread availabillity of knowledge about developing
-  and deploying HTTP based services.</t>
+This section lists the main design criteria.</t>
 
 <ul>
+<li><t>Provide a clear, clean, easy to use and self-explanatory
+interface that can easily be integrated into existing software
+systems. On the basis of these principles a [REST] architectural
+style was chosen, where a client interacts with a REPP server via HTTP.</t>
+</li>
 <li><t>Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as
 load balancing. Load balancing at the level of request messages is more efficient compared to load balancing balancing TCP sessions.
 A TCP session may be used to transmit multiple request messages and these are processed by a single server and not load balanced across a pool of servers.</t>
@@ -119,11 +115,12 @@ A TCP session may be used to transmit multiple request messages and these are pr
 EPP server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state.
 Every client request needs to provide all of the information necessary for the server to successfully process the request.</li>
 </ul></li>
-<li><t>Security, allow for the use of available authentication and authorization solutions for HTTP based APIs.</t>
+<li><t>Security, allow for the use of authentication and authorization solutions available
+for HTTP based APIs.</t>
 </li>
-<li><t>Support for multiple resource representation media types and provide a mechanism for
-the client to signal the server what media type the server should use. This document only describes the use of [XML]
-but use of of response media types such as JSON <xref target="RFC7159"></xref> should also be possible.</t>
+<li><t>Content negotion, A server may choose to include support for multiple media types.
+The client must be able to signal the server what media type the should use for decoding request content en for encoding response content. This document only describes the use of [XML]
+but the use of other media types such as JSON <xref target="RFC7159"></xref> should also be possible.</t>
 </li>
 <li><t>Compatibility with existing EPP RFCs.</t>
 </li>
@@ -134,16 +131,16 @@ match the contents of an EPP request.</t>
 </section>
 
 <section anchor="epp-extension-framework"><name>EPP Extension Framework</name>
-<t>EPP provides an extension framework, <xref target="RFC3735" sectionFormat="bare" section="Section 2"></xref>, describes how to extend EPP by adding
-new features at the protocol, object and command-response levels.
-REPP affects the following levels:</t>
+<t><xref target="RFC3735" sectionFormat="bare" section="Section 2"></xref> describes how the EPP extension framework can be used to extend
+EPP functionality by adding new features at the protocol, object and command-response level.
+This section describes the impact of REPP on each of the extension levels:</t>
 <t>Protocol Extension: REPP does not use the &quot;command&quot;
   concept, because the &quot;command&quot; concept is part of a RPC style and
-  not of a RESTful style. A REST URL and HTTP method combination have
-  replaced the command structure. The <xref target="command-mapping"></xref> section describes and extension
+  not of a RESTful style. A REST URL resource and HTTP method combination have
+  replaced the command structure. The <xref target="command-mapping"></xref> section describes an extension
   resource for use with existing and future command extensions.</t>
 <t>Object extension: REPP does not define any new object level
-  extensions. Any existing object level EPP extensions can be used.</t>
+  extensions. Any existing and future object level EPP extensions can be used.</t>
 <t>Command-Response extension:
   RESTful EPP reuses the existing request and response messages defined in the
   EPP RFCs.</t>
@@ -166,18 +163,18 @@ used in a REPP URL MUST match the version used by EPP in the upper layer.</t>
 <li><t>{collection} MUST be substituted by &quot;domains&quot;, &quot;hosts&quot; or
 &quot;contacts&quot;, referring to either <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> or <xref target="RFC5733"></xref>.</t>
 </li>
-<li><t>A trailing slash MAY be added to each request.  Implementations
+<li><t>A trailing slash MAY be added to each request. Implementations
 MUST consider requests which only differ with respect to this
 trailing slash as identical.</t>
 </li>
 </ul>
-<t>A specific object instance MUST be identified by {context-root}/
+<t>A specific EPP object instance MUST be identified by {context-root}/
 {version}/{collection}/{id} where {id} is a unique object identifier
 described in EPP RFCs.</t>
-<t>An example domain name resource, for example.nl, would look like this:</t>
+<t>An example domain name resource, for domain name example.nl, would look like this:</t>
 <t>/repp/v1/domains/example.nl</t>
-<t>The level below a collection MUST be used to identify an object
-instance, the level below an object instance MUST be used to identify
+<t>The path segment after a collection path segment MUST be used to identify an object
+instance, the  path segment after an object instance MUST be used to identify
 attributes of the object instance.</t>
 <t>With REPP the object identifiers are embedded in URLs.  This
 makes any object identifier in the request messages superfluous.
@@ -190,16 +187,22 @@ identifier (for example <eref target="domain:name">domain:name</eref>, <eref tar
 in the HTTP message-body does not match the {id} object identifier in the URL.</t>
 </section>
 
+<section anchor="session-management"><name>Session Management</name>
+<t>Session management as described in <xref target="RFC5730"></xref> requires a stateful server, maintaining client and application state.
+One of the main design considerations of REPP is to enable increased scalability for EPP services, for this the server MUST use
+a stateless architecture. Session management functionality MUST be delegated to the HTTP layer.</t>
+<t>The server MUST not create and maintain client sessions for use over multiple client requests and NOT
+maintain any state information relating to the client or EPP process state.
+The client MUST include authentication credentials for each request. This MAY be done by using any of the
+available HTTP authentication mechanisms, such as those described in <xref target="RFC2617"></xref>.</t>
+</section>
+
 <section anchor="http-usage"><name>HTTP Usage</name>
-<t>A <xref target="RFC5730"></xref> EPP request includes a command- and object mapping to which a
-command must be applied. REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section  <xref target="http-method"></xref> provides a overview of each the behaviour assinged to each method.
-REPP requests are expressed by using an URL resource, an HTTP method and optionally an HTTP header and message body.</t>
-<t>Data (payload) belonging to a request or response is added to the HTTP message-
-body or sent as using an HTTP header, depending on the nature of the
-request as defined in Section 9. </t>
-<t>An HTTP request MUST contain no more than one EPP command.  HTTP
+<t>REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section <xref target="http-method"></xref> provides a overview of each the behaviour assinged to each method. REPP requests are expressed by using an URL resource, an HTTP method, zero or more HTTP headers and a optional message body.</t>
+<t>Request and response messagesare included in the HTTP message body.</t>
+<t>An REPP HTTP request MUST contain at most a single EPP command. HTTP
 requests MUST be processed independently of each other and in the
-same order as the server receives them.</t>
+same order as received by the server.</t>
 <t>A client MAY use the &quot;Connection&quot; header to request for the server to not close the existing connection, so it can be used for
 future requests. The server MAY choose not to honor this request.</t>
 
@@ -243,7 +246,7 @@ is sufficient for the server to be able to successfully proceses some request, s
 add the request content to the HTTP message-body.</t>
 </section>
 
-<section anchor="repp-request-headers"><name>REPP Request Headers</name>
+<section anchor="repp-headers"><name>REPP Headers</name>
 <t>HTTP request-headers are used to transmit additional or optional
 request data to the server. All REPP HTTP headers must have
 the &quot;REPP-&quot; prefix, following the recommendations from <xref target="RFC6648"></xref>.</t>
@@ -252,12 +255,14 @@ the &quot;REPP-&quot; prefix, following the recommendations from <xref target="R
   accordingly.  When this header is present in a client request, an
   equivalent element in the message-body MAY also be present, but
   MUST than be consistent with the header.</t>
-<t>REPP-svcs: The namespace used by the client in the EPP request document
-  in the message-body of the HTTP request.</t>
+<t>REPP-svcs: The namespace used by the client in the EPP request message. The client MUST use this header
+if the media type used by the client requires the server to know what namespaces are used.
+Such as is the case for XML-based request messages.
+The header value MAY contain multiple comma separated namespaces</t>
 </section>
 
-<section anchor="generic-http-headers"><name>Generic HTTP Headers</name>
-<t>Generic HTTP headers as defined in HTTP/1.1 <xref target="RFC2616"></xref>,
+<section anchor="generic-headers"><name>Generic Headers</name>
+<t>Generic HTTP headers as defined in HTTP/2 <xref target="RFC2616"></xref>,
 the following general-headers are REQUIRED in REPP HTTP requests.</t>
 <t>Accept-Language:  This request-header is equivalent to the &quot;lang&quot;
   element in the EPP Login command. The server MUST support the use
@@ -278,7 +283,7 @@ Connection: ...</t>
 response-headers and it MAY contain an EPP response message in the HTTP
 message-body.</t>
 
-<section anchor="repp-response-headers"><name>REPP Response Headers</name>
+<section anchor="repp-headers-1"><name>REPP Headers</name>
 <t>HTTP response-headers are used to transmit additional response data
 to the client.  All HTTP headers used by REPP MUST use the &quot;REPP-&quot;
 prefix.</t>
@@ -291,10 +296,9 @@ prefix.</t>
   body with the EPP XML equivalent &lt;clTRID&gt; exists, both values MUST
   be consistent.</t>
 <t>
-REPP-eppcode:  This header is the equivalent of the &lt;result code&gt;
-  element in te EPP RFCs and MUST be used accordingly. If an HTTP
-  message-body with The EPP XML equivalent &lt;result code&gt; exists,
-  both values MUST be consistent.</t>
+REPP-eppcode:  This header is the equivalent of the result code used
+  in the EPP RFCs and MUST be used accordingly. This header MUST only
+  be used when an REPP response HTTP message-body has no content.</t>
 <t>REPP-check-avail: An alternative for the &quot;avail&quot;
   attribute of the <eref target="object:name">object:name</eref> element in a check response and
   MUST be used accordingly.</t>
@@ -302,8 +306,8 @@ REPP-eppcode:  This header is the equivalent of the &lt;result code&gt;
   element in a check response and MUST be used accordingly.</t>
 </section>
 
-<section anchor="generic-headers"><name>Generic Headers</name>
-<t>Generic HTTP headers MAY be used as defined in HTTP/1.1 <xref target="RFC2616"></xref>. For
+<section anchor="generic-headers-1"><name>Generic Headers</name>
+<t>Generic HTTP headers MAY be used as defined in HTTP/2 <xref target="RFC2616"></xref>. For
 REPP, the following general-headers are REQUIRED in HTTP responses.</t>
 <t><br />
 Cache-Control:  ...  TBD: the idea is to prohibit
@@ -346,7 +350,7 @@ body of the response.</t>
 provide details for each request.
 All resource URLs in the table are assumed to use the prefix: &quot;/{context-root}/{version}/&quot;.</t>
 <t>{c}:  An abbreviation for {collection}: this MUST be substituted with
-  &quot;domains&quot;, &quot;hosts&quot;, &quot;contacts&quot; or &quot;messages&quot;.</t>
+  &quot;domains&quot;, &quot;hosts&quot;, &quot;contacts&quot; or any other collection of objects.</t>
 <t>{i}:  An abbreviation for {id}:  this MUST be substituted with the value of a domain name, hostname, contact-id
   or a message-id.</t>
 <t>TODO: add resource extension commands for such as nl cancel-delete</t>
@@ -476,13 +480,13 @@ All resource URLs in the table are assumed to use the prefix: &quot;/{context-ro
 <li><t>Response payload: Greeting response</t>
 </li>
 </ul>
-<t>The server MUST send a Greeting response, as defined in <xref target="RFC5730" sectionFormat="of" section="2.4"></xref> in response
-to request using the HTTP GET method on the root &quot;/&quot; resource.</t>
+<t>The server MUST return a Greeting response, as defined in <xref target="RFC5730" sectionFormat="of" section="2.4"></xref> in response
+to request using the HTTP OPTIONS method on the root &quot;/&quot; resource.</t>
 <t>The version information returned by the server in the Hello response MUST match the version used in the
 URL of the REPP server.</t>
 <t>Example Hello request:</t>
 
-<artwork><![CDATA[C: OPTIONS /repp/v1/ HTTP/1.1
+<artwork><![CDATA[C: OPTIONS /repp/v1/ HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -492,11 +496,12 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: Connection: keep-alive
+
 ]]>
 </artwork>
 <t>Example Hello response:</t>
 
-<artwork><![CDATA[S: HTTP/1.1 200 OK
+<artwork><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 799
@@ -510,14 +515,6 @@ S:   </greeting>
 S: </epp>
 ]]>
 </artwork>
-</section>
-
-<section anchor="session-management"><name>Session Management</name>
-<t>One of the design goals of REPP is to increase the scalability of an EPP service.
-This means that session management as described in <xref target="RFC5730"></xref> is not supported, session management functions are delegated to the HTTP layer.</t>
-<t>The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state.
-The client MUST include authentication credentials with each request. This MAY be done by using any of the
-available HTTP authentication mechanisms, such as those described in <xref target="RFC2617"></xref>.</t>
 
 <section anchor="login"><name>Login</name>
 <t>The Login command defined in <xref target="RFC5730"></xref> is used to configure a session and is part of the stateful nature of the EPP protocol.
@@ -534,10 +531,10 @@ Data attributes from the <xref target="RFC5730"></xref> Login command are either
 server URL.</li>
 <li>lang: This attribute has been replaced by the Accept-Language HTTP
 request-header.</li>
-<li>svcs: This attribute has been replaced by 1 or more REPP-svcs HTTP
-request-headers.</li>
+<li>svcs: This attribute has been replaced by the REPP-svcs HTTP
+request-header.</li>
 </ul>
-<t>The server MUST check the namespace used in all REPP-svcs HTTP
+<t>The server MUST check the namespaces used in all REPP-svcs HTTP
 request-header. An unsupported namespace MUST result in the appropriate
 EPP result code.</t>
 </section>
@@ -582,7 +579,7 @@ The HTTP response for a request using the HTTP GET method, MUST contain the REPP
 </ul>
 <t>Example Check request for a domain name:</t>
 
-<artwork><![CDATA[C: HEAD /repp/v1/domains/example.nl HTTP/1.1
+<artwork><![CDATA[C: HEAD /repp/v1/domains/example.nl HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -592,11 +589,12 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ]]>
 </artwork>
 <t>Example Check response:</t>
 
-<artwork><![CDATA[S: HTTP/1.1 200 OK
+<artwork><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 0
@@ -604,6 +602,7 @@ S: REPP-cltrid: ABC-12345
 S: REPP-svtrid: XYZ-12345
 S: REPP-check-avail: 0
 S: REPP-check-reason: In use
+S: REPP-result-code: 1000
 ]]>
 </artwork>
 </section>
@@ -658,7 +657,7 @@ labels.</t>
 </ul>
 <t>Example domain Info including all hosts, without authorization data:</t>
 
-<artwork><![CDATA[C: GET /repp/v1/domains/example.nl/hosts/all HTTP/1.1
+<artwork><![CDATA[C: GET /repp/v1/domains/example.nl/hosts/all HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -668,11 +667,12 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ]]>
 </artwork>
 <t>Example Info response:</t>
 
-<artwork><![CDATA[S: HTTP/1.1 200 OK
+<artwork><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 424
@@ -716,7 +716,7 @@ S:</epp>
 request the message at the head of the queue.</t>
 <t>Example Poll request:</t>
 
-<artwork><![CDATA[C: GET /repp/v1/messages HTTP/1.1
+<artwork><![CDATA[C: GET /repp/v1/messages HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -725,11 +725,12 @@ C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
+
 ]]>
 </artwork>
 <t>Example Poll response:</t>
 
-<artwork><![CDATA[S: HTTP/1.1 200 OK
+<artwork><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 312
@@ -771,7 +772,7 @@ S:</epp>
 <t>A client MUST use the HTTP DELETE method on a message instance to acknowledge the removal of the message from the message queue.</t>
 <t>Example Poll Ack request:</t>
 
-<artwork><![CDATA[C: GET /repp/v1/messages/12345 HTTP/1.1
+<artwork><![CDATA[C: GET /repp/v1/messages/12345 HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -780,11 +781,12 @@ C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
+
 ]]>
 </artwork>
 <t>Example Poll Ack response:</t>
 
-<artwork><![CDATA[S: HTTP/1.1 200 OK
+<artwork><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 312
@@ -833,7 +835,7 @@ MAY be used, otherwise the HTTP POST method MUST be used.</t>
 </ul>
 <t>Example domain name Transfer Query request:</t>
 
-<sourcecode type="xml"><![CDATA[C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+<sourcecode type="xml"><![CDATA[C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -843,11 +845,12 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ]]>
 </sourcecode>
 <t>Example Transfer Query response:</t>
 
-<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+<sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Length: 230
@@ -888,7 +891,7 @@ S:</epp>
 <t>A client MUST create a new object using the HTTP POST method on an object collection resource.</t>
 <t>Example Domain Create request:</t>
 
-<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/ HTTP/1.1
+<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/ HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -916,7 +919,7 @@ C:</epp>
 </sourcecode>
 <t>Example Domain Create response:</t>
 
-<artwork><![CDATA[S: HTTP/1.1 200 OK
+<artwork><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -960,7 +963,7 @@ the HTTP DELETE method on a REST resource identifying a unique
 object instance.</t>
 <t>Example Domain Delete request:</t>
 
-<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl HTTP/1.1
+<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -969,11 +972,12 @@ C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
+
 ]]>
 </artwork>
 <t>Example Domain Delete response:</t>
 
-<artwork><![CDATA[S: HTTP/1.1 200 OK
+<artwork><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -1011,7 +1015,7 @@ S:</epp>
 command has been mapped to a period resource.</t>
 <t>Example Renew request:</t>
 
-<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/period HTTP/1.1
+<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/period HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1040,7 +1044,7 @@ C:</epp>
 </sourcecode>
 <t>Example Renew response:</t>
 
-<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+<sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -1092,7 +1096,7 @@ the client MAY choose to send an empty HTTP message-body. <xref target="RFC5730"
 information the server might require.</t>
 <t>Example Create request using no object authorization:</t>
 
-<artwork><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+<artwork><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1102,11 +1106,12 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ]]>
 </artwork>
 <t>Example Create request using object authorization:</t>
 
-<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1136,7 +1141,7 @@ C:</epp>
 </sourcecode>
 <t>Example Transfer response:</t>
 
-<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+<sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -1176,7 +1181,7 @@ S:</epp>
 requested transfe.</t>
 <t>Example Cancel request:</t>
 
-<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1186,6 +1191,7 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ]]>
 </artwork>
 </section>
@@ -1204,7 +1210,7 @@ C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 reject a transfer requested by the new sponsoring client.</t>
 <t>Example Reject request:</t>
 
-<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+<artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1214,6 +1220,7 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ]]>
 </artwork>
 </section>
@@ -1232,7 +1239,7 @@ C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 a transfer requested by the new sponsoring client.</t>
 <t>Example Approve request:</t>
 
-<artwork><![CDATA[C: PUT /repp/v1/domains/example.nl/transfers/latest HTTP/1.1
+<artwork><![CDATA[C: PUT /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1242,6 +1249,7 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+
 ]]>
 </artwork>
 </section>
@@ -1261,7 +1269,7 @@ C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 on a unique object resource. The payload MUST contain an Update request as described in the EPP RFCs.</t>
 <t>Example Update request:</t>
 
-<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/1.1
+<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1289,7 +1297,7 @@ C:</epp>
 </sourcecode>
 <t>Example Update response:</t>
 
-<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+<sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -1328,7 +1336,7 @@ The HTTP method used for a extension is not defined but must follow the RESTful 
 <t>Example Extension request:
 The example below, shows the use of the &quot;Domain Cancel Delete&quot; command as defined as a custom command in <xref target="SIDN-EXT"></xref> by the .nl domain registry operator. Where the registrar can use the HTPP DELETE method on a domain name resource to cancel an active domain delete transaction and move the domain from the quarantine state back to the active state.</t>
 
-<sourcecode type="xml"><![CDATA[C: DELETE /repp/v1/extensions/domains/example.nl/quarantine HTTP/1.1
+<sourcecode type="xml"><![CDATA[C: DELETE /repp/v1/extensions/domains/example.nl/quarantine HTTP/2
 C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
@@ -1338,11 +1346,12 @@ C: Accept-Language: en
 C: Accept-Charset: utf-8
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: REPP-cltrid: ABC-12345
+
 ]]>
 </sourcecode>
 <t>Example Extension response:</t>
 
-<sourcecode type="xml"><![CDATA[S: HTTP/1.1 200 OK
+<sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -1368,13 +1377,19 @@ S:</epp>
 
 <section anchor="transport-considerations"><name>Transport Considerations</name>
 <t><xref target="RFC5730" sectionFormat="of" section="2.1"></xref> of the EPP protocol specification
-describes considerations to be addressed by protocol transport
-mappings. This section addresses each of the considerations using a
-combination of features described in this document and features
-provided by HTTP as follows:</t>
+describes considerations to be addressed by a protocol transport
+mapping. This section addresses each of the considerations using a
+combination of REPP features and features provided by HTTP as follows:</t>
+<t>
+- When load balancing requests over multiple stateless REPP servers the return order
+  of the results cannot be guaranteed. Therefore the client is responsible
+  for sending results in the correct order, and may have to wait
+  for a server response for a previous request, if a request depends on the
+  response of a previous request.</t>
 
 <ul>
-<li><t>HTTP is an application layer protocol which uses TCP as a
+<li><t>Sessions are delegated to the HTTP layer, which uses the client-server paradigm.
+HTTP is an application layer protocol which uses TCP as a
 transport protocol. TCP includes features to provide reliability,
 flow control, ordered delivery, and congestion control
 <xref target="RFC793" sectionFormat="of" section="1.5"></xref> describes these features in detail; congestion
@@ -1382,23 +1397,29 @@ control principles are described further in <xref target="RFC2581"></xref> and <
 HTTP is a stateless protocol and as such it does not maintain any
 client state.</t>
 </li>
-<li><t>The stateful nature of EPP is nomlonger preserved through EPP managed
-sessions. The session management is delegated to the stateless HTTP layer.
-Required EPP session information, such as authentication credentials
+<li><t>The stateful nature of EPP is no longer preserved through EPP managed
+sessions. Session management is delegated to the stateless HTTP layer.
+EPP session related information, such as authentication credentials
 MUST be included in every HTTP request. This is required
 for the server to be able to process the request successfully.</t>
 </li>
 <li><t>HTTP 1.1 allows persistent connections which can be used to send
 multiple HTTP requests to the server using the same connection.</t>
 </li>
-<li><t>The server MAY allow pipelining.</t>
+<li><t>The server MAY allow pipelining, <xref target="RFC9000"></xref> descibes a mechanism for
+multiplexing multiple request streams.</t>
 </li>
 <li><t>Batch-oriented processing (combining multiple EPP commands in a
-single HTTP request) MUST NOT be permitted.</t>
+single HTTP request) MUST NOT be permitted. To maximize scalability
+every request MUST contain oly a single command.</t>
 </li>
 <li><t>A request processing failure has no influence on the processing of
 other requests. The stateless nature of the server allows a
 client to retry a failed request or send a new request.</t>
+</li>
+<li><t>Due to the stateless nature of a REPP service, errors while processing a EPP command or
+other errors are isolated to a single request. The Error  status MUST be communicated to the
+client using the appropriate HTTP status codes.</t>
 </li>
 </ul>
 </section>
@@ -1500,6 +1521,7 @@ meaningful in RESTful EPP and MUST NOT be used.</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6648.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7159.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.793.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9000.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9110.xml"/>
 </references>
 <references><name>Informative References</name>

@@ -231,6 +231,17 @@ The server MUST return HTTP Status-Code 412 when the object
 identifier (for example <domain:name>, <host:name> or <contact:id>)
 in the HTTP message-body does not match the {id} object identifier in the URL.
 
+# Session Management
+
+Session management as described in [@!RFC5730] requires a stateful server, maintaining client and application state.
+One of the main design considerations of REPP is to enable increased scalability for EPP services, for this the server MUST use
+a stateless architecture. Session management functionality MUST be delegated to the HTTP layer.
+
+The server MUST not create and maintain client sessions for use over multiple client requests and NOT
+maintain any state information relating to the client or EPP process state. 
+The client MUST include authentication credentials for each request. This MAY be done by using any of the
+available HTTP authentication mechanisms, such as those described in [@!RFC2617].
+
 # HTTP Usage
 
 REPP uses the REST semantics each HTTP method is assigned a distinct behaviour, section (#http-method) provides a overview of each the behaviour assinged to each method. REPP requests are expressed by using an URL resource, an HTTP method, zero or more HTTP headers and a optional message body.
@@ -411,7 +422,7 @@ provide details for each request.
 All resource URLs in the table are assumed to use the prefix: "/{context-root}/{version}/".
 
 {c}:  An abbreviation for {collection}: this MUST be substituted with
-  "domains", "hosts", "contacts" or "messages".
+  "domains", "hosts", "contacts" or any other collection of objects.
 
 {i}:  An abbreviation for {id}:  this MUST be substituted with the value of a domain name, hostname, contact-id
   or a message-id.
@@ -453,8 +464,8 @@ Table: Mapping of EPP Command to REPP Request
 
 - Response payload: Greeting response
 
-The server MUST send a Greeting response, as defined in [@!RFC5730, section 2.4] in response 
-to request using the HTTP GET method on the root "/" resource.
+The server MUST return a Greeting response, as defined in [@!RFC5730, section 2.4] in response 
+to request using the HTTP OPTIONS method on the root "/" resource.
 
 The version information returned by the server in the Hello response MUST match the version used in the 
 URL of the REPP server.
@@ -491,15 +502,6 @@ S:     <!-- The rest of the response is omitted here -->
 S:   </greeting>
 S: </epp>
 ```
-
-## Session Management
-
-One of the design goals of REPP is to increase the scalability of an EPP service.
-This means that session management as described in [@!RFC5730] is not supported, session management functions are delegated to the HTTP layer.
-
-The server MUST not create a client session for use across multiple client requests. The server MUST not maintain any state information relating to the client or EPP process state. 
-The client MUST include authentication credentials with each request. This MAY be done by using any of the
-available HTTP authentication mechanisms, such as those described in [@!RFC2617].
 
 ###  Login
 
@@ -1347,12 +1349,19 @@ S:</epp>
 # Transport Considerations
 
 [@!RFC5730, section 2.1] of the EPP protocol specification 
-describes considerations to be addressed by protocol transport
-mappings. This section addresses each of the considerations using a
-combination of features described in this document and features
-provided by HTTP as follows:
+describes considerations to be addressed by a protocol transport
+mapping. This section addresses each of the considerations using a
+combination of REPP features and features provided by HTTP as follows:
 
--  HTTP is an application layer protocol which uses TCP as a
+  <!--TODO ISSUE #2: not all considerations are met by repp? -->
+- When load balancing requests over multiple stateless REPP servers the return order
+  of the results cannot be guaranteed. Therefore the client is responsible
+  for sending results in the correct order, and may have to wait
+  for a server response for a previous request, if a request depends on the 
+  response of a previous request.
+
+- Sessions are delegated to the HTTP layer, which uses the client-server paradigm.
+  HTTP is an application layer protocol which uses TCP as a
   transport protocol. TCP includes features to provide reliability,
   flow control, ordered delivery, and congestion control
   [@!RFC793, section 1.5] describes these features in detail; congestion
@@ -1360,24 +1369,29 @@ provided by HTTP as follows:
   HTTP is a stateless protocol and as such it does not maintain any
   client state.
 
--  The stateful nature of EPP is nomlonger preserved through EPP managed
-   sessions. The session management is delegated to the stateless HTTP layer.
-   Required EPP session information, such as authentication credentials
+-  The stateful nature of EPP is no longer preserved through EPP managed
+   sessions. Session management is delegated to the stateless HTTP layer.
+   EPP session related information, such as authentication credentials
    MUST be included in every HTTP request. This is required 
    for the server to be able to process the request successfully.
 
 -  HTTP 1.1 allows persistent connections which can be used to send
    multiple HTTP requests to the server using the same connection.
 
--  The server MAY allow pipelining.
+-  The server MAY allow pipelining, [@!RFC9000] descibes a mechanism for
+   multiplexing multiple request streams.
 
 -  Batch-oriented processing (combining multiple EPP commands in a
-   single HTTP request) MUST NOT be permitted.
+   single HTTP request) MUST NOT be permitted. To maximize scalability
+   every request MUST contain oly a single command.
 
 -  A request processing failure has no influence on the processing of
    other requests. The stateless nature of the server allows a
    client to retry a failed request or send a new request.
 
+- Due to the stateless nature of a REPP service, errors while processing a EPP command or
+  other errors are isolated to a single request. The Error  status MUST be communicated to the
+  client using the appropriate HTTP status codes.
 
 # IANA Considerations
 
