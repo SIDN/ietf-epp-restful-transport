@@ -1348,14 +1348,15 @@ S:</epp>
 
 # Transport Considerations
 
+  <!--TODO ISSUE #2: not all considerations are met by repp? -->
+  
 [@!RFC5730, section 2.1] of the EPP protocol specification 
 describes considerations to be addressed by a protocol transport
 mapping. This section addresses each of the considerations using a
 combination of REPP features and features provided by HTTP as follows:
 
-  <!--TODO ISSUE #2: not all considerations are met by repp? -->
-- When load balancing requests over multiple stateless REPP servers the return order
-  of the results cannot be guaranteed. Therefore the client is responsible
+- When using load balancing to distribute requests over multiple stateless REPP servers
+  the return order of the results cannot be guaranteed. Therefore the client is responsible
   for sending results in the correct order, and may have to wait
   for a server response for a previous request, if a request depends on the 
   response of a previous request.

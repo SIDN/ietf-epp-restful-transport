@@ -1376,18 +1376,19 @@ S:</epp>
 </section>
 
 <section anchor="transport-considerations"><name>Transport Considerations</name>
+<t></t>
 <t><xref target="RFC5730" sectionFormat="of" section="2.1"></xref> of the EPP protocol specification
 describes considerations to be addressed by a protocol transport
 mapping. This section addresses each of the considerations using a
 combination of REPP features and features provided by HTTP as follows:</t>
-<t>
-- When load balancing requests over multiple stateless REPP servers the return order
-  of the results cannot be guaranteed. Therefore the client is responsible
-  for sending results in the correct order, and may have to wait
-  for a server response for a previous request, if a request depends on the
-  response of a previous request.</t>
 
 <ul>
+<li><t>When using load balancing to distribute requests over multiple stateless REPP servers
+the return order of the results cannot be guaranteed. Therefore the client is responsible
+for sending results in the correct order, and may have to wait
+for a server response for a previous request, if a request depends on the
+response of a previous request.</t>
+</li>
 <li><t>Sessions are delegated to the HTTP layer, which uses the client-server paradigm.
 HTTP is an application layer protocol which uses TCP as a
 transport protocol. TCP includes features to provide reliability,
