@@ -1349,7 +1349,7 @@ S:</epp>
 # Transport Considerations
 
   <!--TODO ISSUE #2: not all considerations are met by repp? -->
-  
+
 [@!RFC5730, section 2.1] of the EPP protocol specification 
 describes considerations to be addressed by a protocol transport
 mapping. This section addresses each of the considerations using a
@@ -1388,7 +1388,7 @@ combination of REPP features and features provided by HTTP as follows:
 
 -  A request processing failure has no influence on the processing of
    other requests. The stateless nature of the server allows a
-   client to retry a failed request or send a new request.
+   client to retry a failed request by re-sending the request.
 
 - Due to the stateless nature of a REPP service, errors while processing a EPP command or
   other errors are isolated to a single request. The Error  status MUST be communicated to the
