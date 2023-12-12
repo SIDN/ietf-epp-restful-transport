@@ -93,8 +93,8 @@ Table of Contents
        8.4.2.  Generic Headers . . . . . . . . . . . . . . . . . . .  10
      8.5.  Response Status Codes . . . . . . . . . . . . . . . . . .  11
    9.  Command Mapping . . . . . . . . . . . . . . . . . . . . . . .  11
-     9.1.  Hello . . . . . . . . . . . . . . . . . . . . . . . . . .  12
-       9.1.1.  Login . . . . . . . . . . . . . . . . . . . . . . . .  13
+     9.1.  Hello . . . . . . . . . . . . . . . . . . . . . . . . . .  13
+       9.1.1.  Login . . . . . . . . . . . . . . . . . . . . . . . .  14
        9.1.2.  Logout  . . . . . . . . . . . . . . . . . . . . . . .  14
      9.2.  Query . . . . . . . . . . . . . . . . . . . . . . . . . .  14
        9.2.1.  Check . . . . . . . . . . . . . . . . . . . . . . . .  14
@@ -124,14 +124,15 @@ Internet-Draft          RESTful Transport for EPP          December 2023
        9.3.5.  Update  . . . . . . . . . . . . . . . . . . . . . . .  31
      9.4.  Extensions  . . . . . . . . . . . . . . . . . . . . . . .  32
    10. Transport Considerations  . . . . . . . . . . . . . . . . . .  33
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  34
-   12. Internationalization Considerations . . . . . . . . . . . . .  34
-   13. Security Considerations . . . . . . . . . . . . . . . . . . .  35
-   14. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  35
-   15. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  35
-   16. References  . . . . . . . . . . . . . . . . . . . . . . . . .  35
-     16.1.  Normative References . . . . . . . . . . . . . . . . . .  35
-     16.2.  Informative References . . . . . . . . . . . . . . . . .  38
+   11. Formal Syntax . . . . . . . . . . . . . . . . . . . . . . . .  34
+   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  34
+   13. Internationalization Considerations . . . . . . . . . . . . .  35
+   14. Security Considerations . . . . . . . . . . . . . . . . . . .  35
+   15. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  35
+   16. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  36
+   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  36
+     17.1.  Normative References . . . . . . . . . . . . . . . . . .  36
+     17.2.  Informative References . . . . . . . . . . . . . . . . .  38
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  38
 
 1.  Introduction
@@ -160,7 +161,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    maintained on the EPP server.  Each client request to the server
    contains all the information necessary for the server to process the
    request.
-
 
 
 
@@ -289,34 +289,37 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    object and command-response level.  This section describes the impact
    of REPP on each of the extension levels:
 
-   Protocol Extension: REPP does not use the "command" concept, because
-   the "command" concept is part of a RPC style and not of a RESTful
-   style.  A REST URL resource and HTTP method combination have replaced
-   the command structure.  The Section 9 section describes an extension
-   resource for use with existing and future command extensions.
+   -  Protocol Extension: REPP does not define any new high level
+      protocol elements.  The Section 9 section describes an extension
+      resource for use with existing and future command extensions.
 
-   Object extension: REPP does not define any new object level
-   extensions.  Any existing and future object level EPP extensions can
-   be used.
+   -  Object extension: REPP does not use the "command" concept, because
+      the "command" concept is part of a RPC style and not of the REST
+      style.  A REST URL resource and HTTP method combination have
+      replaced the command concept.  The Section 9 section describes a
+      command extension resource for each object type and can be used
+      for existing and future command extensions.  REPP does not define
+      any new object level extensions.  All existing and future object
+      level EPP extensions can be used.
 
-   Command-Response extension: RESTful EPP reuses the existing request
-   and response messages defined in the EPP RFCs.
-
+   -  Command-Response extension: RESTful EPP reuses the existing
+      request and response messages defined in the EPP RFCs.
 
 6.  Resource Naming Convention
 
-   A resource can be a single uniquely object identifier e.g. a domain
-   name, or a collection of objects.  The complete set of objects
-   available to client for registry operations MUST be identified by
-   {context- root}/{version}/{collection}
+   A REPP resource can be a single unique object identifier e.g. a
+   domain name, or consist out of a collection of objects.  The complete
+   set of objects available to the client for registry operations MUST
+   be identified by the following URL: /{context-
+   root}/{version}/{collection}
 
    -  {context-root} is the base URL which MUST be specified by each
       registry.  The {context-root} MAY be an empty, zero length string.
 
    -  {version} is a label which identifies the interface version.  This
-      is the equivalent of the <version> element in the EPP RFCs.  The
-      version used in a REPP URL MUST match the version used by EPP in
-      the upper layer.
+      is the equivalent of the Version element in the EPP RFCs.  The
+      version used in a REPP URL MUST match the version used in EPP
+      request and response messages.
 
    -  {collection} MUST be substituted by "domains", "hosts" or
       "contacts", referring to either [RFC5731], [RFC5732] or [RFC5733].
@@ -325,9 +328,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
       MUST consider requests which only differ with respect to this
       trailing slash as identical.
 
-   A specific EPP object instance MUST be identified by {context-root}/
-   {version}/{collection}/{id} where {id} is a unique object identifier
-   described in EPP RFCs.
 
 
 
@@ -338,6 +338,10 @@ Wullink & Davids          Expires 14 June 2024                  [Page 6]
 Internet-Draft          RESTful Transport for EPP          December 2023
 
 
+   A specific EPP object instance MUST be identified by {context-root}/
+   {version}/{collection}/{id} where {id} is a unique object identifier
+   described in EPP RFCs.
+
    An example domain name resource, for domain name example.nl, would
    look like this:
 
@@ -347,17 +351,18 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    identify an object instance, the path segment after an object
    instance MUST be used to identify attributes of the object instance.
 
-   With REPP the object identifiers are embedded in URLs.  This makes
-   any object identifier in the request messages superfluous.  However,
-   since the goal of REPP is to stay compatible with the existing EPP
+   Reource URLs used by REPP may contain embedded object identifiers.
+   By using a object identifier in the resource URL, the object
+   identifier in the request messages becomes superfluous.  However,
+   since the goal of REPP is to maintain compatibility with existing EPP
    object mapping schemas, this redundancy is accepted as a trade off.
    Removing the object identifier from the request message would require
    new object mapping schemas.
 
    The server MUST return HTTP Status-Code 412 when the object
    identifier (for example domain:name (domain:name), host:name
-   (host:name) or contact:id (contact:id)) in the HTTP message-body does
-   not match the {id} object identifier in the URL.
+   (host:name) or contact:id (contact:id)) in the EPP request message
+   does not match the {id} object identifier embedded in the URL.
 
 7.  Session Management
 
@@ -382,17 +387,14 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    using an URL resource, an HTTP method, zero or more HTTP headers and
    a optional message body.
 
-   Request and response messagesare included in the HTTP message body.
-
-
-
-
 
 
 Wullink & Davids          Expires 14 June 2024                  [Page 7]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
+
+   Request and response messagesare included in the HTTP message body.
 
    An REPP HTTP request MUST contain at most a single EPP command.  HTTP
    requests MUST be processed independently of each other and in the
@@ -436,8 +438,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    TODO: add text that due to stateless nature a request must contain
    all data required to execute command. includes data previously part
    of client session (login)
-
-
 
 
 
@@ -653,19 +653,19 @@ Internet-Draft          RESTful Transport for EPP          December 2023
         +------------------+----------+---------------------------+
         | Update           | PUT      | /{c}/{i}                  |
         +------------------+----------+---------------------------+
-        | Extensions [1]   | *        | /extensions/*             |
+        | Extension [1]    | *        | /{c}/{i}/extension/*      |
+        +------------------+----------+---------------------------+
+        | Extension [2]    | *        | /extension/*              |
         +------------------+----------+---------------------------+
 
               Table 1: Mapping of EPP Command to REPP Request
 
-   [1] This mapping is used for protocol extensions based on the
-   extension mechanism as defined in [RFC5730, secion 2.7.3]
+   [1] This mapping is used for Object extensions based on the extension
+   mechanism as defined in [RFC5730, secion 2.7.2]
 
-9.1.  Hello
+   [2] This mapping is used for protocol extensions based on the
+   extension mechanism as defined in [RFC5730, secion 2.7.1]
 
-   -  Request: OPTIONS /{context-root}/{version}
-
-   -  Request payload: N/A
 
 
 
@@ -673,6 +673,12 @@ Wullink & Davids          Expires 14 June 2024                 [Page 12]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
+
+9.1.  Hello
+
+   -  Request: OPTIONS /{context-root}/{version}
+
+   -  Request payload: N/A
 
    -  Response payload: Greeting response
 
@@ -711,6 +717,19 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    S:   </greeting>
    S: </epp>
 
+
+
+
+
+
+
+
+
+Wullink & Davids          Expires 14 June 2024                 [Page 13]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
+
 9.1.1.  Login
 
    The Login command defined in [RFC5730] is used to configure a session
@@ -722,13 +741,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    Data attributes from the [RFC5730] Login command are either no longer
    used or are moved to the HTTP layer using a HTTP-header.
-
-
-
-Wullink & Davids          Expires 14 June 2024                 [Page 13]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
 
    -  clID: No longer used
    -  pw: No longer used
@@ -766,6 +778,14 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    -  Request: HEAD /{collection}/{id}
 
+
+
+
+Wullink & Davids          Expires 14 June 2024                 [Page 14]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
+
    -  Request payload: N/A
 
    -  Response payload: N/A
@@ -776,15 +796,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    contain the REPP-check-reason header.  The value of the REPP-check-
    avail header MUST be "1" or "0" as described in the EPP RFCs,
    depending on whether the object can be provisioned or not.
-
-
-
-
-
-Wullink & Davids          Expires 14 June 2024                 [Page 14]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
 
    A Check request using the HTTP HEAD method is limited to checking
    only a single resource {id}. This may seem a step backwards when
@@ -824,23 +835,16 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    -  Request payload: Check request
 
-   -  Response payload: Check Response -->
-
-   Example Check request for a domain name:
-
-
-
-
-
-
-
-
 
 
 Wullink & Davids          Expires 14 June 2024                 [Page 15]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
+
+   -  Response payload: Check Response -->
+
+   Example Check request for a domain name:
 
    C: HEAD /repp/v1/domains/example.nl HTTP/2
    C: Host: repp.example.nl
@@ -886,10 +890,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    A request for an object that has authorization information attached.
 
-   -  Request: POST /{collection}/{id}
-
-   -  Request payload: Info request
-
 
 
 
@@ -897,6 +897,10 @@ Wullink & Davids          Expires 14 June 2024                 [Page 16]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
+
+   -  Request: POST /{collection}/{id}
+
+   -  Request payload: Info request
 
    -  Response payload: Info response
 
@@ -935,10 +939,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
    Example Info response:
-
-
-
-
 
 
 
@@ -1885,18 +1885,18 @@ Internet-Draft          RESTful Transport for EPP          December 2023
       request.  The Error status MUST be communicated to the client
       using the appropriate HTTP status codes.
 
-11.  IANA Considerations
+11.  Formal Syntax
+
+   The extension used by RESTful EPP is specified in XML Schema
+   notation.  The formal syntax presented here is a complete schema
+   representation of RESTful EPP suitable for automated validation of
+   EPP XML instances.  The schema is based on the XML schemas defined in
+   [RFC5730].  Section 2.3 states that it MUST be announced in the
+   Greeting response.
+
+12.  IANA Considerations
 
    TODO: any?
-
-12.  Internationalization Considerations
-
-   TODO: any?  Accept-Language in HTTP Header
-
-
-
-
-
 
 
 
@@ -1906,7 +1906,11 @@ Wullink & Davids          Expires 14 June 2024                 [Page 34]
 Internet-Draft          RESTful Transport for EPP          December 2023
 
 
-13.  Security Considerations
+13.  Internationalization Considerations
+
+   TODO: any?  Accept-Language in HTTP Header
+
+14.  Security Considerations
 
 
    [RFC5730] describes a Login command for transmitting client
@@ -1927,7 +1931,7 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    also apply to REPP.
 
 
-14.  Obsolete EPP Result Codes
+15.  Obsolete EPP Result Codes
 
    The following result codes specified in [RFC5730] are no longer
    meaningful in RESTful EPP and MUST NOT be used.
@@ -1947,13 +1951,9 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
                      Table 2: Obsolete EPP result codes
 
-15.  Acknowledgments
 
-   TODO
 
-16.  References
 
-16.1.  Normative References
 
 
 
@@ -1961,6 +1961,14 @@ Wullink & Davids          Expires 14 June 2024                 [Page 35]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
+
+16.  Acknowledgments
+
+   TODO
+
+17.  References
+
+17.1.  Normative References
 
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,
@@ -2001,6 +2009,15 @@ Internet-Draft          RESTful Transport for EPP          December 2023
               DOI 10.17487/RFC3735, March 2004,
               <https://www.rfc-editor.org/info/rfc3735>.
 
+
+
+
+
+Wullink & Davids          Expires 14 June 2024                 [Page 36]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
+
    [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
               Resource Identifier (URI): Generic Syntax", STD 66,
               RFC 3986, DOI 10.17487/RFC3986, January 2005,
@@ -2010,13 +2027,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
               (TLS) Protocol Version 1.2", RFC 5246,
               DOI 10.17487/RFC5246, August 2008,
               <https://www.rfc-editor.org/info/rfc5246>.
-
-
-
-Wullink & Davids          Expires 14 June 2024                 [Page 36]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
 
    [RFC5730]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)",
               STD 69, RFC 5730, DOI 10.17487/RFC5730, August 2009,
@@ -2054,16 +2064,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
               Interchange Format", RFC 7159, DOI 10.17487/RFC7159, March
               2014, <https://www.rfc-editor.org/info/rfc7159>.
 
-   [RFC793]   Postel, J., "Transmission Control Protocol", RFC 793,
-              DOI 10.17487/RFC0793, September 1981,
-              <https://www.rfc-editor.org/info/rfc793>.
-
-   [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
-              Multiplexed and Secure Transport", RFC 9000,
-              DOI 10.17487/RFC9000, May 2021,
-              <https://www.rfc-editor.org/info/rfc9000>.
-
-
 
 
 
@@ -2074,12 +2074,21 @@ Wullink & Davids          Expires 14 June 2024                 [Page 37]
 Internet-Draft          RESTful Transport for EPP          December 2023
 
 
+   [RFC793]   Postel, J., "Transmission Control Protocol", RFC 793,
+              DOI 10.17487/RFC0793, September 1981,
+              <https://www.rfc-editor.org/info/rfc793>.
+
+   [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
+              Multiplexed and Secure Transport", RFC 9000,
+              DOI 10.17487/RFC9000, May 2021,
+              <https://www.rfc-editor.org/info/rfc9000>.
+
    [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
               Ed., "HTTP Semantics", STD 97, RFC 9110,
               DOI 10.17487/RFC9110, June 2022,
               <https://www.rfc-editor.org/info/rfc9110>.
 
-16.2.  Informative References
+17.2.  Informative References
 
    [SIDN-EXT] SIDN, "Extensible Provisioning Protocol v1.0 schema .NL
               extensions", 2019,
@@ -2097,15 +2106,6 @@ Authors' Addresses
    SIDN Labs
    Email: marco.davids@sidn.nl
    URI:   https://sidn.nl/
-
-
-
-
-
-
-
-
-
 
 
 

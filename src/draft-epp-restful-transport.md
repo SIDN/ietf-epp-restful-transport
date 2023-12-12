@@ -160,8 +160,7 @@ This section lists the main design criteria.
   This document only describes the use of [XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
 - Compatibility with existing EPP RFCs.
-- Simplicity, optional use of EPP request messages where the semantics of a REPP resource URL and HTTP method
-  match the contents of an EPP command and message.
+- Simplicity, optional use of EPP request messages where the semantics of a REPP resource URL and HTTP method match the contents of an EPP command and message.
 
 
 # EPP Extension Framework
@@ -170,34 +169,34 @@ This section lists the main design criteria.
 EPP functionality by adding new features at the protocol, object and command-response level.
 This section describes the impact of REPP on each of the extension levels:
 
-Protocol Extension: REPP does not use the "command"
-  concept, because the "command" concept is part of a RPC style and
-  not of a RESTful style. A REST URL resource and HTTP method combination have
-  replaced the command structure. The (#command-mapping) section describes an extension 
+- Protocol Extension: REPP does not define any new high level protocol elements.
+  The (#command-mapping) section describes an extension 
   resource for use with existing and future command extensions.
 
-Object extension: REPP does not define any new object level
-  extensions. Any existing and future object level EPP extensions can be used.
+- Object extension: REPP does not use the "command"
+  concept, because the "command" concept is part of a RPC style and
+  not of the REST style. A REST URL resource and HTTP method combination have
+  replaced the command concept. The (#command-mapping) section describes a command extension 
+  resource for each object type and can be used for existing and future command extensions. 
+  REPP does not define any new object level extensions.
+  All existing and future object level EPP extensions can be used.
 
-Command-Response extension: 
-  RESTful EPP reuses the existing request and response messages defined in the
-  EPP RFCs. 
-
-  <!--TODO ISSUE 29: create extension for hello response? -->
+- Command-Response extension: 
+  RESTful EPP reuses the existing request and response messages defined in the EPP RFCs. 
 
 # Resource Naming Convention
 
-A resource can be a single uniquely object identifier e.g. a domain
-name, or a collection of objects. The complete set of objects available to
-client for registry operations MUST be identified by {context-
-root}/{version}/{collection}
+A REPP resource can be a single unique object identifier e.g. a domain
+name, or consist out of a collection of objects.
+The complete set of objects available to the client for registry operations MUST be identified by 
+the following URL: `/{context-root}/{version}/{collection}`
 
 - {context-root} is the base URL which MUST be specified by each
   registry. The {context-root} MAY be an empty, zero length string.
 
-- {version} is a label which identifies the interface version.  This
-  is the equivalent of the <version> element in the EPP RFCs. The version 
-  used in a REPP URL MUST match the version used by EPP in the upper layer.
+- {version} is a label which identifies the interface version. This
+  is the equivalent of the Version element in the EPP RFCs. The version 
+  used in a REPP URL MUST match the version used in EPP request and response messages.
 
 - {collection} MUST be substituted by "domains", "hosts" or
   "contacts", referring to either [@!RFC5731], [@!RFC5732] or [@!RFC5733].
@@ -212,34 +211,29 @@ described in EPP RFCs.
 
 An example domain name resource, for domain name example.nl, would look like this:
 
-/repp/v1/domains/example.nl
+`/repp/v1/domains/example.nl`
 
 The path segment after a collection path segment MUST be used to identify an object
 instance, the  path segment after an object instance MUST be used to identify
 attributes of the object instance.
 
 <!--TODO ISSUE 7: No need for XML payload for GET requests when URL identifies object -->
-With REPP the object identifiers are embedded in URLs.  This
-makes any object identifier in the request messages superfluous.
-However, since the goal of REPP is to stay compatible with the
-existing EPP object mapping schemas, this redundancy is accepted as a
-trade off.  Removing the object identifier from the request message
-would require new object mapping schemas.
+Reource URLs used by REPP may contain embedded object identifiers. By using a object identifier
+in the resource URL, the object identifier in the request messages becomes superfluous.
+However, since the goal of REPP is to maintain compatibility with existing EPP object mapping schemas, this redundancy is accepted as a trade off. Removing the object identifier from the request message would require new object mapping schemas.
 
 The server MUST return HTTP Status-Code 412 when the object
 identifier (for example <domain:name>, <host:name> or <contact:id>)
-in the HTTP message-body does not match the {id} object identifier in the URL.
+in the EPP request message does not match the {id} object identifier embedded in the URL.
+  <!--TODO: is this not mixing epp and http status codes? -->
 
 # Session Management
 
-Session management as described in [@!RFC5730] requires a stateful server, maintaining client and application state.
-One of the main design considerations of REPP is to enable increased scalability for EPP services, for this the server MUST use
-a stateless architecture. Session management functionality MUST be delegated to the HTTP layer.
+Session management as described in [@!RFC5730] requires a stateful server, maintaining client and application state. One of the main design considerations of REPP is to enable more scalable EPP services, for this the REPP server MUST use a stateless architecture. Session management functionality MUST be delegated to the HTTP layer.
 
 The server MUST not create and maintain client sessions for use over multiple client requests and NOT
-maintain any state information relating to the client or EPP process state. 
-The client MUST include authentication credentials for each request. This MAY be done by using any of the
-available HTTP authentication mechanisms, such as those described in [@!RFC2617].
+maintain any state information relating to the client or EPP process. 
+The client MUST include authentication credentials for each request. This MAY be done by using any of the available HTTP authentication mechanisms, such as those described in [@!RFC2617].
 
 # HTTP Usage
 
@@ -446,10 +440,13 @@ Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest
 Transfer Approve   | PUT      | /{c}/{i}/transfers/latest    
 Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest  
 Update             | PUT      | /{c}/{i} 
-Extensions [1]     | *        | /extensions/*
+Extension [1]      | *        | /{c}/{i}/extension/*
+Extension [2]      | *        | /extension/*
 Table: Mapping of EPP Command to REPP Request
 
-[1] This mapping is used for protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.3] 
+[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2] 
+
+[2] This mapping is used for protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1] 
   <!-- 
   Allow for new commands not in the original RFC5730, need to add this to table and add footnote here
   [1] xxxx is not defined in [@!RFC5730] it is defined in this document as an additional mechanism for checking if there are any messages waiting in the queue.  
@@ -1392,6 +1389,12 @@ combination of REPP features and features provided by HTTP as follows:
 - Due to the stateless nature of a REPP service, errors while processing a EPP command or
   other errors are isolated to a single request. The Error  status MUST be communicated to the
   client using the appropriate HTTP status codes.
+
+# Formal Syntax
+The extension used by RESTful EPP is specified in XML Schema notation.
+The formal syntax presented here is a complete schema representation of RESTful EPP suitable for automated validation of EPP XML instances. The schema is based on the XML schemas defined in
+[@!RFC5730]. [@!RFC3735, Section 2.3] states that it MUST be announced in the Greeting response.
+
 
 # IANA Considerations
 

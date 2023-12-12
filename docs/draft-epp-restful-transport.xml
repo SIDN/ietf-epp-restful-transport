@@ -121,8 +121,7 @@ This document only describes the use of [XML] but the use of other media types s
 </li>
 <li><t>Compatibility with existing EPP RFCs.</t>
 </li>
-<li><t>Simplicity, optional use of EPP request messages where the semantics of a REPP resource URL and HTTP method
-match the contents of an EPP command and message.</t>
+<li><t>Simplicity, optional use of EPP request messages where the semantics of a REPP resource URL and HTTP method match the contents of an EPP command and message.</t>
 </li>
 </ul>
 </section>
@@ -131,32 +130,39 @@ match the contents of an EPP command and message.</t>
 <t><xref target="RFC3735" sectionFormat="bare" section="Section 2"></xref> describes how the EPP extension framework can be used to extend
 EPP functionality by adding new features at the protocol, object and command-response level.
 This section describes the impact of REPP on each of the extension levels:</t>
-<t>Protocol Extension: REPP does not use the &quot;command&quot;
-  concept, because the &quot;command&quot; concept is part of a RPC style and
-  not of a RESTful style. A REST URL resource and HTTP method combination have
-  replaced the command structure. The <xref target="command-mapping"></xref> section describes an extension
-  resource for use with existing and future command extensions.</t>
-<t>Object extension: REPP does not define any new object level
-  extensions. Any existing and future object level EPP extensions can be used.</t>
-<t>Command-Response extension:
-  RESTful EPP reuses the existing request and response messages defined in the
-  EPP RFCs.</t>
-<t></t>
+
+<ul>
+<li><t>Protocol Extension: REPP does not define any new high level protocol elements.
+The <xref target="command-mapping"></xref> section describes an extension
+resource for use with existing and future command extensions.</t>
+</li>
+<li><t>Object extension: REPP does not use the &quot;command&quot;
+concept, because the &quot;command&quot; concept is part of a RPC style and
+not of the REST style. A REST URL resource and HTTP method combination have
+replaced the command concept. The <xref target="command-mapping"></xref> section describes a command extension
+resource for each object type and can be used for existing and future command extensions.
+REPP does not define any new object level extensions.
+All existing and future object level EPP extensions can be used.</t>
+</li>
+<li><t>Command-Response extension:
+RESTful EPP reuses the existing request and response messages defined in the EPP RFCs.</t>
+</li>
+</ul>
 </section>
 
 <section anchor="resource-naming-convention"><name>Resource Naming Convention</name>
-<t>A resource can be a single uniquely object identifier e.g. a domain
-name, or a collection of objects. The complete set of objects available to
-client for registry operations MUST be identified by {context-
-root}/{version}/{collection}</t>
+<t>A REPP resource can be a single unique object identifier e.g. a domain
+name, or consist out of a collection of objects.
+The complete set of objects available to the client for registry operations MUST be identified by
+the following URL: <tt>/{context-root}/{version}/{collection}</tt></t>
 
 <ul>
 <li><t>{context-root} is the base URL which MUST be specified by each
 registry. The {context-root} MAY be an empty, zero length string.</t>
 </li>
-<li><t>{version} is a label which identifies the interface version.  This
-is the equivalent of the &lt;version&gt; element in the EPP RFCs. The version
-used in a REPP URL MUST match the version used by EPP in the upper layer.</t>
+<li><t>{version} is a label which identifies the interface version. This
+is the equivalent of the Version element in the EPP RFCs. The version
+used in a REPP URL MUST match the version used in EPP request and response messages.</t>
 </li>
 <li><t>{collection} MUST be substituted by &quot;domains&quot;, &quot;hosts&quot; or
 &quot;contacts&quot;, referring to either <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> or <xref target="RFC5733"></xref>.</t>
@@ -170,19 +176,17 @@ trailing slash as identical.</t>
 {version}/{collection}/{id} where {id} is a unique object identifier
 described in EPP RFCs.</t>
 <t>An example domain name resource, for domain name example.nl, would look like this:</t>
-<t>/repp/v1/domains/example.nl</t>
+<t><tt>/repp/v1/domains/example.nl</tt></t>
 <t>The path segment after a collection path segment MUST be used to identify an object
 instance, the  path segment after an object instance MUST be used to identify
 attributes of the object instance.</t>
-<t>With REPP the object identifiers are embedded in URLs.  This
-makes any object identifier in the request messages superfluous.
-However, since the goal of REPP is to stay compatible with the
-existing EPP object mapping schemas, this redundancy is accepted as a
-trade off.  Removing the object identifier from the request message
-would require new object mapping schemas.</t>
+<t>Reource URLs used by REPP may contain embedded object identifiers. By using a object identifier
+in the resource URL, the object identifier in the request messages becomes superfluous.
+However, since the goal of REPP is to maintain compatibility with existing EPP object mapping schemas, this redundancy is accepted as a trade off. Removing the object identifier from the request message would require new object mapping schemas.</t>
 <t>The server MUST return HTTP Status-Code 412 when the object
 identifier (for example <eref target="domain:name">domain:name</eref>, <eref target="host:name">host:name</eref> or <eref target="contact:id">contact:id</eref>)
-in the HTTP message-body does not match the {id} object identifier in the URL.</t>
+in the EPP request message does not match the {id} object identifier embedded in the URL.
+  </t>
 </section>
 
 <section anchor="session-management"><name>Session Management</name>
@@ -460,12 +464,19 @@ All resource URLs in the table are assumed to use the prefix: &quot;/{context-ro
 </tr>
 
 <tr>
-<td>Extensions [1]</td>
+<td>Extension [1]</td>
 <td>*</td>
-<td>/extensions/*</td>
+<td>/{c}/{i}/extension/*</td>
+</tr>
+
+<tr>
+<td>Extension [2]</td>
+<td>*</td>
+<td>/extension/*</td>
 </tr>
 </tbody>
-</table><t>[1] This mapping is used for protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.3]
+</table><t>[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2]</t>
+<t>[2] This mapping is used for protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1]
   </t>
 
 <section anchor="hello"><name>Hello</name>
@@ -1421,6 +1432,12 @@ other errors are isolated to a single request. The Error  status MUST be communi
 client using the appropriate HTTP status codes.</t>
 </li>
 </ul>
+</section>
+
+<section anchor="formal-syntax"><name>Formal Syntax</name>
+<t>The extension used by RESTful EPP is specified in XML Schema notation.
+The formal syntax presented here is a complete schema representation of RESTful EPP suitable for automated validation of EPP XML instances. The schema is based on the XML schemas defined in
+<xref target="RFC5730"></xref>. <xref target="RFC3735" sectionFormat="bare" section="Section 2.3"></xref> states that it MUST be announced in the Greeting response.</t>
 </section>
 
 <section anchor="iana-considerations"><name>IANA Considerations</name>
