@@ -1390,11 +1390,6 @@ combination of REPP features and features provided by HTTP as follows:
   other errors are isolated to a single request. The Error  status MUST be communicated to the
   client using the appropriate HTTP status codes.
 
-# Formal Syntax
-The extension used by RESTful EPP is specified in XML Schema notation.
-The formal syntax presented here is a complete schema representation of RESTful EPP suitable for automated validation of EPP XML instances. The schema is based on the XML schemas defined in
-[@!RFC5730]. [@!RFC3735, Section 2.3] states that it MUST be announced in the Greeting response.
-
 
 # IANA Considerations
 
