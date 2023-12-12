@@ -38,15 +38,15 @@ organization = "SIDN Labs"
 .# Abstract
 
 This document specifies a 'RESTful transport for EPP' (REPP) with the
-aim of improving the efficiency and interoperability of EPP.
+goal of enabling the development of a stateless and scaleable EPP service.
 
 This document includes a mapping of [@!RFC5730] EPP commands to an RESTful HTTP based
 interface.  Existing semantics and mappings as defined in [@!RFC5731],
 [@!RFC5732] and [@!RFC5733] are largely retained and reusable in RESTful
 EPP.
 
-REPP allows for a stateless server implementation, no session data is maintained on the EPP server,
-this allows for a better scalable EPP service by enabling load balancing at the per request level.
+Session details are not maintained on the server, allowing for a more scalable EPP service 
+by enabling load balancing at the request level instead of the session level as described in [@!RFC5734].
 
 {mainmatter}
 
