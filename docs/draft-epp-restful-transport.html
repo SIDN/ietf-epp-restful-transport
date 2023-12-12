@@ -8,14 +8,15 @@
 <meta content="Maarten Wullink" name="author">
 <meta content="Marco Davids" name="author">
 <meta content="
-       This document specifies a 'RESTful transport for EPP' (REPP) with the
-aim of improving the efficiency and interoperability of EPP. 
-       This document includes a mapping of   EPP commands to an RESTful HTTP based
-interface.  Existing semantics and mappings as defined in  ,
-  and   are largely retained and reusable in RESTful
-EPP. 
-       REPP allows for a stateless server implementation, no session data is maintained on the EPP server,
-this allows for a better scalable EPP service by enabling load balancing at the per request level. 
+       This document describes RESTful EPP (REPP), a REST based Application Programming Interface (API)
+for the Extensible Provisioning Protocol  .
+REPP enables the development a stateless and scaleable EPP service. 
+       This document includes a mapping of   XML EPP commands to a RESTful HTTP based
+interface. Existing semantics and mappings as defined in  ,
+  and   are largely retained and reusable in RESTful EPP. 
+       REPP is data format agnostic, supporting data formats other than XML, such as JSON. 
+       A server implementing REPP does not maintain client or process state, allowing for scalable EPP services
+by enabling load balancing at the request level instead of the session level as described in  . 
     " name="description">
 <meta content="xml2rfc 3.18.2" name="generator">
 <meta content="draft-wullink-restful-epp-01" name="ietf.draft">
@@ -1212,11 +1213,11 @@ li > p:last-of-type:only-child {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">RESTful Transport for EPP</td>
-<td class="right">November 2023</td>
+<td class="right">December 2023</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Wullink &amp; Davids</td>
-<td class="center">Expires 31 May 2024</td>
+<td class="center">Expires 14 June 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1229,12 +1230,12 @@ li > p:last-of-type:only-child {
 <dd class="internet-draft">draft-wullink-restful-epp-01</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-11-28" class="published">28 November 2023</time>
+<time datetime="2023-12-12" class="published">12 December 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-05-31">31 May 2024</time></dd>
+<dd class="expires"><time datetime="2024-06-14">14 June 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1251,14 +1252,15 @@ li > p:last-of-type:only-child {
 <h1 id="title">Extensible Provisioning Protocol (EPP) RESTful Transport</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document specifies a 'RESTful transport for EPP' (REPP) with the
-aim of improving the efficiency and interoperability of EPP.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">This document includes a mapping of <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> EPP commands to an RESTful HTTP based
-interface.  Existing semantics and mappings as defined in <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>,
-<span>[<a href="#RFC5732" class="cite xref">RFC5732</a>]</span> and <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span> are largely retained and reusable in RESTful
-EPP.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
-<p id="section-abstract-3">REPP allows for a stateless server implementation, no session data is maintained on the EPP server,
-this allows for a better scalable EPP service by enabling load balancing at the per request level.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document describes RESTful EPP (REPP), a REST based Application Programming Interface (API)
+for the Extensible Provisioning Protocol <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>.
+REPP enables the development a stateless and scaleable EPP service.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">This document includes a mapping of <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> XML EPP commands to a RESTful HTTP based
+interface. Existing semantics and mappings as defined in <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>,
+<span>[<a href="#RFC5732" class="cite xref">RFC5732</a>]</span> and <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span> are largely retained and reusable in RESTful EPP.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-3">REPP is data format agnostic, supporting data formats other than XML, such as JSON.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-4">A server implementing REPP does not maintain client or process state, allowing for scalable EPP services
+by enabling load balancing at the request level instead of the session level as described in <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span>.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1279,7 +1281,7 @@ this allows for a better scalable EPP service by enabling load balancing at the 
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 31 May 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 14 June 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1493,34 +1495,29 @@ this allows for a better scalable EPP service by enabling load balancing at the 
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
 <p id="section-1-1">This document describes a transport protocol for EPP, based on the <span>[<a href="#REST" class="cite xref">REST</a>]</span> architectural style.
-This transport machanism leverages the HTTP protocol <span>[<a href="#RFC2616" class="cite xref">RFC2616</a>]</span>
-and the principles of <span>[<a href="#REST" class="cite xref">REST</a>]</span>.
+This transport machanism leverages the HTTP protocol <span>[<a href="#RFC2616" class="cite xref">RFC2616</a>]</span> and the principles of <span>[<a href="#REST" class="cite xref">REST</a>]</span>.
 Conforming to the REST constraints is generally referred to as being "RESTful".
 Hence we dubbed the new transport protocol: "'RESTful transport for EPP" or "REPP"
 for short.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">This new REST based transport includes a mapping of
-<span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> EPP-commands to [URI] resources. REPP, in contrast to
-the EPP specification, is stateless.  It aims to provide a
-mechanism that is more suitable for complex, high availability
-environments, as well as for environments where TCP connections can
-be unreliable.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> EPP commands to resources based on Uniform Resource Locators <span>[<a href="#RFC1738" class="cite xref">RFC1738</a>]</span>.
+REPP, in contrast to the EPP specification, is stateless. It aims to provide a
+mechanism that is more suitable for complex, high availability environments,
+as well as for environments where TCP connections can be unreliable.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">RFC 5730 <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> Section 2.1 describes that EPP can be layered over
 multiple transport protocols.  Currently, the EPP transport over TCP
 <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span> is the only widely deployed transport mapping for EPP.
 This same section defines that newly defined transport mappings must
 preserve the stateful nature of EPP.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">The stateless nature of REPP dictates that no session state is maintained on the EPP server.  Each request
-from client to server will contain all of the information necessary
-to understand the request.  The server will close the connection
-after each HTTP request.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">With a stateless mechanism, some drawbacks of EPP (as mentioned in
-Section 5) are circumvented.<a href="#section-1-5" class="pilcrow">¶</a></p>
-<p id="section-1-6">A good understanding of the EPP base protocol specification <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>
+<p id="section-1-4">The stateless nature of REPP requires that no session state is maintained on the EPP server.
+Each client request to the server contains all the information necessary
+for the server to process the request.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">A good understanding of the EPP base protocol specification <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>
 is advised, to grasp the command mapping described in this
-document.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<p id="section-1-7">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+document.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span>.<a href="#section-1-7" class="pilcrow">¶</a></p>
+document are to be interpreted as described in <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span>.<a href="#section-1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="terminology">
@@ -1535,17 +1532,17 @@ style.<a href="#section-2-2" class="pilcrow">¶</a></p>
 HTTP and the principles of <span>[<a href="#REST" class="cite xref">REST</a>]</span>.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">EPP RFCs - This is a reference to the EPP version 1.0
 specifications <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>, <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>, <span>[<a href="#RFC5732" class="cite xref">RFC5732</a>]</span> and <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>.<a href="#section-2-4" class="pilcrow">¶</a></p>
-<p id="section-2-5">Stateful EPP - The definition according to Section 2 of <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>.<a href="#section-2-5" class="pilcrow">¶</a></p>
+<p id="section-2-5">Stateful EPP - The definition according to <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2" class="relref">Section 2</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>.<a href="#section-2-5" class="pilcrow">¶</a></p>
 <p id="section-2-6">RESTful EPP or REPP - The RESTful transport for EPP described in
 this document.<a href="#section-2-6" class="pilcrow">¶</a></p>
 <p id="section-2-7">URL - A Uniform Resource Locator as defined in <span>[<a href="#RFC3986" class="cite xref">RFC3986</a>]</span>.<a href="#section-2-7" class="pilcrow">¶</a></p>
 <p id="section-2-8">Resource - A network data object or service that can be identified
 by a URL.<a href="#section-2-8" class="pilcrow">¶</a></p>
 <p id="section-2-9">Command Mapping - A mapping of <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> EPP commands to
-RESTful EPP.<a href="#section-2-9" class="pilcrow">¶</a></p>
+RESTful EPP URL resources.<a href="#section-2-9" class="pilcrow">¶</a></p>
 <p id="section-2-10">REPP client - An HTTP user agent performing an REPP request<a href="#section-2-10" class="pilcrow">¶</a></p>
 <p id="section-2-11">REPP server - An HTTP server resposible for processing requests and returning
-a result in any supported media type.<a href="#section-2-11" class="pilcrow">¶</a></p>
+results in any supported media type.<a href="#section-2-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-used-in-this-document">
@@ -1553,7 +1550,7 @@ a result in any supported media type.<a href="#section-2-11" class="pilcrow">¶<
       <h2 id="name-conventions-used-in-this-do">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-conventions-used-in-this-do" class="section-name selfRef">Conventions Used in This Document</a>
       </h2>
-<p id="section-3-1">XML is case sensitive.  Unless stated otherwise, XML specifications
+<p id="section-3-1">XML is case sensitive. Unless stated otherwise, XML specifications
 and examples provided in this document MUST be interpreted in the
 character case presented to develop a conforming implementation.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">The examples in this document assume that request and response messages
@@ -1562,7 +1559,7 @@ are properly formatted XML documents.<a href="#section-3-2" class="pilcrow">¶</
 REPP client and lines starting with "S:" represent data returned
 by a REPP server. Indentation and white space in examples
 are provided only to illustrate element relationships and are not
-REQUIRED features of this protocol.<a href="#section-3-3" class="pilcrow">¶</a></p>
+REQUIRED features of the protocol.<a href="#section-3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="design-considerations">
@@ -1582,8 +1579,9 @@ style was chosen, where a client interacts with a REPP server via HTTP.<a href="
 </li>
         <li class="normal" id="section-4-2.2">
           <p id="section-4-2.2.1">Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as
-load balancing. Load balancing at the level of request messages is more efficient compared to load balancing balancing TCP sessions.
-A TCP session may be used to transmit multiple request messages and these are processed by a single server and not load balanced across a pool of servers.<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
+load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions.
+When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single
+EPP server and not load balanced across a pool of available servers.<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
 <ul class="compact normal">
 <li class="compact normal" id="section-4-2.2.2.1">Stateless, <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span> requires a stateful session between a client and the<br>
 EPP server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state.
@@ -1593,19 +1591,19 @@ Every client request needs to provide all of the information necessary for the s
 </li>
         <li class="normal" id="section-4-2.3">
           <p id="section-4-2.3.1">Security, allow for the use of authentication and authorization solutions available
-for HTTP based APIs.<a href="#section-4-2.3.1" class="pilcrow">¶</a></p>
+for HTTP based applications.<a href="#section-4-2.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-2.4">
-          <p id="section-4-2.4.1">Content negotion, A server may choose to include support for multiple media types.
-The client must be able to signal the server what media type the should use for decoding request content en for encoding response content. This document only describes the use of [XML]
-but the use of other media types such as JSON <span>[<a href="#RFC7159" class="cite xref">RFC7159</a>]</span> should also be possible.<a href="#section-4-2.4.1" class="pilcrow">¶</a></p>
+          <p id="section-4-2.4.1">Content negotiation, A server may choose to include support for multiple media types.
+The client must be able to signal the server what media type the should use for decoding request content en for encoding response content.
+This document only describes the use of [XML] but the use of other media types such as JSON <span>[<a href="#RFC7159" class="cite xref">RFC7159</a>]</span> should also be possible.<a href="#section-4-2.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-2.5">
           <p id="section-4-2.5.1">Compatibility with existing EPP RFCs.<a href="#section-4-2.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-2.6">
-          <p id="section-4-2.6.1">Optional use of EPP request messages when the semantics of a resource URL and HTTP method
-match the contents of an EPP request.<a href="#section-4-2.6.1" class="pilcrow">¶</a></p>
+          <p id="section-4-2.6.1">Simplicity, optional use of EPP request messages where the semantics of a REPP resource URL and HTTP method
+match the contents of an EPP command and message.<a href="#section-4-2.6.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1628,6 +1626,7 @@ This section describes the impact of REPP on each of the extension levels:<a hre
 <p id="section-5-4">Command-Response extension:
   RESTful EPP reuses the existing request and response messages defined in the
   EPP RFCs.<a href="#section-5-4" class="pilcrow">¶</a></p>
+<p id="section-5-5"></p>
 </section>
 </div>
 <div id="resource-naming-convention">
@@ -3121,7 +3120,7 @@ every request MUST contain oly a single command.<a href="#section-10-3.6.1" clas
         <li class="normal" id="section-10-3.7">
           <p id="section-10-3.7.1">A request processing failure has no influence on the processing of
 other requests. The stateless nature of the server allows a
-client to retry a failed request or send a new request.<a href="#section-10-3.7.1" class="pilcrow">¶</a></p>
+client to retry a failed request by re-sending the request.<a href="#section-10-3.7.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-3.8">
           <p id="section-10-3.8.1">Due to the stateless nature of a REPP service, errors while processing a EPP command or
@@ -3229,6 +3228,10 @@ meaningful in RESTful EPP and MUST NOT be used.<a href="#section-14-1" class="pi
 <dt id="REST">[REST]</dt>
         <dd>
 <span class="refAuthor">Fielding, R.</span>, <span class="refTitle">"Architectural Styles and the Design of Network-based Software Architectures"</span>, <time datetime="2000" class="refDate">2000</time>, <span>&lt;<a href="http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm">http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC1738">[RFC1738]</dt>
+        <dd>
+<span class="refAuthor">Berners-Lee, T.</span>, <span class="refAuthor">Masinter, L.</span>, and <span class="refAuthor">M. McCahill</span>, <span class="refTitle">"Uniform Resource Locators (URL)"</span>, <span class="seriesInfo">RFC 1738</span>, <span class="seriesInfo">DOI 10.17487/RFC1738</span>, <time datetime="1994-12" class="refDate">December 1994</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc1738">https://www.rfc-editor.org/info/rfc1738</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>

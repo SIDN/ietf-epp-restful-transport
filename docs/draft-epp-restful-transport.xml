@@ -15,14 +15,15 @@
 <workgroup>Network Working Group</workgroup>
 
 <abstract>
-<t>This document specifies a 'RESTful transport for EPP' (REPP) with the
-aim of improving the efficiency and interoperability of EPP.</t>
-<t>This document includes a mapping of <xref target="RFC5730"></xref> EPP commands to an RESTful HTTP based
-interface.  Existing semantics and mappings as defined in <xref target="RFC5731"></xref>,
-<xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are largely retained and reusable in RESTful
-EPP.</t>
-<t>REPP allows for a stateless server implementation, no session data is maintained on the EPP server,
-this allows for a better scalable EPP service by enabling load balancing at the per request level.</t>
+<t>This document describes RESTful EPP (REPP), a REST based Application Programming Interface (API)
+for the Extensible Provisioning Protocol <xref target="RFC5730"></xref>.
+REPP enables the development a stateless and scaleable EPP service.</t>
+<t>This document includes a mapping of <xref target="RFC5730"></xref> XML EPP commands to a RESTful HTTP based
+interface. Existing semantics and mappings as defined in <xref target="RFC5731"></xref>,
+<xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are largely retained and reusable in RESTful EPP.</t>
+<t>REPP is data format agnostic, supporting data formats other than XML, such as JSON.</t>
+<t>A server implementing REPP does not maintain client or process state, allowing for scalable EPP services
+by enabling load balancing at the request level instead of the session level as described in <xref target="RFC5734"></xref>.</t>
 </abstract>
 
 </front>
@@ -31,28 +32,23 @@ this allows for a better scalable EPP service by enabling load balancing at the 
 
 <section anchor="introduction"><name>Introduction</name>
 <t>This document describes a transport protocol for EPP, based on the <xref target="REST"></xref> architectural style.
-This transport machanism leverages the HTTP protocol <xref target="RFC2616"></xref>
-and the principles of <xref target="REST"></xref>.
+This transport machanism leverages the HTTP protocol <xref target="RFC2616"></xref> and the principles of <xref target="REST"></xref>.
 Conforming to the REST constraints is generally referred to as being &quot;RESTful&quot;.
 Hence we dubbed the new transport protocol: &quot;'RESTful transport for EPP&quot; or &quot;REPP&quot;
 for short.</t>
 <t>This new REST based transport includes a mapping of
-<xref target="RFC5730"></xref> EPP-commands to [URI] resources. REPP, in contrast to
-the EPP specification, is stateless.  It aims to provide a
-mechanism that is more suitable for complex, high availability
-environments, as well as for environments where TCP connections can
-be unreliable.</t>
+<xref target="RFC5730"></xref> EPP commands to resources based on Uniform Resource Locators <xref target="RFC1738"></xref>.
+REPP, in contrast to the EPP specification, is stateless. It aims to provide a
+mechanism that is more suitable for complex, high availability environments,
+as well as for environments where TCP connections can be unreliable.</t>
 <t>RFC 5730 <xref target="RFC5730"></xref> Section 2.1 describes that EPP can be layered over
 multiple transport protocols.  Currently, the EPP transport over TCP
 <xref target="RFC5734"></xref> is the only widely deployed transport mapping for EPP.
 This same section defines that newly defined transport mappings must
 preserve the stateful nature of EPP.</t>
-<t>The stateless nature of REPP dictates that no session state is maintained on the EPP server.  Each request
-from client to server will contain all of the information necessary
-to understand the request.  The server will close the connection
-after each HTTP request.</t>
-<t>With a stateless mechanism, some drawbacks of EPP (as mentioned in
-Section 5) are circumvented.</t>
+<t>The stateless nature of REPP requires that no session state is maintained on the EPP server.
+Each client request to the server contains all the information necessary
+for the server to process the request.</t>
 <t>A good understanding of the EPP base protocol specification <xref target="RFC5730"></xref>
 is advised, to grasp the command mapping described in this
 document.</t>
@@ -69,21 +65,21 @@ style.</t>
 HTTP and the principles of <xref target="REST"></xref>.</t>
 <t>EPP RFCs - This is a reference to the EPP version 1.0
 specifications <xref target="RFC5730"></xref>, <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref>.</t>
-<t>Stateful EPP - The definition according to Section 2 of <xref target="RFC5730"></xref>.</t>
+<t>Stateful EPP - The definition according to <xref target="RFC5730" sectionFormat="of" section="2"></xref>.</t>
 <t>RESTful EPP or REPP - The RESTful transport for EPP described in
 this document.</t>
 <t>URL - A Uniform Resource Locator as defined in <xref target="RFC3986"></xref>.</t>
 <t>Resource - A network data object or service that can be identified
 by a URL.</t>
 <t>Command Mapping - A mapping of <xref target="RFC5730"></xref> EPP commands to
-RESTful EPP.</t>
+RESTful EPP URL resources.</t>
 <t>REPP client - An HTTP user agent performing an REPP request</t>
 <t>REPP server - An HTTP server resposible for processing requests and returning
-a result in any supported media type.</t>
+results in any supported media type.</t>
 </section>
 
 <section anchor="conventions-used-in-this-document"><name>Conventions Used in This Document</name>
-<t>XML is case sensitive.  Unless stated otherwise, XML specifications
+<t>XML is case sensitive. Unless stated otherwise, XML specifications
 and examples provided in this document MUST be interpreted in the
 character case presented to develop a conforming implementation.</t>
 <t>The examples in this document assume that request and response messages
@@ -92,7 +88,7 @@ are properly formatted XML documents.</t>
 REPP client and lines starting with &quot;S:&quot; represent data returned
 by a REPP server. Indentation and white space in examples
 are provided only to illustrate element relationships and are not
-REQUIRED features of this protocol.</t>
+REQUIRED features of the protocol.</t>
 </section>
 
 <section anchor="design-considerations"><name>Design Considerations</name>
@@ -107,8 +103,9 @@ systems. On the basis of these principles a [REST] architectural
 style was chosen, where a client interacts with a REPP server via HTTP.</t>
 </li>
 <li><t>Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as
-load balancing. Load balancing at the level of request messages is more efficient compared to load balancing balancing TCP sessions.
-A TCP session may be used to transmit multiple request messages and these are processed by a single server and not load balanced across a pool of servers.</t>
+load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions.
+When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single
+EPP server and not load balanced across a pool of available servers.</t>
 
 <ul spacing="compact">
 <li>Stateless, <xref target="RFC5734"></xref> requires a stateful session between a client and the<br />
@@ -116,16 +113,16 @@ EPP server. A REPP server MUST be stateless and MUST NOT keep client session or 
 Every client request needs to provide all of the information necessary for the server to successfully process the request.</li>
 </ul></li>
 <li><t>Security, allow for the use of authentication and authorization solutions available
-for HTTP based APIs.</t>
+for HTTP based applications.</t>
 </li>
-<li><t>Content negotion, A server may choose to include support for multiple media types.
-The client must be able to signal the server what media type the should use for decoding request content en for encoding response content. This document only describes the use of [XML]
-but the use of other media types such as JSON <xref target="RFC7159"></xref> should also be possible.</t>
+<li><t>Content negotiation, A server may choose to include support for multiple media types.
+The client must be able to signal the server what media type the should use for decoding request content en for encoding response content.
+This document only describes the use of [XML] but the use of other media types such as JSON <xref target="RFC7159"></xref> should also be possible.</t>
 </li>
 <li><t>Compatibility with existing EPP RFCs.</t>
 </li>
-<li><t>Optional use of EPP request messages when the semantics of a resource URL and HTTP method
-match the contents of an EPP request.</t>
+<li><t>Simplicity, optional use of EPP request messages where the semantics of a REPP resource URL and HTTP method
+match the contents of an EPP command and message.</t>
 </li>
 </ul>
 </section>
@@ -144,6 +141,7 @@ This section describes the impact of REPP on each of the extension levels:</t>
 <t>Command-Response extension:
   RESTful EPP reuses the existing request and response messages defined in the
   EPP RFCs.</t>
+<t></t>
 </section>
 
 <section anchor="resource-naming-convention"><name>Resource Naming Convention</name>
@@ -1416,7 +1414,7 @@ every request MUST contain oly a single command.</t>
 </li>
 <li><t>A request processing failure has no influence on the processing of
 other requests. The stateless nature of the server allows a
-client to retry a failed request or send a new request.</t>
+client to retry a failed request by re-sending the request.</t>
 </li>
 <li><t>Due to the stateless nature of a REPP service, errors while processing a EPP command or
 other errors are isolated to a single request. The Error  status MUST be communicated to the
@@ -1505,6 +1503,7 @@ meaningful in RESTful EPP and MUST NOT be used.</t>
     <date year="2000"></date>
   </front>
 </reference>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.1738.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2581.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2616.xml"/>

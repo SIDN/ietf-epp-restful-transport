@@ -37,15 +37,17 @@ organization = "SIDN Labs"
 
 .# Abstract
 
-This document specifies a 'RESTful transport for EPP' (REPP) with the
-goal of enabling the development of a stateless and scaleable EPP service.
+This document describes RESTful EPP (REPP), a REST based Application Programming Interface (API) 
+for the Extensible Provisioning Protocol [@!RFC5730]. 
+REPP enables the development a stateless and scaleable EPP service.
 
-This document includes a mapping of [@!RFC5730] EPP commands to an RESTful HTTP based
-interface.  Existing semantics and mappings as defined in [@!RFC5731],
-[@!RFC5732] and [@!RFC5733] are largely retained and reusable in RESTful
-EPP.
+This document includes a mapping of [@!RFC5730] XML EPP commands to a RESTful HTTP based
+interface. Existing semantics and mappings as defined in [@!RFC5731],
+[@!RFC5732] and [@!RFC5733] are largely retained and reusable in RESTful EPP. 
 
-Session details are not maintained on the server, allowing for a more scalable EPP service 
+REPP is data format agnostic, supporting data formats other than XML, such as JSON.
+
+A server implementing REPP does not maintain client or process state, allowing for scalable EPP services
 by enabling load balancing at the request level instead of the session level as described in [@!RFC5734].
 
 {mainmatter}
@@ -53,18 +55,16 @@ by enabling load balancing at the request level instead of the session level as 
 # Introduction
 
 This document describes a transport protocol for EPP, based on the [@!REST] architectural style.
-This transport machanism leverages the HTTP protocol [@!RFC2616]
-and the principles of [@!REST].
+This transport machanism leverages the HTTP protocol [@!RFC2616] and the principles of [@!REST].
 Conforming to the REST constraints is generally referred to as being "RESTful".
 Hence we dubbed the new transport protocol: "'RESTful transport for EPP" or "REPP"
 for short.
 
 This new REST based transport includes a mapping of
-[@!RFC5730] EPP-commands to [URI] resources. REPP, in contrast to
-the EPP specification, is stateless.  It aims to provide a
-mechanism that is more suitable for complex, high availability
-environments, as well as for environments where TCP connections can
-be unreliable.
+[@!RFC5730] EPP commands to resources based on Uniform Resource Locators [@!RFC1738].
+REPP, in contrast to the EPP specification, is stateless. It aims to provide a
+mechanism that is more suitable for complex, high availability environments, 
+as well as for environments where TCP connections can be unreliable.
 
 RFC 5730 [@!RFC5730] Section 2.1 describes that EPP can be layered over
 multiple transport protocols.  Currently, the EPP transport over TCP
@@ -72,13 +72,9 @@ multiple transport protocols.  Currently, the EPP transport over TCP
 This same section defines that newly defined transport mappings must
 preserve the stateful nature of EPP.
 
-The stateless nature of REPP dictates that no session state is maintained on the EPP server.  Each request
-from client to server will contain all of the information necessary
-to understand the request.  The server will close the connection
-after each HTTP request.
-
-With a stateless mechanism, some drawbacks of EPP (as mentioned in
-Section 5) are circumvented.
+The stateless nature of REPP requires that no session state is maintained on the EPP server.
+Each client request to the server contains all the information necessary
+for the server to process the request.
 
 A good understanding of the EPP base protocol specification [@!RFC5730]
 is advised, to grasp the command mapping described in this
@@ -101,7 +97,7 @@ HTTP and the principles of [@!REST].
 EPP RFCs - This is a reference to the EPP version 1.0
 specifications [@!RFC5730], [@!RFC5731], [@!RFC5732] and [@!RFC5733].
 
-Stateful EPP - The definition according to Section 2 of [@!RFC5730].
+Stateful EPP - The definition according to [@!RFC5730, section 2].
 
 RESTful EPP or REPP - The RESTful transport for EPP described in
 this document.
@@ -112,17 +108,17 @@ Resource - A network data object or service that can be identified
 by a URL.
 
 Command Mapping - A mapping of [@!RFC5730] EPP commands to
-RESTful EPP.
+RESTful EPP URL resources.
 
 REPP client - An HTTP user agent performing an REPP request 
 
 REPP server - An HTTP server resposible for processing requests and returning
-a result in any supported media type.
+results in any supported media type.
 
 
 # Conventions Used in This Document
 
-XML is case sensitive.  Unless stated otherwise, XML specifications
+XML is case sensitive. Unless stated otherwise, XML specifications
 and examples provided in this document MUST be interpreted in the
 character case presented to develop a conforming implementation.
 
@@ -133,7 +129,7 @@ In examples, lines starting with "C:" represent data sent by a
 REPP client and lines starting with "S:" represent data returned
 by a REPP server. Indentation and white space in examples
 are provided only to illustrate element relationships and are not
-REQUIRED features of this protocol.
+REQUIRED features of the protocol.
 
 
 # Design Considerations
@@ -148,23 +144,24 @@ This section lists the main design criteria.
   style was chosen, where a client interacts with a REPP server via HTTP.
 
 - Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
-  load balancing. Load balancing at the level of request messages is more efficient compared to load balancing balancing TCP sessions.
-  A TCP session may be used to transmit multiple request messages and these are processed by a single server and not load balanced across a pool of servers.
+  load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions.
+  When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single
+  EPP server and not load balanced across a pool of available servers.
 
  - Stateless, [@!RFC5734] requires a stateful session between a client and the  
   EPP server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state.
   Every client request needs to provide all of the information necessary for the server to successfully process the request.
 
 - Security, allow for the use of authentication and authorization solutions available 
-  for HTTP based APIs.  
+  for HTTP based applications.  
 
-- Content negotion, A server may choose to include support for multiple media types.
-  The client must be able to signal the server what media type the should use for decoding request content en for encoding response content. This document only describes the use of [XML]
-  but the use of other media types such as JSON [@!RFC7159] should also be possible.
+- Content negotiation, A server may choose to include support for multiple media types.
+  The client must be able to signal the server what media type the should use for decoding request content en for encoding response content.
+  This document only describes the use of [XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
 - Compatibility with existing EPP RFCs.
-- Optional use of EPP request messages when the semantics of a resource URL and HTTP method
-  match the contents of an EPP request.
+- Simplicity, optional use of EPP request messages where the semantics of a REPP resource URL and HTTP method
+  match the contents of an EPP command and message.
 
 
 # EPP Extension Framework
@@ -185,6 +182,8 @@ Object extension: REPP does not define any new object level
 Command-Response extension: 
   RESTful EPP reuses the existing request and response messages defined in the
   EPP RFCs. 
+
+  <!--TODO ISSUE 29: create extension for hello response? -->
 
 # Resource Naming Convention
 
