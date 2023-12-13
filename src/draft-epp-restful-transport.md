@@ -443,9 +443,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: Connection: keep-alive
 
@@ -535,9 +533,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -611,9 +607,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -667,9 +661,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 
 ```
@@ -721,9 +713,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 
 ```
@@ -783,9 +773,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -838,9 +826,7 @@ C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 220
 C:
@@ -910,9 +896,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 
 ```
@@ -962,9 +946,7 @@ C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 325
 C: 
@@ -1045,9 +1027,7 @@ C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -1061,9 +1041,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 252
 
@@ -1131,9 +1109,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -1158,9 +1134,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -1185,9 +1159,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-cltrid: ABC-12345
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -1213,9 +1185,7 @@ C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 252
 
@@ -1278,9 +1248,7 @@ C: Host: repp.example.nl
 C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Accept-Encoding: gzip,deflate
 C: Accept-Language: en
-C: Accept-Charset: utf-8
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 C: REPP-cltrid: ABC-12345
 

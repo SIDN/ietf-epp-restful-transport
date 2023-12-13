@@ -95,16 +95,16 @@ Table of Contents
      9.1.  Hello . . . . . . . . . . . . . . . . . . . . . . . . . .  14
      9.2.  Login . . . . . . . . . . . . . . . . . . . . . . . . . .  15
      9.3.  Logout  . . . . . . . . . . . . . . . . . . . . . . . . .  15
-     9.4.  Query . . . . . . . . . . . . . . . . . . . . . . . . . .  16
-       9.4.1.  Check . . . . . . . . . . . . . . . . . . . . . . . .  16
-       9.4.2.  Info  . . . . . . . . . . . . . . . . . . . . . . . .  18
+     9.4.  Query . . . . . . . . . . . . . . . . . . . . . . . . . .  15
+       9.4.1.  Check . . . . . . . . . . . . . . . . . . . . . . . .  15
+       9.4.2.  Info  . . . . . . . . . . . . . . . . . . . . . . . .  17
          9.4.2.1.  Domain Name . . . . . . . . . . . . . . . . . . .  18
        9.4.3.  Poll  . . . . . . . . . . . . . . . . . . . . . . . .  19
          9.4.3.1.  Poll Request  . . . . . . . . . . . . . . . . . .  19
          9.4.3.2.  Poll Ack  . . . . . . . . . . . . . . . . . . . .  20
        9.4.4.  Transfer Query  . . . . . . . . . . . . . . . . . . .  21
-     9.5.  Transform . . . . . . . . . . . . . . . . . . . . . . . .  23
-       9.5.1.  Create  . . . . . . . . . . . . . . . . . . . . . . .  23
+     9.5.  Transform . . . . . . . . . . . . . . . . . . . . . . . .  22
+       9.5.1.  Create  . . . . . . . . . . . . . . . . . . . . . . .  22
        9.5.2.  Delete  . . . . . . . . . . . . . . . . . . . . . . .  24
 
 
@@ -117,21 +117,21 @@ Internet-Draft          RESTful Transport for EPP          December 2023
        9.5.3.  Renew . . . . . . . . . . . . . . . . . . . . . . . .  25
        9.5.4.  Transfer  . . . . . . . . . . . . . . . . . . . . . .  27
          9.5.4.1.  Create  . . . . . . . . . . . . . . . . . . . . .  27
-         9.5.4.2.  Cancel  . . . . . . . . . . . . . . . . . . . . .  30
-         9.5.4.3.  Reject  . . . . . . . . . . . . . . . . . . . . .  31
-         9.5.4.4.  Approve . . . . . . . . . . . . . . . . . . . . .  31
-       9.5.5.  Update  . . . . . . . . . . . . . . . . . . . . . . .  32
-     9.6.  Extensions  . . . . . . . . . . . . . . . . . . . . . . .  33
-   10. Transport Considerations  . . . . . . . . . . . . . . . . . .  34
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  35
-   12. Internationalization Considerations . . . . . . . . . . . . .  35
-   13. Security Considerations . . . . . . . . . . . . . . . . . . .  36
-   14. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  36
-   15. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  36
-   16. References  . . . . . . . . . . . . . . . . . . . . . . . . .  36
-     16.1.  Normative References . . . . . . . . . . . . . . . . . .  36
-     16.2.  Informative References . . . . . . . . . . . . . . . . .  39
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  39
+         9.5.4.2.  Cancel  . . . . . . . . . . . . . . . . . . . . .  29
+         9.5.4.3.  Reject  . . . . . . . . . . . . . . . . . . . . .  30
+         9.5.4.4.  Approve . . . . . . . . . . . . . . . . . . . . .  30
+       9.5.5.  Update  . . . . . . . . . . . . . . . . . . . . . . .  30
+     9.6.  Extensions  . . . . . . . . . . . . . . . . . . . . . . .  32
+   10. Transport Considerations  . . . . . . . . . . . . . . . . . .  33
+   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  34
+   12. Internationalization Considerations . . . . . . . . . . . . .  34
+   13. Security Considerations . . . . . . . . . . . . . . . . . . .  34
+   14. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  35
+   15. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  35
+   16. References  . . . . . . . . . . . . . . . . . . . . . . . . .  35
+     16.1.  Normative References . . . . . . . . . . . . . . . . . .  35
+     16.2.  Informative References . . . . . . . . . . . . . . . . .  37
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  37
 
 1.  Introduction
 
@@ -757,34 +757,11 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
    C: Connection: keep-alive
 
    Example Hello response:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 14]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
 
    S: HTTP/2 200 OK
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
@@ -801,6 +778,13 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    S:      <svcMenu>
    S:   </greeting>
    S: </epp>
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 14]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
 9.2.  Login
 
@@ -833,15 +817,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    The concept of a session no longer exists when using REPP, therefore
    the Logout command MUST not be implemented by the server.
 
-
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 15]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
 9.4.  Query
 
    Sending content using an HTTP GET request is discouraged in
@@ -858,6 +833,14 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 9.4.1.  Check
 
    -  Request: HEAD /{collection}/{id}
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 15]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    -  Request payload: N/A
 
@@ -891,13 +874,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    the EPP RFCs, depending on whether the object can be provisioned or
    not.
 
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 16]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    A Check request using the HTTP HEAD method is limited to checking
    only a single resource {id}. This may seem a step backwards when
    compared to the Check command defined in the EPP RFCs where multiple
@@ -915,6 +891,13 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    -  Request payload: Check request
 
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 16]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
+
    -  Response payload: Check Response -->
 
    Example Check request for a domain name:
@@ -924,9 +907,7 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -941,18 +922,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    S: REPP-check-avail: 0
    S: REPP-check-reason: In use
    S: REPP-result-code: 1000
-
-
-
-
-
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 17]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
 
 9.4.2.  Info
 
@@ -976,6 +945,14 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    A request for an object that has authorization information attached.
 
    -  Request: POST /{collection}/{id}
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 17]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    -  Request payload: Info request
 
@@ -1002,14 +979,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    -  Hosts=none: GET /domains/{id}/hosts/none
 
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 18]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    Example domain Info including all hosts, without authorization data:
 
    C: GET /repp/v1/domains/example.nl/hosts/all HTTP/2
@@ -1017,13 +986,29 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
    Example Info response:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 18]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
@@ -1059,13 +1044,6 @@ S:</epp>
 
    -  Response payload: Poll response
 
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 19]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    A client MUST use the HTTP GET method on the messages collection to
    request the message at the head of the queue.
 
@@ -1076,12 +1054,17 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
 
    Example Poll response:
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 19]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    S: HTTP/2 200 OK
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
@@ -1115,13 +1098,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    -  Request payload: N/A
 
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 20]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    -  Response payload: Poll ack response
 
    A client MUST use the HTTP DELETE method on a message instance to
@@ -1134,12 +1110,17 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
 
    Example Poll Ack response:
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 20]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    S: HTTP/2 200 OK
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
@@ -1170,14 +1151,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    -  Request payload: N/A
 
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 21]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    -  Response payload: Transfer respons.
 
    If the requested object has no associated authorization information
@@ -1192,14 +1165,25 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    Example domain name Transfer Query request:
 
+
+
+
+
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 21]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
+
    C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
    C: Host: repp.example.nl
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -1227,13 +1211,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    S:  </response>
    S:</epp>
 
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 22]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
 9.5.  Transform
 
 9.5.1.  Create
@@ -1248,15 +1225,22 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    Example Domain Create request:
 
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 22]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
+
    C: POST /repp/v1/domains/ HTTP/2
    C: Host: repp.example.nl
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Content-Type: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
    C: Content-Length: 220
    C:
@@ -1275,6 +1259,22 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C:</epp>
 
    Example Domain Create response:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1330,13 +1330,13 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    Example Domain Delete request:
 
-
-
-
-
-
-
-
+   C: DELETE /repp/v1/domains/example.nl HTTP/2
+   C: Host: repp.example.nl
+   C: Cache-Control: no-cache
+   C: Authorization: Bearer <token>
+   C: Accept: application/epp+xml
+   C: Accept-Language: en
+   C: REPP-cltrid: ABC-12345
 
 
 
@@ -1345,16 +1345,6 @@ Wullink & Davids          Expires 15 June 2024                 [Page 24]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
-
-   C: DELETE /repp/v1/domains/example.nl HTTP/2
-   C: Host: repp.example.nl
-   C: Cache-Control: no-cache
-   C: Authorization: Bearer <token>
-   C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
-   C: Accept-Language: en
-   C: Accept-Charset: utf-8
-   C: REPP-cltrid: ABC-12345
 
    Example Domain Delete response:
 
@@ -1397,6 +1387,16 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
 
 
+
+
+
+
+
+
+
+
+
+
 Wullink & Davids          Expires 15 June 2024                 [Page 25]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
@@ -1408,9 +1408,7 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Content-Type: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
    C: Content-Length: 325
    C:
@@ -1430,6 +1428,8 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C:</epp>
 
    Example Renew response:
+
+
 
 
 
@@ -1530,54 +1530,18 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Content-Type: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
    Example Create request using object authorization:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 28]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
 
    C: POST /repp/v1/domains/example.nl/transfers HTTP/2
    C: Host: repp.example.nl
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
    C: Content-Length: 252
 
@@ -1601,27 +1565,7 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 29]
+Wullink & Davids          Expires 15 June 2024                 [Page 28]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
@@ -1667,9 +1611,7 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -1677,7 +1619,9 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
 
 
-Wullink & Davids          Expires 15 June 2024                 [Page 30]
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 29]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
@@ -1700,9 +1644,7 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
@@ -1724,23 +1666,21 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-cltrid: ABC-12345
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
-
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 31]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
 
 9.5.5.  Update
 
    -  Request: PUT /{collection}/{id}
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 30]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    -  Request payload: Object:update.
 
@@ -1758,9 +1698,7 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Content-Type: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
    C: Content-Length: 252
 
@@ -1789,7 +1727,13 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
 
 
-Wullink & Davids          Expires 15 June 2024                 [Page 32]
+
+
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 31]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
@@ -1833,33 +1777,22 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    active domain delete transaction and move the domain from the
    quarantine state back to the active state.
 
-
-
-
-
-
-
-
-
-
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 33]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    C: DELETE /repp/v1/extensions/domains/example.nl/quarantine HTTP/2
    C: Host: repp.example.nl
    C: Cache-Control: no-cache
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: Accept-Encoding: gzip,deflate
    C: Accept-Language: en
-   C: Accept-Charset: utf-8
    C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
    C: REPP-cltrid: ABC-12345
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 32]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    Example Extension response:
 
@@ -1898,14 +1831,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
       response for a previous request, if a request depends on the
       response of a previous request.
 
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 34]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    -  Sessions are delegated to the HTTP layer, which uses the client-
       server paradigm.  HTTP is an application layer protocol which uses
       TCP as a transport protocol.  TCP includes features to provide
@@ -1914,6 +1839,16 @@ Internet-Draft          RESTful Transport for EPP          December 2023
       detail; congestion control principles are described further in
       [RFC2581] and [RFC2914].  HTTP is a stateless protocol and as such
       it does not maintain any client state.
+
+
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 33]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    -  The stateful nature of EPP is no longer preserved through EPP
       managed sessions.  Session management is delegated to the
@@ -1949,19 +1884,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    TODO: any?  Accept-Language in HTTP Header
 
-
-
-
-
-
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 35]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
 13.  Security Considerations
 
 
@@ -1976,6 +1898,13 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    To protect data confidentiality and integrity, all data transport
    between the client and server MUST use TLS [RFC5246].  Section 9
    describes the level of security that is REQUIRED.
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 34]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    EPP does not use XML encryption for protecting messages.
    Furthermore, REPP (HTTP) servers are vulnerable to common denial-of-
@@ -2011,13 +1940,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
 16.1.  Normative References
 
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 36]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,
               <http://www.ics.uci.edu/~fielding/pubs/dissertation/
@@ -2031,6 +1953,14 @@ Internet-Draft          RESTful Transport for EPP          December 2023
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 35]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    [RFC2581]  Allman, M., Paxson, V., and W. Stevens, "TCP Congestion
               Control", RFC 2581, DOI 10.17487/RFC2581, April 1999,
@@ -2067,13 +1997,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
               DOI 10.17487/RFC5246, August 2008,
               <https://www.rfc-editor.org/info/rfc5246>.
 
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 37]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    [RFC5730]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)",
               STD 69, RFC 5730, DOI 10.17487/RFC5730, August 2009,
               <https://www.rfc-editor.org/info/rfc5730>.
@@ -2086,6 +2009,14 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    [RFC5732]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Host Mapping", STD 69, RFC 5732, DOI 10.17487/RFC5732,
               August 2009, <https://www.rfc-editor.org/info/rfc5732>.
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 36]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
 
    [RFC5733]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Contact Mapping", STD 69, RFC 5733, DOI 10.17487/RFC5733,
@@ -2119,17 +2050,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/info/rfc9000>.
 
-
-
-
-
-
-
-Wullink & Davids          Expires 15 June 2024                 [Page 38]
-
-Internet-Draft          RESTful Transport for EPP          December 2023
-
-
    [RFC9110]  Fielding, R., Ed., Nottingham, M., Ed., and J. Reschke,
               Ed., "HTTP Semantics", STD 97, RFC 9110,
               DOI 10.17487/RFC9110, June 2022,
@@ -2146,6 +2066,14 @@ Authors' Addresses
    Maarten Wullink
    SIDN Labs
    Email: maarten.wullink@sidn.nl
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 37]
+
+Internet-Draft          RESTful Transport for EPP          December 2023
+
+
    URI:   https://sidn.nl/
 
 
@@ -2181,4 +2109,20 @@ Authors' Addresses
 
 
 
-Wullink & Davids          Expires 15 June 2024                 [Page 39]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Davids          Expires 15 June 2024                 [Page 38]
