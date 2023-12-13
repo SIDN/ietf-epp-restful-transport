@@ -256,12 +256,12 @@ Internet-Draft          RESTful Transport for EPP          December 2023
       improve registry services and provide better performance for the
       transform request types.
 
-      -  Stateless, [RFC5734] requires a stateful session between a
-         client and the
-         EPP server.  A REPP server MUST be stateless and MUST NOT keep
-         client session or any other application state.  Every client
-         request needs to provide all of the information necessary for
-         the server to successfully process the request.
+   -  Stateless, [RFC5734] requires a stateful session between a client
+      and the
+      EPP server.  A REPP server MUST be stateless and MUST NOT keep
+      client session or any other application state.  Every client
+      request needs to provide all of the information necessary for the
+      server to successfully process the request.
 
    -  Security, allow for the use of authentication and authorization
       solutions available for HTTP based applications.

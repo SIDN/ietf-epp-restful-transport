@@ -104,12 +104,10 @@ style was chosen, where a client interacts with a REPP server via HTTP.</t>
 </li>
 <li><t>Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as
 load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. The bulk of EPP requests are of the informational type, load balancing and possibly seperating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.</t>
-
-<ul spacing="compact">
-<li>Stateless, <xref target="RFC5734"></xref> requires a stateful session between a client and the<br />
-EPP server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state.
-Every client request needs to provide all of the information necessary for the server to successfully process the request.</li>
-</ul></li>
+</li>
+<li><t>Stateless, <xref target="RFC5734"></xref> requires a stateful session between a client and the<br />
+EPP server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Every client request needs to provide all of the information necessary for the server to successfully process the request.</t>
+</li>
 <li><t>Security, allow for the use of authentication and authorization solutions available
 for HTTP based applications.</t>
 </li>
