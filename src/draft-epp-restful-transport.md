@@ -144,7 +144,7 @@ This section lists the main design criteria.
   style was chosen, where a client interacts with a REPP server via HTTP.
 
 - Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
-  load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. The bulk of EPP requests are of the informational type, load balancing and possibly seperating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.   
+  load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. During normal registry operations, the bulk of EPP requests canb be expected to be of the informational type, load balancing and possibly seperating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.   
 
 - Stateless, [@!RFC5734] requires a stateful session between a client and the  
   EPP server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Every client request needs to provide all of the information necessary for the server to successfully process the request.
@@ -157,8 +157,8 @@ This section lists the main design criteria.
   This document only describes the use of [XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
 - Compatibility with existing EPP RFCs.
-- Simplicity, when the semantics of a REPP resource URL and HTTP method match an EPP command and request message, the use of an request message should be optional.  
-
+- Simplicity, when the semantics of a REPP resource URL and HTTP method match an EPP command and request message, the use of an request message is not preferred. 
+- Performance, Removing the need request messages where possible, reduces message parsing overhead for both the client and server.
 
 # EPP Extension Framework
 
@@ -233,7 +233,7 @@ maintain any state information relating to the client or EPP process.
 Due to stateless nature of REPP, a request must contain all information required for the 
 server to be able to successfully process the request. The client MUST include authentication credentials for each request. This MAY be done by using any of the available HTTP authentication mechanisms, such as those described in [@!RFC2617].
 
-# HTTP Use
+# HTTP
 
 REPP uses the REST semantics, each HTTP method is assigned a distinct behaviour, section (#http-method) provides a overview of each the behaviour assinged to each method. REPP requests are expressed by using a URL refering to a resource, an HTTP method, zero or more HTTP headers and a optional message body containing the EPP request message. 
 
@@ -265,37 +265,36 @@ When multiple representations are supported, the server MUST use agent-driven co
   
 The client MUST use these HTTP headers:
 
-- `Content-Type`: Used to indicate the type of a request message body 
-- `Accept`: Used to indicate the type the server MUST use for the representation, this MAY
+- `Content-Type`: Used to indicate the media type of a request message body 
+- `Accept`: Used to indicate the media type the server MUST use for the representation, this MAY
            be a list of types and related weight factors, as described in [@!RFC2616, section 14.1]
 
-The server MUST use the `Content-Type` HTTP header to indicate the type used for the representation in the response message body. The server MUST return HTTP status code 406 (Not Acceptable) when the client requests an unsupported representation type.
+The server MUST use the `Content-Type` HTTP header to indicate the media type used for the representation in the response message body. The server MUST return HTTP status code 406 (Not Acceptable) or 415 (Unsupported Media Type) when the client requests an unsupported media type.
 
 ## EPP content
 
 <!--TODO ISSUE 4: also include authentication header here? -->
-In contrast to EPP over TCP [@!RFC5734], REPP does not always
-require a EPP request message to be sent to the server. The information conveyed by HTTP method, URL and request headers is, for some use cases, sufficient for the server to be able to successfully proceses the request. The `Object Info` request for example, does not require an EPP message.
+In contrast to EPP over TCP [@!RFC5734], REPP does not always require a EPP request message to be sent to the server. The information conveyed by HTTP method, URL and request headers is, for some use cases, sufficient for the server to be able to successfully proceses the request. The `Object Info` request for example, does not require an EPP message.
 
 When an EPP request does require an EPP request message, the client MUST use the HTTP POST or PUT method and
 add the EPP request message content to the HTTP message body.
 
 ## Request
 
-### Headers
-
-HTTP request-headers are used to transmit additional or optional
-request data to the server. All REPP HTTP headers must have
-the "REPP-" prefix, following the recommendations from [@!RFC6648].
+HTTP request-headers are used to transmit additional or optional request data to the server. All REPP HTTP headers must have
+the "REPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `REPP-cltrid`:  The client transaction identifier is the equivalent
   of the `clTRID` element defined in [@!RFC5730] and MUST be used
   accordingly when the REPP request does not contain an EPP request in the
   HTTP message body.
 
-- `REPP-svcs`: The namespace used by the client in the EPP request message. The client MUST use this header
-if the media type used by the client requires the server to know what namespaces are used.
-Such as is the case for XML-based request messages. The header value MAY contain multiple comma separated namespaces. This header MUST NOT be used when the HTTP message body contains a EPP request message.
+- `REPP-svcs`: The namespace used by the client in the EPP request message. The client MUST use this 
+  header if the media type used by the client for the message body content requires the server to know what namespaces are used.
+  Such is the case for XML-based request messages. The header value MAY contain multiple comma separated namespaces.
+
+- `REPP-authInfo`: The client MAY use this header for sending basic password-based authorization information, as described in [@!RFC5731, section 2.6] and [@!RFC5733, section 2.8]. If the authorization is linked to a contact object then the client MUST NOT use this header.
+  <!-- TODO issue #33 : use header for simple auth token -->
 
 - `Accept-Language`:  This header is equivalent to the "lang"
   element in the EPP Login command. The server MUST support the use
@@ -311,12 +310,8 @@ Such as is the case for XML-based request messages. The header value MAY contain
 
 ## Response
 
-The server response contains an HTTP status code, HTTP headers and it MAY contain an EPP response message in the HTTP message body.
-
-### Headers
-
-HTTP response-headers are used to transmit additional response data
-to the client.  All HTTP headers used by REPP MUST use the "REPP-"
+The server response contains an HTTP status code, HTTP headers and MAY contain an EPP response message in the HTTP message body.
+HTTP response-headers are used to transmit additional response data to the client. All HTTP headers used by REPP MUST use the "REPP-"
 prefix.
 
 - `REPP-svtrid`:  This header is the equivalent of the <svTRID> element
@@ -349,22 +344,45 @@ prefix.
 
 - `Connection`:  .... <!--TODO ISSUE 11: How to handle connections -->   
      
-
-## Response Status Codes
-
-TODO: 
-see for example: https://datatracker.ietf.org/doc/html/rfc7480
-
 ## Error Handling
 
-REPP is designed atop of the HTTP protocol, both are an
-application layer protocol with their own status- and result codes.
-All request endpoints described in (#command-mapping) MUST return the specified HTTP status for successful HTTP requests. The HTTP status code that must be returned for an unsuccessful request is not specified in this document, the full set of status code is defined in [@!RFC2616, section 10].
+Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. All endpoints described in (#command-mapping) MUST return the specified HTTP status for successful requests when the EPP result code indicates as positive completion (1xxx) of the EPP command.
 
+When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. (#tbl-error-mapping) contains the mapping for EPP result codes to a HTTP status codes.
+
+The client MAY use the well defined HTTP status codes for error handling logic, without having to first parse the EPP result mesage. 
+
+For example, a client sending an Object Tranfer request when the Object is already linked to an active transfer process, this will cause the server to respond using an EPP result code 2106 this code maps to HTTP status code 400. The client MAY use the HTTP status code alone to determine that the EPP command failed and only parse the result when additional information from the response is required for handling the error.
+
+{#tbl-error-mapping}
+EPP result code    | HTTP status code
+-------------------|----------
+2000               | 501  
+2001               |   
+2002               |   
+2003               |   
+2004               |   
+2005               |   
+2100               |   
+2101               |   
+2102               |   
+2103               |   
+2104               |   
+2105               |   
+2106               | 400
+Table: Mapping EPP codes to HTTP codes
+
+TODO: complete the table
+
+<!-- 
+The HTTP status code that must be returned for an unsuccessful EPP request is not specified in this document, the full set of status code is defined in [@!RFC2616, section 10].
+-->
+
+<!-- 
 The value of an EPP result code and HTTP status code MUST remain
 independent of each other. E.g. an EPP message containing a result code indicating an
-error in the EPP protocol layer, may be contained in the message body of a HTTP response using status code 200. An HTTP response using an error status code MAY not contain an EPP message body containing an EPP result code. 
-
+error in the EPP protocol layer, may be contained in the message body of a HTTP response using status code 200. A HTTP response using an error status code MAY not contain an EPP message body containing an EPP result code. 
+-->
 - `EPP result code`: MUST only return EPP result information relating to
   the EPP protocol.  The HTTP header "REPP-eppcode" MAY be used
   to add EPP result information to the HTTP layer.
@@ -405,7 +423,7 @@ Poll Request       | GET      | /messages                 | No
 Poll Ack           | DELETE   | /messages/{i}             | No
 Create             | POST     | /{c}                      | Yes
 Delete             | DELETE   | /{c}/{i}                  | No
-Renew              | PUT      | /{c}/{i}/period           | Yes
+Renew              | POST     | /{c}/{i}/renewals         | Yes
 Transfer           | POST     | /{c}/{i}/transfers        | Optional
 Transfer Query     | GET/POST | /{c}/{i}/transfers/latest | Optional
 Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | Optional
@@ -437,7 +455,6 @@ Example Hello request:
 ```
 C: OPTIONS /repp/v1/ HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
@@ -508,7 +525,6 @@ Example Check request for a domain name:
 ```
 C: HEAD /repp/v1/domains/example.nl HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept-Language: en
 C: REPP-cltrid: ABC-12345
@@ -553,29 +569,31 @@ A request for an object that has authorization information attached.
 - Response message: Info response
 - HTTP success status code: 200 (OK)
 
-#### Filtering
+#### Object Filtering
 
-Object collections may contain many objects, the server MUST support the use of query string parameters for the pupose of filtering objects before these are added to the response.
+The client MAY choose to use a filter to limit the number of objects returned for a request. The server MUST support the use of query string parameters for the prupose of filtering objects before these are added to a response.
 
-A domain name Info request is different from a contact- and host Info request in the
-sense that EPP Domain Name Mapping [@!RFC5731, Section 3.1.2] describes
-an OPTIONAL "hosts" attribute. This attribute is used for filtering hosts returned in the response, the "hosts" attribute is mapped to a similarly name query string parameter.
+Query string parameters used for filtering:
+
+- `attr`: The name of the object attribute or field to filter on
+- `val`: The value the server must use when filtering objects
+
+The domain name Info request is different from the Contact- and Host Info request, in the sense that EPP Domain Name Mapping [@!RFC5731, Section 3.1.2] describes an OPTIONAL "hosts" attribute. This attribute is used for filtering hosts returned in the response, the "hosts" attribute is mapped to the generic query string filtering.
 
 The specified default value for the hosts parameter is "all". This default MUST be used by the server
 when the query string parameter is absent from the request URL.
 
 -  default: GET /domains/{id}
--  all: GET /domains/{id}?hosts=all
--  del: GET /domains/{id}?hosts=del
--  sub: GET /domains/{id}?hosts=sub
--  none: GET /domains/{id}?hosts=none
+-  all: GET /domains/{id}?attr=hosts&val=all
+-  del: GET /domains/{id}?attr=hosts&val=del
+-  sub: GET /domains/{id}?attr=hosts&val=sub
+-  none: GET /domains/{id}?attr=hosts&val=none
 
 Example Domain Info request including all hosts objects, without any required authorization data:
 
 ```
-C: GET /repp/v1/domains/example.nl?host=all HTTP/2
+C: GET /repp/v1/domains/example.nl?attr=hosts&val=all HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
@@ -627,7 +645,6 @@ Example Poll request:
 ```
 C: GET /repp/v1/messages HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
@@ -677,7 +694,6 @@ Example Poll Ack request:
 ```
 C: DELETE /repp/v1/messages/12345 HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
@@ -718,8 +734,7 @@ latest object transfer, a latest transfer object may not exist, when no transfer
 - Response message: Transfer Query response
 - HTTP success status code: 200 (OK)
 
-If the requested object has associated authorization information then the HTTP GET method
-MUST NOT be used and the HTTP POST method MUST be used and the authorization information MUST be included in the EPP request message inside the HTTP message body. 
+If the requested object has associated authorization information linked to a contact object, then the HTTP GET method MUST NOT be used and the HTTP POST method MUST be used and the authorization information MUST be included in the EPP request message inside the HTTP message body. 
 
 - Request: POST {collection}/{id}/transfers/latest
 - Request message: Transfer Query request
@@ -731,7 +746,6 @@ Example domain name Transfer Query request:
 ```
 C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
@@ -740,12 +754,25 @@ C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
-Example domain name Transfer Query request requiring authorization information:
+Example domain name Transfer Query request and authorization information in REPP-authInfo header:
+
+```
+C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
+C: Host: repp.example.nl
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Language: en
+C: REPP-cltrid: ABC-12345
+C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-authInfo: secret
+
+```
+
+Example domain name Transfer Query request and authorization information in request message:
 
 ```xml
 C: POST /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
@@ -803,20 +830,18 @@ S:</epp>
 - Response message: Object Create response
 - HTTP success status code: 201 (CREATED)
 
-A client MUST create a new object using the HTTP POST method on an object collection resource.
-
+The client MUST use the HTTP POST method to create a new object resource.
 
 Example Domain Create request:
 
 ```xml
-C: POST /repp/v1/domains/ HTTP/2
+C: POST /repp/v1/domains HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: Accept-Language: en
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Accept-Language: en
 C: Content-Length: 220
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -836,7 +861,7 @@ C:</epp>
 
 Example Domain Create response:
 
-```
+```xml
 S: HTTP/2 201 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
@@ -867,21 +892,18 @@ S:</epp>
 
 ### Delete
 
-- Request: DELETE /{collection}/{id}
+- Request: DELETE /{collection}/{id} 
 - Request message: None
-- Response message: Object Delete response
+- Response message: object Delete response
 - HTTP success status code: 200 (OK)
 
-Deleting an object from the registry database MUST be performed using
-the HTTP DELETE method on a REST resource identifying a unique
-object instance.
+The client MUST the HTTP DELETE method and a resource identifying a unique object instance.
 
 Example Domain Delete request:
 
 ```
 C: DELETE /repp/v1/domains/example.nl HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
@@ -891,7 +913,7 @@ C: REPP-cltrid: ABC-12345
 
 Example Domain Delete response:
 
-```
+```xml
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
@@ -916,25 +938,25 @@ S:</epp>
 
 ### Renew
 
-- Request: PUT /{collection}/{id}/period
-- Request message: Object <renew>.
-- Response message: Object <renew> response.
-- HTTP success status code: 200 (OK)
+- Request: POST /{collection}/{id}/renewals
+- Request message: object Renew request
+- Response message: object Renew response
+- HTTP success status code: 201 (CREATED)
 
-Renewing an object is only specified by [@!RFC5731], the <renew>
-command has been mapped to a period resource.
+The EPP Renew command is mapped to a nested resource, named "renewals".
+Not all EPP object types include support for the renew command, the server MUST return HTTP status code 404 (Not Found) when the client
+send a Renew request for an unsupported object type.
 
-Example Renew request:
+Example Domain Renew request:
 
 ```xml
-C: POST /repp/v1/domains/example.nl/period HTTP/2
+C: POST /repp/v1/domains/example.nl/renewals HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: Accept-Language: en
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Accept-Language: en
 C: Content-Length: 325
 C: 
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -956,7 +978,7 @@ C:</epp>
 Example Renew response:
 
 ```xml
-S: HTTP/2 200 OK
+S: HTTP/2 201 CREATED
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
@@ -982,15 +1004,10 @@ S:</epp>
 
 ### Transfer
 
-Transferring an object from one sponsoring client to another is only
-specified in [@!RFC5731] and [@!RFC5733].  The <transfer> command has
-been mapped to a transfer resource.
+Transferring an object from one sponsoring client to another is specified in [@!RFC5731] and [@!RFC5733]. The Transfer command is mapped to a nested resource, named "transfers".
 
-The semantics of the HTTP DELETE method are determined by the role of
-the client executing the method. For the current sponsoring
-registrar the DELETE method is defined as "reject transfer". For the
-new sponsoring registrar the DELETE method is defined as "cancel
-transfer".
+The semantics of the HTTP DELETE method are determined by the role of the client executing the method. For the current sponsoring
+client of the object, the DELETE method is defined as "reject transfer". For the new sponsoring client the DELETE method is defined as "cancel transfer".
 
 #### Create
 
@@ -999,36 +1016,43 @@ transfer".
 - Response message: Transfer response.
 - HTTP success status code: 201 (CREATED)
 
-To start a new object transfer, the client MUST use the HTTP POST method on a unique domain name or
-contact object instance. If the server only requires the domain name to be able to create a new transfer, then  
-the client MAY choose to send an empty HTTP message body. [@!RFC5730, section 3.2.4] described additional
-information the server might require.
+To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource, not all EPP include support for the Transfer command as described in [@!RFC5730, section 3.2.4], [@!RFC5731, section 3.2.4] and [@!RFC5733, section 3.2.4]. If the server does not require authorization
+information associated with a contact object, then the client MAY choose to send an empty HTTP message body.
 
-Example Create request using no object authorization:
+Example Create request wiithout using object authorization:
 
 ```
 C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: Content-Type: application/epp+xml
 C: Accept-Language: en
 C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
-Example Create request using object authorization:
+Example Create request using object authorization not linked to a contact:
 
 ```xml
 C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
+C: REPP-cltrid: ABC-12345
+C: REPP-authInfo: secret
 C: Accept-Language: en
+
+```
+
+Example Create request using object authorization linked to a contact object:
+
+```xml
+C: POST /repp/v1/domains/example.nl/transfers HTTP/2
+C: Host: repp.example.nl
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Accept-Language: en
 C: Content-Length: 252
 
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -1039,7 +1063,7 @@ C:      <domain:transfer
 C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
 C:        <domain:name>example.nl</domain:name>
 C:        <domain:authInfo>
-C:          <domain:pw roid="DOM-12345">kds78jhbfdsk</domain:pw>
+C:          <domain:pw roid="DOM-12345">secret</domain:pw>
 C:        </domain:authInfo>
 C:      </domain:transfer>
 C:    </transfer>
@@ -1083,6 +1107,9 @@ S:</epp>
 - Response message: Transfer cancel response message.
 - HTTP success status code: 200 (OK)
 
+The semantics of the HTTP DELETE method are determined by the role of
+the client sending the request. For the new sponsoring client the DELETE method is defined as "cancel transfer".
+
 The new sponsoring client MUST use the HTTP DELETE method to cancel a
 requested transfer.
 
@@ -1091,12 +1118,10 @@ Example Cancel request:
 ```
 C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -1113,6 +1138,10 @@ TODO
 - Response message: Transfer response
 - HTTP success status code: 200 (OK)
 
+The semantics of the HTTP DELETE method are determined by the role of
+the client sending the request. For the current sponsoring
+client of the object, the DELETE method is defined as "reject transfer".
+
 The current sponsoring client MUST use the HTTP DELETE method to
 reject a transfer requested by the new sponsoring client.
 
@@ -1121,12 +1150,10 @@ Example Reject request:
 ```
 C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -1151,12 +1178,10 @@ Example Approve request:
 ```
 C: PUT /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -1181,7 +1206,6 @@ Example Update request:
 ```xml
 C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
@@ -1244,7 +1268,6 @@ The example below, shows the use of the "Domain Cancel Delete" command as define
 ```xml
 C: DELETE /repp/v1/extensions/domains/example.nl/quarantine HTTP/2
 C: Host: repp.example.nl
-C: Cache-Control: no-cache
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
