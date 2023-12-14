@@ -156,9 +156,10 @@ This section lists the main design criteria.
   The client must be able to signal the server what media type the should use for decoding request content en for encoding response content.
   This document only describes the use of [XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
-- Compatibility with existing EPP RFCs.
-- Simplicity, when the semantics of a REPP resource URL and HTTP method match an EPP command and request message, the use of an request message is not preferred. 
-- Performance, Removing the need request messages where possible, reduces message parsing overhead for both the client and server.
+- Compatibility with existing EPP commands and corresponding request and response messages.
+- Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of an request message should ne optional. If the EPP response message is limited to the EPP result code and transaction identifiers, sending a response message should be optional.
+
+- Performance, reducing the number of required request and response messages, improves the performnce of both client and server, less messages have to be created, marshalled, transmitted and parsed.
 
 # EPP Extension Framework
 
@@ -346,31 +347,47 @@ prefix.
      
 ## Error Handling
 
-Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. All endpoints described in (#command-mapping) MUST return the specified HTTP status for successful requests when the EPP result code indicates as positive completion (1xxx) of the EPP command.
+  <!--TODO: ISSUE #35: Mapping EPP code to HTTP status codes -->
+Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. The endpoints described in (#command-mapping) MUST return the specified HTTP status for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.
 
-When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. (#tbl-error-mapping) contains the mapping for EPP result codes to a HTTP status codes.
+When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. (#tbl-error-mapping) contains the mapping for EPP result codes to HTTP status codes.
 
 The client MAY use the well defined HTTP status codes for error handling logic, without having to first parse the EPP result mesage. 
 
-For example, a client sending an Object Tranfer request when the Object is already linked to an active transfer process, this will cause the server to respond using an EPP result code 2106 this code maps to HTTP status code 400. The client MAY use the HTTP status code alone to determine that the EPP command failed and only parse the result when additional information from the response is required for handling the error.
+For example, a client sending an Object Tranfer request when the Object is already linked to an active transfer process, this will cause the server to respond using an EPP result code 2106 this code maps to HTTP status code 400. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response is required for handling the error.
 
 {#tbl-error-mapping}
 EPP result code    | HTTP status code
 -------------------|----------
 2000               | 501  
-2001               |   
-2002               |   
-2003               |   
-2004               |   
-2005               |   
-2100               |   
-2101               |   
+2001               | 400  
+2002               | 405  
+2003               | 400  
+2004               | 400  
+2005               | 400  
+2100               | 400  
+2101               | 501  
 2102               |   
 2103               |   
 2104               |   
 2105               |   
 2106               | 400
-Table: Mapping EPP codes to HTTP codes
+2201               | 
+2202               | 
+2300               | 
+2301               | 
+2302               | 
+2303               | 
+2304               | 
+2305               | 
+2306               | 
+2307               | 
+2308               | 
+2400               | 500
+2500               | 500
+2501               | 401
+2502               | 429
+Table: EPP code to HTTP code mapping
 
 TODO: complete the table
 
@@ -387,10 +404,7 @@ error in the EPP protocol layer, may be contained in the message body of a HTTP 
   the EPP protocol.  The HTTP header "REPP-eppcode" MAY be used
   to add EPP result information to the HTTP layer.
   
-- `HTTP status code`:  MUST only return status information related to the
-  HTTP protocol, When there is a mismatch between the object
-  identifier in the HTTP message body and the resource URL HTTP
-  status code 412 MUST be returned.
+- `HTTP status code`:  MUST only return status information related to the HTTP protocol
 
 
 # Command Mapping {#command-mapping}
@@ -412,31 +426,33 @@ provide details for each request. Resource URLs in the table are assumed to be u
 - `{i}`:  An abbreviation for an object id, this MUST be substituted with the value of a domain name, hostname, contact-id or a message-id or any other defined object.
 
 {#tbl-cmd-mapping}
-Command            | Method   | Resource                  | Request message
--------------------|----------|---------------------------| ----------------
-Hello              | OPTIONS  | /                         | No
-Login              | N/A      | N/A                       | N/A
-Logout             | N/A      | N/A                       | N/A
-Check              | HEAD     | /{c}/{i}                  | No
-Info               | GET/POST | /{c}/{i}                  | Optional
-Poll Request       | GET      | /messages                 | No
-Poll Ack           | DELETE   | /messages/{i}             | No
-Create             | POST     | /{c}                      | Yes
-Delete             | DELETE   | /{c}/{i}                  | No
-Renew              | POST     | /{c}/{i}/renewals         | Yes
-Transfer           | POST     | /{c}/{i}/transfers        | Optional
-Transfer Query     | GET/POST | /{c}/{i}/transfers/latest | Optional
-Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | Optional
-Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | Optional   
-Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | Optional
-Update             | PUT      | /{c}/{i}                  | Yes
-Extension [1]      | *        | /{c}/{i}/extension/*      | *
-Extension [2]      | *        | /extension/*              | *
+Command            | Method   | Resource                  | Req message | Resp message
+-------------------|----------|---------------------------|-------------|-----------------
+Hello              | OPTIONS  | /                         | No          | TODO
+Login              | N/A      | N/A                       | N/A         | TODO
+Logout             | N/A      | N/A                       | N/A         | TODO
+Check              | HEAD     | /{c}/{i}                  | No          | TODO
+Info               | GET/POST | /{c}/{i}                  | Optional    | TODO
+Poll Request       | GET      | /messages                 | No          | TODO
+Poll Ack           | DELETE   | /messages/{i}             | No          | TODO
+Create             | POST     | /{c}                      | Yes         | TODO
+Delete             | DELETE   | /{c}/{i}                  | No          | TODO
+Renew              | POST     | /{c}/{i}/renewals         | Yes         | TODO
+Transfer           | POST     | /{c}/{i}/transfers        | Optional    | TODO
+Transfer Query     | GET/POST | /{c}/{i}/transfers/latest | Optional    | TODO
+Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | Optional    | TODO
+Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | Optional    | TODO 
+Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | Optional    | TODO
+Update             | PUT      | /{c}/{i}                  | Yes         | TODO
+Extension [1]      | *        | /{c}/{i}/extension/*      | *           | TODO
+Extension [2]      | *        | /extension/*              | *           | TODO
 Table: Mapping of EPP Command to REPP Request
 
 [1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2] 
 
 [2] This mapping is used for protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1] 
+
+When there is a mismatch between the resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the servr MUST return HTTP status code 400 (Bad Request).
 
 ## Hello
 
@@ -1303,6 +1319,7 @@ S:</epp>
 # Transport Considerations
 
   <!--TODO ISSUE #2: not all considerations are met by repp? -->
+  <!--TODO ISSUE #36: create update for this section in rfc5730 -->
 
 [@!RFC5730, section 2.1] of the EPP protocol specification 
 describes considerations to be addressed by a protocol transport

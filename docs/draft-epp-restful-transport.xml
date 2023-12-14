@@ -115,11 +115,11 @@ for HTTP based applications.</t>
 The client must be able to signal the server what media type the should use for decoding request content en for encoding response content.
 This document only describes the use of [XML] but the use of other media types such as JSON <xref target="RFC7159"></xref> should also be possible.</t>
 </li>
-<li><t>Compatibility with existing EPP RFCs.</t>
+<li><t>Compatibility with existing EPP commands and corresponding request and response messages.</t>
 </li>
-<li><t>Simplicity, when the semantics of a REPP resource URL and HTTP method match an EPP command and request message, the use of an request message is not preferred.</t>
+<li><t>Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of an request message should ne optional. If the EPP response message is limited to the EPP result code and transaction identifiers, sending a response message should be optional.</t>
 </li>
-<li><t>Performance, Removing the need request messages where possible, reduces message parsing overhead for both the client and server.</t>
+<li><t>Performance, reducing the number of required request and response messages, improves the performnce of both client and server, less messages have to be created, marshalled, transmitted and parsed.</t>
 </li>
 </ul>
 </section>
@@ -306,11 +306,12 @@ scenario's, it also complicates matters.
 </section>
 
 <section anchor="error-handling"><name>Error Handling</name>
-<t>Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. All endpoints described in <xref target="command-mapping"></xref> MUST return the specified HTTP status for successful requests when the EPP result code indicates as positive completion (1xxx) of the EPP command.</t>
-<t>When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. <xref target="tbl-error-mapping"></xref> contains the mapping for EPP result codes to a HTTP status codes.</t>
+<t>
+Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. The endpoints described in <xref target="command-mapping"></xref> MUST return the specified HTTP status for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.</t>
+<t>When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. <xref target="tbl-error-mapping"></xref> contains the mapping for EPP result codes to HTTP status codes.</t>
 <t>The client MAY use the well defined HTTP status codes for error handling logic, without having to first parse the EPP result mesage.</t>
-<t>For example, a client sending an Object Tranfer request when the Object is already linked to an active transfer process, this will cause the server to respond using an EPP result code 2106 this code maps to HTTP status code 400. The client MAY use the HTTP status code alone to determine that the EPP command failed and only parse the result when additional information from the response is required for handling the error.</t>
-<table anchor="tbl-error-mapping"><name>Mapping EPP codes to HTTP codes
+<t>For example, a client sending an Object Tranfer request when the Object is already linked to an active transfer process, this will cause the server to respond using an EPP result code 2106 this code maps to HTTP status code 400. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response is required for handling the error.</t>
+<table anchor="tbl-error-mapping"><name>EPP code to HTTP code mapping
 </name>
 <thead>
 <tr>
@@ -327,37 +328,37 @@ scenario's, it also complicates matters.
 
 <tr>
 <td>2001</td>
-<td></td>
+<td>400</td>
 </tr>
 
 <tr>
 <td>2002</td>
-<td></td>
+<td>405</td>
 </tr>
 
 <tr>
 <td>2003</td>
-<td></td>
+<td>400</td>
 </tr>
 
 <tr>
 <td>2004</td>
-<td></td>
+<td>400</td>
 </tr>
 
 <tr>
 <td>2005</td>
-<td></td>
+<td>400</td>
 </tr>
 
 <tr>
 <td>2100</td>
-<td></td>
+<td>400</td>
 </tr>
 
 <tr>
 <td>2101</td>
-<td></td>
+<td>501</td>
 </tr>
 
 <tr>
@@ -384,6 +385,81 @@ scenario's, it also complicates matters.
 <td>2106</td>
 <td>400</td>
 </tr>
+
+<tr>
+<td>2201</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2202</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2300</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2301</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2302</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2303</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2304</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2305</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2306</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2307</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2308</td>
+<td></td>
+</tr>
+
+<tr>
+<td>2400</td>
+<td>500</td>
+</tr>
+
+<tr>
+<td>2500</td>
+<td>500</td>
+</tr>
+
+<tr>
+<td>2501</td>
+<td>401</td>
+</tr>
+
+<tr>
+<td>2502</td>
+<td>429</td>
+</tr>
 </tbody>
 </table><t>TODO: complete the table</t>
 
@@ -392,10 +468,7 @@ scenario's, it also complicates matters.
 the EPP protocol.  The HTTP header &quot;REPP-eppcode&quot; MAY be used
 to add EPP result information to the HTTP layer.</t>
 </li>
-<li><t><tt>HTTP status code</tt>:  MUST only return status information related to the
-HTTP protocol, When there is a mismatch between the object
-identifier in the HTTP message body and the resource URL HTTP
-status code 412 MUST be returned.</t>
+<li><t><tt>HTTP status code</tt>:  MUST only return status information related to the HTTP protocol</t>
 </li>
 </ul>
 </section>
@@ -427,7 +500,8 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <th>Command</th>
 <th>Method</th>
 <th>Resource</th>
-<th>Request message</th>
+<th>Req message</th>
+<th>Resp message</th>
 </tr>
 </thead>
 
@@ -437,6 +511,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>OPTIONS</td>
 <td>/</td>
 <td>No</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -444,6 +519,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>N/A</td>
 <td>N/A</td>
 <td>N/A</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -451,6 +527,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>N/A</td>
 <td>N/A</td>
 <td>N/A</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -458,6 +535,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>HEAD</td>
 <td>/{c}/{i}</td>
 <td>No</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -465,6 +543,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>GET/POST</td>
 <td>/{c}/{i}</td>
 <td>Optional</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -472,6 +551,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>GET</td>
 <td>/messages</td>
 <td>No</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -479,6 +559,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>DELETE</td>
 <td>/messages/{i}</td>
 <td>No</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -486,6 +567,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>POST</td>
 <td>/{c}</td>
 <td>Yes</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -493,6 +575,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>DELETE</td>
 <td>/{c}/{i}</td>
 <td>No</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -500,6 +583,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>POST</td>
 <td>/{c}/{i}/renewals</td>
 <td>Yes</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -507,6 +591,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>POST</td>
 <td>/{c}/{i}/transfers</td>
 <td>Optional</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -514,6 +599,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>GET/POST</td>
 <td>/{c}/{i}/transfers/latest</td>
 <td>Optional</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -521,6 +607,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>DELETE</td>
 <td>/{c}/{i}/transfers/latest</td>
 <td>Optional</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -528,6 +615,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>PUT</td>
 <td>/{c}/{i}/transfers/latest</td>
 <td>Optional</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -535,6 +623,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>DELETE</td>
 <td>/{c}/{i}/transfers/latest</td>
 <td>Optional</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -542,6 +631,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>PUT</td>
 <td>/{c}/{i}</td>
 <td>Yes</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -549,6 +639,7 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>*</td>
 <td>/{c}/{i}/extension/*</td>
 <td>*</td>
+<td>TODO</td>
 </tr>
 
 <tr>
@@ -556,10 +647,12 @@ provide details for each request. Resource URLs in the table are assumed to be u
 <td>*</td>
 <td>/extension/*</td>
 <td>*</td>
+<td>TODO</td>
 </tr>
 </tbody>
 </table><t>[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2]</t>
 <t>[2] This mapping is used for protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1]</t>
+<t>When there is a mismatch between the resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the servr MUST return HTTP status code 400 (Bad Request).</t>
 
 <section anchor="hello"><name>Hello</name>
 
@@ -1424,7 +1517,8 @@ S:</epp>
 </section>
 
 <section anchor="transport-considerations"><name>Transport Considerations</name>
-<t></t>
+<t>
+  </t>
 <t><xref target="RFC5730" sectionFormat="of" section="2.1"></xref> of the EPP protocol specification
 describes considerations to be addressed by a protocol transport
 mapping. This section addresses each of the considerations using a
