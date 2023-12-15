@@ -38,16 +38,13 @@ organization = "SIDN Labs"
 .# Abstract
 
 This document describes RESTful EPP (REPP), a REST based Application Programming Interface (API) 
-for the Extensible Provisioning Protocol [@!RFC5730]. 
-REPP enables the development a stateless and scaleable EPP service.
+for the Extensible Provisioning Protocol [@!RFC5730]. REPP enables the development a stateless and scaleable EPP service.
 
-This document includes a mapping of [@!RFC5730] XML EPP commands to a RESTful HTTP based
-interface. Existing semantics and mappings as defined in [@!RFC5731],
-[@!RFC5732] and [@!RFC5733] are largely retained and reusable in RESTful EPP. 
+This document includes a mapping of [@!RFC5730] XML EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in [@!RFC5731], [@!RFC5732] and [@!RFC5733] are retained and reused in RESTful EPP. 
 
-REPP uses agent-driven content negotiation for supporting multiple presentations, such as XML and JSON.
+The client uses agent-driven content negotiation, allowing the client select from the set of representation types supported by the server, such as XML or JSON.
 
-A server implementing REPP does not maintain client or process state, allowing for scalable EPP services
+A REPP server does not maintain any client or process state, allowing for scalable EPP services
 by enabling load balancing at the request level instead of the session level as described in [@!RFC5734].
 
 {mainmatter}
@@ -146,11 +143,10 @@ This section lists the main design criteria.
 - Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
   load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. During normal registry operations, the bulk of EPP requests canb be expected to be of the informational type, load balancing and possibly seperating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.   
 
-- Stateless, [@!RFC5734] requires a stateful session between a client and the  
-  EPP server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Every client request needs to provide all of the information necessary for the server to successfully process the request.
+- Stateless, [@!RFC57340] REQUIRES a stateful session between a client and server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Each client request needs to provide all of the information necessary for the server to successfully process the request.
 
 - Security, allow for the use of authentication and authorization solutions available 
-  for HTTP based applications.  
+  for HTTP based applications. HTTP provides an Authorization header [@!RFC2616, section 14.8].
 
 - Content negotiation, A server may choose to include support for multiple media types.
   The client must be able to signal the server what media type the should use for decoding request content en for encoding response content.
@@ -159,7 +155,7 @@ This section lists the main design criteria.
 - Compatibility with existing EPP commands and corresponding request and response messages.
 - Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of an request message should ne optional. If the EPP response message is limited to the EPP result code and transaction identifiers, sending a response message should be optional.
 
-- Performance, reducing the number of required request and response messages, improves the performnce of both client and server, less messages have to be created, marshalled, transmitted and parsed.
+- Performance, reducing the number of required request and response messages, improves the performance and bandwidth used for both client and server. Fewer messages have to be created, marshalled, transmitted and parsed.
 
 # EPP Extension Framework
 
@@ -270,15 +266,7 @@ The client MUST use these HTTP headers:
 - `Accept`: Used to indicate the media type the server MUST use for the representation, this MAY
            be a list of types and related weight factors, as described in [@!RFC2616, section 14.1]
 
-The server MUST use the `Content-Type` HTTP header to indicate the media type used for the representation in the response message body. The server MUST return HTTP status code 406 (Not Acceptable) or 415 (Unsupported Media Type) when the client requests an unsupported media type.
-
-## EPP content
-
-<!--TODO ISSUE 4: also include authentication header here? -->
-In contrast to EPP over TCP [@!RFC5734], REPP does not always require a EPP request message to be sent to the server. The information conveyed by HTTP method, URL and request headers is, for some use cases, sufficient for the server to be able to successfully proceses the request. The `Object Info` request for example, does not require an EPP message.
-
-When an EPP request does require an EPP request message, the client MUST use the HTTP POST or PUT method and
-add the EPP request message content to the HTTP message body.
+The client MUST synchronize the value for the Content-Type and Accept headers, for example a client MUST NOT send an XML formatted request message to the server, while at the same time requesting a JSON formatted response message. The server MUST use the `Content-Type` HTTP header to indicate the media type used for the representation in the response message body. The server MUST return HTTP status code 406 (Not Acceptable) or 415 (Unsupported Media Type) when the client requests an unsupported media type.
 
 ## Request
 
@@ -309,11 +297,12 @@ the "REPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `Connection`:  <!--TODO ISSUE 11: How to handle connections -->   
 
+  <!--TODO ISSUE 4: also include authentication header here? -->
+In contrast to EPP over TCP [@!RFC5734], REPP does not always require a EPP request message. The information conveyed by HTTP method, URL and request headers is, for some use cases, sufficient for the server to be able to successfully proceses the request. The `Object Info` request for example, does not require an EPP message.
+
 ## Response
 
-The server response contains an HTTP status code, HTTP headers and MAY contain an EPP response message in the HTTP message body.
-HTTP response-headers are used to transmit additional response data to the client. All HTTP headers used by REPP MUST use the "REPP-"
-prefix.
+The server HTTP response contains a status code, headers and MAY contain an EPP response message in the message body. HTTP headers are used to transmit additional data to the client. HTTP headers used by REPP MUST use the "REPP-" prefix. Every REPP endpoint in 
 
 - `REPP-svtrid`:  This header is the equivalent of the <svTRID> element
   defined in [@!RFC5730] and MUST be used accordingly when the REPP response
@@ -327,8 +316,7 @@ prefix.
   be consistent.
   
 - `REPP-eppcode`: This header is the equivalent of the result code defined 
-  in [@!RFC5730] and MUST be used accordingly. This header MUST only 
-  be used when an REPP response HTTP message body has no content.
+  in [@!RFC5730] and MUST be used accordingly. This header MUST be used when a response HTTP message body has no content, and MAY be used in all other situations to provide easy access to the EPP result code.
    <!-- do we keep REPP-eppcode? yes but only for responses with empty message body issue #20 -->
 
 - `REPP-check-avail`: An alternative for the "avail"
@@ -344,15 +332,17 @@ prefix.
    <!--TODO ISSUE 10: How to handle caching -->   
 
 - `Connection`:  .... <!--TODO ISSUE 11: How to handle connections -->   
-     
+
+REPP does not always return an EPP response message in the HTTP message body. The `Object Check` request for example, does not require the server to return an EPP response message. When the server does not return a EPP message, it MUST return at least the REPP-svtrid, REPP-cltrid and REPP-eppcode headers.
+
 ## Error Handling
 
   <!--TODO: ISSUE #35: Mapping EPP code to HTTP status codes -->
-Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. The endpoints described in (#command-mapping) MUST return the specified HTTP status for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.
+Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. The endpoints described in (#command-mapping) MUST return the specified HTTP status code for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.
 
-When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. (#tbl-error-mapping) contains the mapping for EPP result codes to HTTP status codes.
+When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. An explanation of the error MUST be included in the message body of the HTTP response, as described in [@!RFC9110]. (#tbl-error-mapping) contains the mapping for EPP result codes to HTTP status codes.
 
-The client MAY use the well defined HTTP status codes for error handling logic, without having to first parse the EPP result mesage. 
+The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successful. The client MAY use the well defined HTTP status codes for error handling logic, without first having to parse the EPP result mesage. 
 
 For example, a client sending an Object Tranfer request when the Object is already linked to an active transfer process, this will cause the server to respond using an EPP result code 2106 this code maps to HTTP status code 400. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response is required for handling the error.
 
@@ -377,7 +367,7 @@ EPP result code    | HTTP status code
 2300               | 
 2301               | 
 2302               | 
-2303               | 
+2303               | 404
 2304               | 
 2305               | 
 2306               | 
@@ -391,61 +381,61 @@ Table: EPP code to HTTP code mapping
 
 TODO: complete the table
 
-<!-- 
-The HTTP status code that must be returned for an unsuccessful EPP request is not specified in this document, the full set of status code is defined in [@!RFC2616, section 10].
--->
 
-<!-- 
-The value of an EPP result code and HTTP status code MUST remain
-independent of each other. E.g. an EPP message containing a result code indicating an
-error in the EPP protocol layer, may be contained in the message body of a HTTP response using status code 200. A HTTP response using an error status code MAY not contain an EPP message body containing an EPP result code. 
--->
-- `EPP result code`: MUST only return EPP result information relating to
-  the EPP protocol.  The HTTP header "REPP-eppcode" MAY be used
-  to add EPP result information to the HTTP layer.
+<!--
+## This is alternative text, describing how HTTP status codes should be independent of EPP result codes
+Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. The endpoints described in (#command-mapping) MUST return the specified HTTP status for successful HTTP requests idependent of the EPP result code.
+
+The value of an EPP result code and HTTP status code MUST remain independent of each other. E.g. an EPP message containing a result code indicating an error in the EPP protocol layer (2xxx), may be contained in the message body of a HTTP response using status code 200 (Ok). A HTTP response using an error status code MAY not have a message body containing an EPP result message. 
+
+For example, a client sending an Object Tranfer request when the Object is already linked to an active transfer process, this will cause the server to respond using an EPP result code 2106 while the HTTP response contains a status code 200.
+
+The HTTP status code that must be returned for an unsuccessful HTTP request is not specified in this document, the full set of status code is defined in [@!RFC2616, section 10].
+
+
+- `EPP result code`: MUST only return EPP result information relating to the EPP protocol. The HTTP header "REPP-eppcode" MAY be used to include the EPP result code in the HTTP layer response.
   
-- `HTTP status code`:  MUST only return status information related to the HTTP protocol
-
+- `HTTP status code`: MUST only return status information related to the HTTP protocol
+-->
 
 # Command Mapping {#command-mapping}
 
 EPP commands are mapped to RESTful EPP transaction consisting out of three elements.
 
-1. A resource defined by a URL.
-2. The HTTP method to execute on the resource.
-3. The EPP request message, contained in the HTTP message body.
-
-For some EPP transactions a request message is optional or not supported.
+1. A resource defined by a URL
+2. The HTTP method to be used on the resource
+3. The EPP request message
+4. The EPP response message
 
 (#tbl-cmd-mapping) lists a mapping for each EPP command to REPP transaction, the subsequent sections
-provide details for each request. Resource URLs in the table are assumed to be using the prefix: "/{context-root}/{version}/".
+provide details for each request. Resource URLs in the table are assumed to be using the prefix: "/{context-root}/{version}/". For some EPP transactions the request and/or response message may not be used or has become optional, this is indicated by table columns "Request" and "response"
 
 - `{c}`:  An abbreviation for {collection}: this MUST be substituted with
   "domains", "hosts", "contacts" or any other collection of objects.
-
 - `{i}`:  An abbreviation for an object id, this MUST be substituted with the value of a domain name, hostname, contact-id or a message-id or any other defined object.
+- `N/A`: Not Applicable
 
 {#tbl-cmd-mapping}
-Command            | Method   | Resource                  | Req message | Resp message
+Command            | Method   | Resource                  | Request     | Response
 -------------------|----------|---------------------------|-------------|-----------------
-Hello              | OPTIONS  | /                         | No          | TODO
-Login              | N/A      | N/A                       | N/A         | TODO
-Logout             | N/A      | N/A                       | N/A         | TODO
-Check              | HEAD     | /{c}/{i}                  | No          | TODO
-Info               | GET/POST | /{c}/{i}                  | Optional    | TODO
-Poll Request       | GET      | /messages                 | No          | TODO
-Poll Ack           | DELETE   | /messages/{i}             | No          | TODO
-Create             | POST     | /{c}                      | Yes         | TODO
-Delete             | DELETE   | /{c}/{i}                  | No          | TODO
-Renew              | POST     | /{c}/{i}/renewals         | Yes         | TODO
-Transfer           | POST     | /{c}/{i}/transfers        | Optional    | TODO
-Transfer Query     | GET/POST | /{c}/{i}/transfers/latest | Optional    | TODO
-Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | Optional    | TODO
-Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | Optional    | TODO 
-Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | Optional    | TODO
-Update             | PUT      | /{c}/{i}                  | Yes         | TODO
-Extension [1]      | *        | /{c}/{i}/extension/*      | *           | TODO
-Extension [2]      | *        | /extension/*              | *           | TODO
+Hello              | OPTIONS  | /                         | No          | Yes
+Login              | N/A      | N/A                       | N/A         | N/A
+Logout             | N/A      | N/A                       | N/A         | N/A
+Check              | HEAD     | /{c}/{i}                  | No          | No
+Info               | GET/POST | /{c}/{i}                  | Optional    | Yes
+Poll Request       | GET      | /messages                 | No          | Yes
+Poll Ack           | DELETE   | /messages/{i}             | No          | Yes
+Create             | POST     | /{c}                      | Yes         | Yes
+Delete             | DELETE   | /{c}/{i}                  | No          | No
+Renew              | POST     | /{c}/{i}/renewals         | Yes         | Optional
+Transfer Request   | POST     | /{c}/{i}/transfers        | Optional    | Yes
+Transfer Query     | GET/POST | /{c}/{i}/transfers/latest | Optional    | Yes
+Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Yes
+Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | Optional    | Yes
+Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Yes
+Update             | PATCH    | /{c}/{i}                  | Yes         | Optional
+Extension [1]      | *        | /{c}/{i}/extension/*      | *           | *
+Extension [2]      | *        | /extension/*              | *           | *
 Table: Mapping of EPP Command to REPP Request
 
 [1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2] 
@@ -459,7 +449,7 @@ When there is a mismatch between the resource identifier in the HTTP message bod
 - Request: OPTIONS /{context-root}/{version}
 - Request payload: No
 - Response payload: Greeting response
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 The server MUST return a Greeting response, as defined in [@!RFC5730, section 2.4] in response 
 to request using the HTTP OPTIONS method on the root "/" resource.
@@ -500,14 +490,14 @@ S: </epp>
 
 ##  Login
 
-The Login command defined in [@!RFC5730] is used to configure a session and is part of the stateful nature of the EPP protocol. A REPP server is stateless and MUST not maintain any client state and MUST NOT support the Login command. The client MUST include all the information in a REPP request that is required for the server to be able to properly process the request, this includes the request attributes that are part of the Login command defined in [@!RFC5730, section 2.9.1.1].
+The Login command defined in [@!RFC5730] is used to configure a session and is part of the stateful nature of the EPP protocol. The REPP server is stateless and MUST not maintain any client state and MUST NOT support the Login command. The client MUST include all the information in a REPP request that is required for the server to be able to properly process the request. This includes the request attributes that are part of the Login command defined in [@!RFC5730, section 2.9.1.1].
 
   <!--TODO ISSUE #16: do we support changing password using /password  -->
 The request attributes from the [@!RFC5730] Login command are are moved to the HTTP layer.
 
 - `clID`: Replaced by HTTP authentication
 - `pw:`: Replaced by HTTP authentication
-- `newPW`: Replaced by HTTP authentication
+- `newPW`: Replaced by out of band process
 - `version`: Replaced by the `{version}` path segment in the request URL.
 - `lang`: Replaced by the `Accept-Language` HTTP header.
 - `svcs`: Replaced by the `REPP-svcs` HTTP header.
@@ -516,9 +506,9 @@ The server MUST check the namespaces used in the REPP-svcs HTTP header. An unsup
 
 ##  Logout
 
-The concept of a session no longer exists when using REPP, therefore the Logout command MUST not be implemented by the server.
+Due to the stateless nature of REPP, the session concept no longer exists and therefore the Logout command MUST not be implemented by the server.
 
-## Query Endpoints
+## Query Resources
 
    <!--TODO: ISSUE #9: How to handle authInfo data for INFO command (GET request)? -->
 Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semanticsfor content received in a GET request. 
@@ -530,7 +520,7 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 - Request: HEAD /{collection}/{id}
 - Request message: None
 - Response message: None
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 The server MUST support the HTTP HEAD method for the Check endoint, both client and server MUST not put any content to the HTTP message body. The response MUST contain the REPP-check-avail and MAY contain the REPP-check-reason header. The value of the REPP-check-avail header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not.
 
@@ -563,27 +553,22 @@ S: REPP-result-code: 1000
 
 ### Info
 
-An Info request MUST be performed using the HTTP GET or POST method on
-a resource identifying an object instance. The response MUST be a
-response message as described in object mapping of the EPP RFCs.
+An Info request MUST be performed using the HTTP GET method on a resource identifying an object instance. 
+An object MAY have authorization attachted to it, the client then MUST use the HTTP POST method and include the authorization information in the request.
 
-An object MAY have authorization attachted to it, forcing the client to include
-the authorization in the request. When the authorization needs to be included in the request
-the HTTP POST method MUST be used.
-
-A request for an object without authorization information.  
+A request for an object not using authorization information.  
 
 - Request: GET /{collection}/{id}
 - Request message: None
 - Response message: Info response
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 A request for an object that has authorization information attached.  
 
 - Request: POST /{collection}/{id}
 - Request message: Info request
 - Response message: Info response
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 #### Object Filtering
 
@@ -652,7 +637,7 @@ S:</epp>
 - Request: GET /messages
 - Request message: None
 - Response message: Poll response
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 The client MUST use the HTTP GET method on the messages resource collection to
 request the message at the head of the queue. The "op=req" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP GET method.
@@ -702,7 +687,7 @@ S:</epp>
 - Request: DELETE /messages/{id}
 - Request message: None
 - Response message: Poll ack response
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 The client MUST use the HTTP DELETE method on a message instance to to acknowledge receipt of a message of a message from the message queue. The "op=ack" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP DELETE method. The "msgID" from a received EPP message MUST be included in the message resource URL, using the {id} path element.
 
@@ -742,20 +727,20 @@ S:</epp>
 
 ### Transfer Query
 
-The Transfer Query request MUST use the special "latest" resource to refer to the
+The Transfer Query request MUST use the special "latest" sub-resource to refer to the
 latest object transfer, a latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST NOT add content to the HTTP message body when using the HTTP GET method.
 
 - Request: GET {collection}/{id}/transfers/latest
 - Request message: None
 - Response message: Transfer Query response
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 If the requested object has associated authorization information linked to a contact object, then the HTTP GET method MUST NOT be used and the HTTP POST method MUST be used and the authorization information MUST be included in the EPP request message inside the HTTP message body. 
 
 - Request: POST {collection}/{id}/transfers/latest
 - Request message: Transfer Query request
 - Response message: Transfer Query response.
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 Example domain name Transfer Query request:
 
@@ -837,16 +822,16 @@ S:  </response>
 S:</epp>
 ```
 
-## Transform Endpoints
+## Transform Resources
 
 ### Create
 
 - Request: POST /{collection}
 - Request message: Object Create request
 - Response message: Object Create response
-- HTTP success status code: 201 (CREATED)
+- HTTP status code success: 201 (CREATED)
 
-The client MUST use the HTTP POST method to create a new object resource.
+The client MUST use the HTTP POST method to create a new object resource. If the EPP request results in a newly created object, then the server MUST return HTTP status code 201 (Created).
 
 Example Domain Create request:
 
@@ -910,10 +895,10 @@ S:</epp>
 
 - Request: DELETE /{collection}/{id} 
 - Request message: None
-- Response message: object Delete response
-- HTTP success status code: 200 (OK)
+- Response message: None
+- HTTP status code success: 204 (No Content)
 
-The client MUST the HTTP DELETE method and a resource identifying a unique object instance.
+The client MUST the HTTP DELETE method and a resource identifying a unique object instance. This operation has no EPP request and response message and MUST return 204 (No Content) if the resources was deleted successfully.
 
 Example Domain Delete request:
 
@@ -936,20 +921,10 @@ S: Server: Acme REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 505
 S: Content-Type: application/epp+xml
+S: REPP-svtrid: XYZ-12345
+S: REPP-cltrid: ABC-12345
+S: REPP-eppcode: 1000
 
-S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
-S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-S:   <response>
-S:      <result code="1000">
-S:         <msg>Command completed successfully</msg>
-S:      </result>
-S:      <trID>
-S:         <clTRID>ABC-12345</clTRID>
-S:         <svTRID>XYZ-12345</svTRID>
-S:       </trID>
-S:   </response>
-S:</epp>
 ```
 
 ### Renew
@@ -957,11 +932,10 @@ S:</epp>
 - Request: POST /{collection}/{id}/renewals
 - Request message: object Renew request
 - Response message: object Renew response
-- HTTP success status code: 201 (CREATED)
+- HTTP status code success: 201 (CREATED)
 
 The EPP Renew command is mapped to a nested resource, named "renewals".
-Not all EPP object types include support for the renew command, the server MUST return HTTP status code 404 (Not Found) when the client
-send a Renew request for an unsupported object type.
+Not all EPP object types include support for the renew command. If the EPP request results in a renewal of the object, then the server MUST return HTTP status code 201 (Created).
 
 Example Domain Renew request:
 
@@ -999,6 +973,7 @@ S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Acme REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 505
+S: Location: https://repp.example.nl/repp/v1/domains/example.nl
 S: Content-Type: application/epp+xml
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -1025,17 +1000,18 @@ Transferring an object from one sponsoring client to another is specified in [@!
 The semantics of the HTTP DELETE method are determined by the role of the client executing the method. For the current sponsoring
 client of the object, the DELETE method is defined as "reject transfer". For the new sponsoring client the DELETE method is defined as "cancel transfer".
 
-#### Create
+#### Request
 
 - Request: POST /{collection}/{id}/transfers
 - Request payload: Optional Transfer request
 - Response message: Transfer response.
-- HTTP success status code: 201 (CREATED)
+- HTTP status code success: 201 (CREATED)
 
-To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource, not all EPP include support for the Transfer command as described in [@!RFC5730, section 3.2.4], [@!RFC5731, section 3.2.4] and [@!RFC5733, section 3.2.4]. If the server does not require authorization
-information associated with a contact object, then the client MAY choose to send an empty HTTP message body.
+To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource, not all EPP objcts include support for the Transfer command as described in [@!RFC5730, section 3.2.4], [@!RFC5731, section 3.2.4] and [@!RFC5733, section 3.2.4].
 
-Example Create request wiithout using object authorization:
+If the EPP request is successful, then the server MUST return HTTP status code 201 (Created). The client MAY choose to send an empty HTTP message body when the object is not linked to authorization information associated with a contact object. The server MUST also include the Location header in the HTTP response.
+
+Example Create request not using using object authorization:
 
 ```
 C: POST /repp/v1/domains/example.nl/transfers HTTP/2
@@ -1097,6 +1073,7 @@ S: Server: Acme REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 328
 S: Content-Type: application/epp+xml
+S: Location: https://repp.example.nl/repp/v1/domains/example.nl/transfers/latest
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
@@ -1121,7 +1098,7 @@ S:</epp>
 - Request: DELETE /{collection}/{id}/transfers/latest
 - Request message: Optional Transfer Reject request
 - Response message: Transfer cancel response message.
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 The semantics of the HTTP DELETE method are determined by the role of
 the client sending the request. For the new sponsoring client the DELETE method is defined as "cancel transfer".
@@ -1152,7 +1129,7 @@ TODO
 - Request: DELETE /{collection}/{id}/transfers/latest
 - Request message:  Optional Transfer Reject request
 - Response message: Transfer response
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 The semantics of the HTTP DELETE method are determined by the role of
 the client sending the request. For the current sponsoring
@@ -1184,7 +1161,7 @@ TODO
 - Request: PUT /{collection}/{id}/transfers/latest
 - Request message: Optional Transfer Approve request
 - Response message: Transfer response.
-- HTTP success status code: 200 (OK)
+- HTTP status code success: 200 (OK)
 
 The current sponsoring client MUST use the HTTP PUT method to approve
 a transfer requested by the new sponsoring client.
@@ -1209,18 +1186,17 @@ TODO
 
 ### Update
 
-- Request: PUT /{collection}/{id}
-- Request message: Object:update.
-- Response message: Update response message
-- HTTP success status code: 200 (OK)
+- Request: PATCH /{collection}/{id}
+- Request message: Object Update message
+- Response message: Optional Update response message
+- HTTP status code success: 200 (OK)
 
-An object Update request MUST be performed with the HTTP PUT method
-on a unique object resource. The payload MUST contain an Update request as described in the EPP RFCs.
+An object Update request MUST be performed with the HTTP PATCH method on a unique object resource. The payload MUST contain an Update request as described in the EPP RFCs.
 
 Example Update request:
 
 ```xml
-C: POST /repp/v1/domains/example.nl/transfers HTTP/2
+C: PATCH /repp/v1/domains/example.nl HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
@@ -1268,12 +1244,26 @@ S:  </response>
 S:</epp>
 ```
 
+Example Update response, without EPP response in message body:
+
+```
+S: HTTP/2 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Acme REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 0
+S: REPP-svtrid: XYZ-12345
+S: REPP-cltrid: ABC-12345
+S: REPP-eppcode: 1000
+
+```
+
 ## Extensions
 
 - Request: * /extensions/*
 - Request message: *
 - Response message: *
-- HTTP success status code: *
+- HTTP status code success: *
 
 EPP protocol extensions, as defined in [@!RFC5730, secion 2.7.3] are supported using the generic "/extensions" resource.
 The HTTP method used for a extension is not defined but must follow the RESTful principles.
@@ -1316,36 +1306,32 @@ S:</epp>
 ```
 
 
-# Transport Considerations
+# Transport Mapping Considerations
 
   <!--TODO ISSUE #2: not all considerations are met by repp? -->
   <!--TODO ISSUE #36: create update for this section in rfc5730 -->
 
-[@!RFC5730, section 2.1] of the EPP protocol specification 
-describes considerations to be addressed by a protocol transport
-mapping. This section addresses each of the considerations using a
-combination of REPP features and features provided by HTTP as follows:
+[@!RFC5730, section 2.1] of the EPP protocol specification describes considerations to be addressed by a protocol transport mapping. This section updates the following consideration.
 
-- When using load balancing to distribute requests over multiple stateless REPP servers
-  the return order of the results cannot be guaranteed. Therefore the client is responsible
-  for sending results in the correct order, and may have to wait
-  for a server response for a previous request, if a request depends on the 
-  response of a previous request.
+"The transport mapping MUST preserve the stateful nature of the protocol" is updated to:
+"The transport mapping MAY preserve the stateful nature of the protocol."
 
-- Sessions are delegated to the HTTP layer, which uses the client-server paradigm.
-  HTTP is an application layer protocol which uses TCP as a
-  transport protocol. TCP includes features to provide reliability,
+REPP uses the REST architectural style for defining a stateless API based on the stateless HTTP protocol. The server MUST not keep any client state, only the state of resources MUST be maintained. 
+
+<!-- 
+### We do  need to list all the considerations here and describe how they are handled in REPP? this should be clear from the rest of this document?
+
+- `The transport mapping MUST preserve command order`: The ordering of request sent by the client is not changed in any way. Then client may have to wait for a response to a previous request, when a request depends on the response of a previous request.
+
+- `The transport mapping MUST address the relationship between sessions and the client-server connection concept.`: HTTP uses the client-server paradigm, and is an application layer protocol which uses TCP as a transport protocol. TCP includes features to provide reliability,
   flow control, ordered delivery, and congestion control
   [@!RFC793, section 1.5] describes these features in detail; congestion
   control principles are described further in [@!RFC2581] and [@!RFC2914].
   HTTP is a stateless protocol and as such it does not maintain any
   client state.
 
--  The stateful nature of EPP is no longer preserved through EPP managed
-   sessions. Session management is delegated to the stateless HTTP layer.
-   EPP session related information, such as authentication credentials
-   MUST be included in every HTTP request. This is required 
-   for the server to be able to process the request successfully.
+- `The transport mapping MUST frame data units`: HTTP uses TCP as a transport protocol. TCP includes features for frame data units.
+
 
 -  HTTP 1.1 allows persistent connections which can be used to send
    multiple HTTP requests to the server using the same connection.
@@ -1364,7 +1350,7 @@ combination of REPP features and features provided by HTTP as follows:
 - Due to the stateless nature of a REPP service, errors while processing a EPP command or
   other errors are isolated to a single request. The Error  status MUST be communicated to the
   client using the appropriate HTTP status codes.
-
+-->
 
 # IANA Considerations
 
@@ -1377,6 +1363,8 @@ TODO: any?
 Accept-Language in HTTP Header
 
 # Security Considerations
+
+HTTP Basic Authentication with an API Key is used by many APIs, this is a simple and effective authentication mechanism.
 
   <!--TODO ISSUE 12: expand security section -->    
 
@@ -1404,14 +1392,16 @@ apply to REPP.
 TODO: check list of RFC5730 codes and see which ones are not used anymore.
 
 The following result codes specified in [@!RFC5730] are no longer
-meaningful in RESTful EPP and MUST NOT be used.
+meaningful in the context of RESTful EPP and MUST NOT be used.
 
 | Code | Reason                                                     
 ------|------------------------------------------------------------
-| 1500 | The logout command is not used anymore.                    
-| 2100 | The REPP URL already includes the version.     
-| 2002 | Commands can now be sent in any order. TODO: is order guaranteed?                                                               
-| 2200 | The login command is not used anymore.                     
+| 1500 | Authentication functionality is delegated to the HTTP protocol layer                
+| 2100 | The REPP URL includes a path segment for the version
+| 2200 | Authentication functionality is delegated to the HTTP protocol layer           
+| 2501 | Authentication functionality is delegated to the HTTP protocol layer 
+| 2502 | Rate limiting functionality is delegated to the HTTP protocol layer    
+          
 Table: Obsolete EPP result codes
 
 # Acknowledgments

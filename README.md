@@ -16,7 +16,9 @@ For generated output see:
 
 ## REST
 
-For more information about [REST API Design](https://restfulapi.net/)
+For more information about designing a good REST API, see:
+- [RESTful web API design](https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design)
+- [REST API Design](https://restfulapi.net/)
 
 ## Contributing
 
