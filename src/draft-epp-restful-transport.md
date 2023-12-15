@@ -143,7 +143,7 @@ This section lists the main design criteria.
 - Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
   load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. During normal registry operations, the bulk of EPP requests canb be expected to be of the informational type, load balancing and possibly seperating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.   
 
-- Stateless, [@!RFC57340] REQUIRES a stateful session between a client and server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Each client request needs to provide all of the information necessary for the server to successfully process the request.
+- Stateless, [@!RFC5730] REQUIRES a stateful session between a client and server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Each client request needs to provide all of the information necessary for the server to successfully process the request.
 
 - Security, allow for the use of authentication and authorization solutions available 
   for HTTP based applications. HTTP provides an Authorization header [@!RFC2616, section 14.8].
@@ -326,9 +326,10 @@ The server HTTP response contains a status code, headers and MAY contain an EPP 
 - `REPP-check-reason`: An optional alternative for the "object:reason"
   element in an Object Check response and MUST be used accordingly.
 
-- `Cache-Control`:  ...  TBD: the idea is to prohibit
-  caching.  Even though it will probably work and be useful in some
-  scenario's, it also complicates matters.
+- `REPP-Queue-Size`: Return the number of messages in the qeueue waiting to being retrived by the client.
+    <!--TODO ISSUE 40: return queue size for all results-->   
+
+- `Cache-Control`:  ...  TBD: the idea is to prohibit caching.  Even though it will probably work and be useful in some scenario's, it also complicates matters.
    <!--TODO ISSUE 10: How to handle caching -->   
 
 - `Connection`:  .... <!--TODO ISSUE 11: How to handle connections -->   
