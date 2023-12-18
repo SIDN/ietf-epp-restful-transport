@@ -1823,13 +1823,14 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    -  Request: DELETE /{collection}/{id}/transfers/latest
    -  Request message: Optional Transfer Reject request
    -  Response message: Transfer cancel response message.
-   -  OK status code: 200 (OK)
+   -  OK status code: 204 (No Content)
 
    The new sponsoring client MUST use the HTTP DELETE method to cancel a
    requested transfer.  The semantics of the HTTP DELETE method are
    determined by the role of the client sending the request.  The server
    MAY return an empty message body when the transfer was cancelled
-   without an error.
+   without an error.  The server MUST return 204 (No Content) if the
+   transfer resource was deleted successfully.
 
    Example request:
 
@@ -1841,7 +1842,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    C: REPP-cltrid: ABC-12345
 
    Example response:
-
 
 
 
@@ -1863,13 +1863,14 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    -  Request: DELETE /{collection}/{id}/transfers/latest
    -  Request message: Optional Transfer Reject request
    -  Response message: Transfer response
-   -  OK status code: 200 (OK)
+   -  OK status code: 204 (No Content)
 
    The semantics of the HTTP DELETE method are determined by the role of
    the client sending the request.  For the current sponsoring client of
    the object, the DELETE method is defined as "reject transfer".  The
    server MAY return an empty message body when the transfer was
-   rejected without an error.
+   rejected without an error.  The server MUST return 204 (No Content)
+   if the transfer resource was deleted successfully.
 
    Example request:
 
@@ -1900,7 +1901,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
 
 
-
 Wullink & Davids          Expires 20 June 2024                 [Page 34]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
@@ -1923,7 +1923,7 @@ Internet-Draft          RESTful Transport for EPP          December 2023
 
    Example Approve response:
 
-   S: HTTP/2 204 OK
+   S: HTTP/2 200 OK
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 0

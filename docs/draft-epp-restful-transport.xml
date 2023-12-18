@@ -1262,10 +1262,10 @@ S:</epp>
 <li>Request: DELETE /{collection}/{id}/transfers/latest</li>
 <li>Request message: Optional Transfer Reject request</li>
 <li>Response message: Transfer cancel response message.</li>
-<li>OK status code: 200 (OK)</li>
+<li>OK status code: 204 (No Content)</li>
 </ul>
 <t>The new sponsoring client MUST use the HTTP DELETE method to cancel a
-requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request. The server MAY return an empty message body when the transfer was cancelled without an error.</t>
+requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request. The server MAY return an empty message body when the transfer was cancelled without an error. The server MUST return 204 (No Content) if the transfer resource was deleted successfully.</t>
 <t>Example request:</t>
 
 <artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -1297,9 +1297,9 @@ S: REPP-eppcode: 1000
 <li>Request: DELETE /{collection}/{id}/transfers/latest</li>
 <li>Request message:  Optional Transfer Reject request</li>
 <li>Response message: Transfer response</li>
-<li>OK status code: 200 (OK)</li>
+<li>OK status code: 204 (No Content)</li>
 </ul>
-<t>The semantics of the HTTP DELETE method are determined by the role of the client sending the request. For the current sponsoring client of the object, the DELETE method is defined as &quot;reject transfer&quot;. The server MAY return an empty message body when the transfer was rejected without an error.</t>
+<t>The semantics of the HTTP DELETE method are determined by the role of the client sending the request. For the current sponsoring client of the object, the DELETE method is defined as &quot;reject transfer&quot;. The server MAY return an empty message body when the transfer was rejected without an error. The server MUST return 204 (No Content) if the transfer resource was deleted successfully.</t>
 <t>Example request:</t>
 
 <artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -1348,7 +1348,7 @@ C: Content-Length: 0
 </artwork>
 <t>Example Approve response:</t>
 
-<artwork><![CDATA[S: HTTP/2 204 OK
+<artwork><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
