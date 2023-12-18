@@ -3,10 +3,14 @@ info:
   title: RESTful EPP
   version: '1.0'
 servers:
-  - url: https://api.server.test/v1
+  - url: https://api.example.nl/repp/v1/
 paths:
-  /test:
+  /domains/{id}:
     get:
+      parameters:
+      - name: id
+        in: path
+        required: true
       responses:
-        '200':
-          description: OK
+          '200':
+            description: OK

@@ -37,96 +37,62 @@ organization = "SIDN Labs"
 
 .# Abstract
 
-This document describes RESTful EPP (REPP), a REST based Application Programming Interface (API) 
-for the Extensible Provisioning Protocol [@!RFC5730]. REPP enables the development a stateless and scaleable EPP service.
+This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol [@!RFC5730]. REPP enables the development a stateless and scaleable EPP service.
 
 This document includes a mapping of [@!RFC5730] XML EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in [@!RFC5731], [@!RFC5732] and [@!RFC5733] are retained and reused in RESTful EPP. 
 
-The client uses agent-driven content negotiation, allowing the client select from the set of representation types supported by the server, such as XML or JSON.
-
-A REPP server does not maintain any client or process state, allowing for scalable EPP services
-by enabling load balancing at the request level instead of the session level as described in [@!RFC5734].
+The stateless REPP server does not maintain any client or application state, allowing for scalable EPP services and enabling load balancing at the request level instead of the session level as described in [@!RFC5734].
 
 {mainmatter}
 
 # Introduction
 
-This document describes a transport protocol for EPP, based on the [@!REST] architectural style.
-This transport machanism leverages the HTTP protocol [@!RFC2616] and the principles of [@!REST].
-Conforming to the REST constraints is generally referred to as being "RESTful".
-Hence we dubbed the new transport protocol: "'RESTful transport for EPP" or "REPP"
-for short.
+This document describes an Application Programming Interface (API) for the Extensible Provisioning Protocol (EPP) protocol described in [@!RFC5730]. The API leverages the HTTP protocol [@!RFC2616] and the principles of [@!REST]. Conforming to the REST constraints is generally referred to as being "RESTful". Hence we dubbed the API: "'RESTful EPP" or "REPP" for short.
 
-This new REST based transport includes a mapping of
-[@!RFC5730] EPP commands to resources based on Uniform Resource Locators [@!RFC1738].
-REPP, in contrast to the EPP specification, is stateless. It aims to provide a
-mechanism that is more suitable for complex, high availability environments, 
-as well as for environments where TCP connections can be unreliable.
+REPP includes a mapping of [@!RFC5730] EPP commands to REST resources based on Uniform Resource Locators (URLs) defined in [@!RFC1738]. REPP uses a stateless architecture. It aims to provide a solution that is more suitable for complex, high availability environments.
 
-RFC 5730 [@!RFC5730] Section 2.1 describes that EPP can be layered over
-multiple transport protocols.  Currently, the EPP transport over TCP
-[@!RFC5734] is the only widely deployed transport mapping for EPP.
-This same section defines that newly defined transport mappings must
-preserve the stateful nature of EPP.
+[@!RFC5730, Section 2.1] describes how EPP can be layered over multiple transport protocols. Currently, EPP transport over TCP [@!RFC5734] is the only widely deployed transport mapping for EPP. [@!RFC5730, Section 2.1] requires that newly defined transport mappings preserve the stateful nature of EPP. This document updates this requirement to also allow stateless for EPP transport.
 
-The stateless nature of REPP requires that no session state is maintained on the EPP server.
-Each client request to the server contains all the information necessary
-for the server to process the request.
+The stateless nature of REPP requires that no client or application state is maintained on the server. Each client request to the server must contain all the information necessary for the server to process the request.
 
-A good understanding of the EPP base protocol specification [@!RFC5730]
-is advised, to grasp the command mapping described in this
-document.
+REPP is data format agnostic, the client uses agent-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as XML and JSON.
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in [@!RFC2119].
+A good understanding of the EPP base protocol specification [@!RFC5730] is advised, to grasp the command mapping described in this document.
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [@!RFC2119].
 
 # Terminology
 
 In this document the following terminology is used.
 
-REST - Representational State Transfer ([@!REST]). An architectural
-style.
+REST - Representational State Transfer ([@!REST]). An architectural style.
 
-RESTful - A RESTful web service is a web service or API implemented using
-HTTP and the principles of [@!REST].
+RESTful - A RESTful web service is a web service or API implemented using HTTP and the principles of [@!REST].
 
-EPP RFCs - This is a reference to the EPP version 1.0
-specifications [@!RFC5730], [@!RFC5731], [@!RFC5732] and [@!RFC5733].
+EPP RFCs - This is a reference to the EPP version 1.0 specifications [@!RFC5730], [@!RFC5731], [@!RFC5732] and [@!RFC5733].
 
 Stateful EPP - The definition according to [@!RFC5730, section 2].
 
-RESTful EPP or REPP - The RESTful transport for EPP described in
-this document.
+RESTful EPP or REPP - The RESTful transport for EPP described in this document.
 
 URL - A Uniform Resource Locator as defined in [@!RFC3986].
 
-Resource - A network data object or service that can be identified
-by a URL.
+Resource - An object having a type, data and possible relationship to other resources, identified by a URL.
 
-Command Mapping - A mapping of [@!RFC5730] EPP commands to
-RESTful EPP URL resources.
+Command Mapping - A mapping of [@!RFC5730] EPP commands to RESTful EPP URL resources.
 
 REPP client - An HTTP user agent performing an REPP request 
 
-REPP server - An HTTP server resposible for processing requests and returning
-results in any supported media type.
+REPP server - An HTTP server resposible for processing requests and returning results in any supported media type.
 
 
 # Conventions Used in This Document
 
-XML is case sensitive. Unless stated otherwise, XML specifications
-and examples provided in this document MUST be interpreted in the
-character case presented to develop a conforming implementation.
+XML is case sensitive. Unless stated otherwise, XML specifications and examples provided in this document MUST be interpreted in the character case presented to develop a conforming implementation.
 
-The examples in this document assume that request and response messages
-are properly formatted XML documents.  
+The examples in this document assume that request and response messages are properly formatted XML documents.  
 
-In examples, lines starting with "C:" represent data sent by a
-REPP client and lines starting with "S:" represent data returned
-by a REPP server. Indentation and white space in examples
-are provided only to illustrate element relationships and are not
-REQUIRED features of the protocol.
+In examples, lines starting with "C:" represent data sent by a REPP client and lines starting with "S:" represent data returned by a REPP server. Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.
 
 
 # Design Considerations
@@ -135,10 +101,7 @@ RESTful transport for EPP (REPP) is designed to improve the ease of design, deve
 of an EPP service, while maintaining compatibility with the existing EPP RFCs.
 This section lists the main design criteria.
 
-- Provide a clear, clean, easy to use and self-explanatory
-  interface that can easily be integrated into existing software
-  systems. On the basis of these principles a [REST] architectural
-  style was chosen, where a client interacts with a REPP server via HTTP.
+- Provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. On the basis of these principles a [REST] architectural style was chosen, where a client  interacts with a REPP server via HTTP.
 
 - Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
   load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. During normal registry operations, the bulk of EPP requests canb be expected to be of the informational type, load balancing and possibly seperating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.   
@@ -164,60 +127,39 @@ EPP functionality by adding new features at the protocol, object and command-res
 This section describes the impact of REPP on each of the extension levels:
 
 - Protocol Extension: REPP does not define any new high level protocol elements.
-  The (#command-mapping) section describes an extension 
-  resource for use with existing and future command extensions.
+  The (#command-mapping) section describes an extension resource for use with existing and future command extensions.
 
-- Object extension: REPP does not use the "command"
-  concept, because the "command" concept is part of a RPC style and
-  not of the REST style. A REST URL resource and HTTP method combination have
-  replaced the command concept. The (#command-mapping) section describes a command extension 
-  resource for each object type and can be used for existing and future command extensions. 
-  REPP does not define any new object level extensions.
-  All existing and future object level EPP extensions can be used.
+- Object extension: REPP does not use the "command" concept, because the "command" concept is part of a RPC style and not of the REST style. A REST URL resource and HTTP method combination have replaced the command concept. The (#command-mapping) section describes a command extension resource for each object type and can be used for existing and future command extensions. REPP does not define any new object level extensions. All existing and future object level EPP extensions MAY be used.
 
 - Command-Response extension: 
   RESTful EPP reuses the existing request and response messages defined in the EPP RFCs. 
 
 # Resource Naming Convention
 
-A REPP resource can be a single unique object identifier e.g. a domain
-name, or consist out of a collection of objects.
-A collection of objects available for registry operations MUST be identified by: `/{context-root}/{version}/{collection}` 
+A REPP resource can be a single unique object identifier e.g. a domain name, or consist out of a collection of objects. A collection of objects available for registry operations MUST be identified by: `/{context-root}/{version}/{collection}` 
 
-- `{context-root}` is the base URL which MUST be specified by each
-  registry. The {context-root} MAY be an empty, zero length string.
+- `{context-root}` is the base URL which MUST be specified, the {context-root} MAY be an empty, zero length string.
 
-- `{version}` is a path segment which identifies the interface version. This
-  is the equivalent of the Version element in the EPP RFCs. The version 
-  used in a REPP URL MUST match the version used in EPP request and response messages.
+- `{version}` is a path segment which identifies the version of the REPP implementation. This
+  is the equivalent of the Version element in the EPP RFCs. The version used in the REPP URL MUST match the version used in EPP Greeting message.
 
 - `{collection}` MUST be substituted by "domains", "hosts" or
-  "contacts", referring to either [@!RFC5731], [@!RFC5732] or [@!RFC5733].
+  "contacts" or other supported objects, referring to either [@!RFC5731], [@!RFC5732] or [@!RFC5733].
 
-A trailing slash MAY be added to each request. Implementations
-MUST consider requests which only differ with respect to this
-trailing slash as identical.
+A trailing slash MAY be added to each request. Implementations MUST consider requests which only differ with respect to this trailing slash as identical.
 
-A specific EPP object instance MUST be identified by {context-root}/
-{version}/{collection}/{id} where {id} is a unique object identifier
-described in EPP RFCs.
+A specific EPP object instance MUST be identified by {context-root}/ {version}/{collection}/{id} where {id} is a unique object identifier described in EPP RFCs.
 
 An example domain name resource, for domain name example.nl, would look like this:
 
 `/repp/v1/domains/example.nl`
 
-The path segment after a collection path segment MUST be used to identify an object
-instance, the  path segment after an object instance MUST be used to identify
-attributes of the object instance.
+The path segment after a collection path segment MUST be used to identify an object instance, the path segment after an object instance MUST be used to identify attributes or related collections of the object instance.
 
 <!--TODO ISSUE 7: No need for XML payload for GET requests when URL identifies object -->
-Reource URLs used by REPP may contain embedded object identifiers. By using a object identifier
-in the resource URL, the object identifier in the request messages becomes superfluous.
-However, since the goal of REPP is to maintain compatibility with existing EPP object mapping schemas, this redundancy is accepted as a trade off. Removing the object identifier from the request message would require new object mapping schemas.
+Reource URLs used by REPP contain embedded object identifiers. By using an object identifier in the resource URL, the object identifier in the request messages becomes superfluous. However, since the goal of REPP is to maintain compatibility with existing EPP object mapping schemas, this redundancy is accepted as a trade off. Removing the object identifier from the request message would require updating the object mapping schemas in the EPP RFCs.
 
-The server MUST return HTTP status code 412 when the object
-identifier (for example <domain:name>, <host:name> or <contact:id>)
-in the EPP request message does not match the {id} object identifier embedded in the URL.
+The server MUST return HTTP status code 412 when the object identifier, for example domain:name, host:name or contact:id, in the EPP request message does not match the {id} object identifier embedded in the URL.
   <!--TODO: is this not mixing epp and http status codes? -->
 
 # Session Management
@@ -227,10 +169,10 @@ Session management as described in [@!RFC5730] requires a stateful server, maint
 The server MUST not create and maintain client sessions for use over multiple client requests and NOT
 maintain any state information relating to the client or EPP process. 
 
-Due to stateless nature of REPP, a request must contain all information required for the 
+Due to stateless nature of REPP, a request MUST contain all information required for the 
 server to be able to successfully process the request. The client MUST include authentication credentials for each request. This MAY be done by using any of the available HTTP authentication mechanisms, such as those described in [@!RFC2617].
 
-# HTTP
+# REST
 
 REPP uses the REST semantics, each HTTP method is assigned a distinct behaviour, section (#http-method) provides a overview of each the behaviour assinged to each method. REPP requests are expressed by using a URL refering to a resource, an HTTP method, zero or more HTTP headers and a optional message body containing the EPP request message. 
 
@@ -326,7 +268,7 @@ The server HTTP response contains a status code, headers and MAY contain an EPP 
 - `REPP-check-reason`: An optional alternative for the "object:reason"
   element in an Object Check response and MUST be used accordingly.
 
-- `REPP-Queue-Size`: Return the number of messages in the qeueue waiting to being retrived by the client.
+- `REPP-Queue-Size`: Return the number of unackknowledged messages in the client message queue.
     <!--TODO ISSUE 40: return queue size for all results-->   
 
 - `Cache-Control`:  ...  TBD: the idea is to prohibit caching.  Even though it will probably work and be useful in some scenario's, it also complicates matters.
