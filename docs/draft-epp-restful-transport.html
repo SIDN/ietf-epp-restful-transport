@@ -1877,7 +1877,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
         <li id="section-9-2.4">EPP response message<a href="#section-9-2.4" class="pilcrow">¶</a>
 </li>
       </ol>
-<p id="section-9-3"><a href="#tbl-cmd-mapping" class="auto internal xref">Table 2</a> lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: "/{context-root}/{version}/". For some EPP requests the request and/or response message is no longer used or has become optional, this is indicated by the table columns "Request" and "response".<a href="#section-9-3" class="pilcrow">¶</a></p>
+<p id="section-9-3"><a href="#tbl-cmd-mapping" class="auto internal xref">Table 2</a> lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: "/{context-root}/{version}/". For some EPP requests the request and/or response message is no longer used or has become optional, this is indicated by the table columns "Request" and "response". A request may have an optional response message, in the case of a successful response no response message is required. In an error situation, the server may return a response message containing 1 or more errors.<a href="#section-9-3" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-9-4.1">
           <code>{c}</code>:  An abbreviation for {collection}: this MUST be substituted with
@@ -1929,7 +1929,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
             <td class="text-left" rowspan="1" colspan="1">HEAD</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
             <td class="text-left" rowspan="1" colspan="1">No</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Info</td>
@@ -1950,7 +1950,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
             <td class="text-left" rowspan="1" colspan="1">/messages/{i}</td>
             <td class="text-left" rowspan="1" colspan="1">No</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Create</td>
@@ -1964,7 +1964,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
             <td class="text-left" rowspan="1" colspan="1">No</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Renew</td>
@@ -2013,7 +2013,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
             <td class="text-left" rowspan="1" colspan="1">PATCH</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Extension [1]</td>

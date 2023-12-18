@@ -326,7 +326,7 @@ EPP commands are mapped to RESTful EPP requests consisting out of four elements.
 3. EPP request message
 4. EPP response message
 
-(#tbl-cmd-mapping) lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: "/{context-root}/{version}/". For some EPP requests the request and/or response message is no longer used or has become optional, this is indicated by the table columns "Request" and "response". 
+(#tbl-cmd-mapping) lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: "/{context-root}/{version}/". For some EPP requests the request and/or response message is no longer used or has become optional, this is indicated by the table columns "Request" and "response". A request may have an optional response message, in the case of a successful response no response message is required. In an error situation, the server may return a response message containing 1 or more errors.
 
 - `{c}`:  An abbreviation for {collection}: this MUST be substituted with
   "domains", "hosts", "contacts" or any other collection of objects.
@@ -338,19 +338,19 @@ Command            | Method   | Resource                  | Request     | Respon
 Hello              | OPTIONS  | /                         | No          | Yes
 Login              | N/A      | N/A                       | N/A         | N/A
 Logout             | N/A      | N/A                       | N/A         | N/A
-Check              | HEAD     | /{c}/{i}                  | No          | No
+Check              | HEAD     | /{c}/{i}                  | No          | Optional
 Info               | GET/POST | /{c}/{i}                  | Optional    | Yes
 Poll Request       | GET      | /messages                 | No          | Yes
-Poll Ack           | DELETE   | /messages/{i}             | No          | No
+Poll Ack           | DELETE   | /messages/{i}             | No          | Optional
 Create             | POST     | /{c}                      | Yes         | Yes
-Delete             | DELETE   | /{c}/{i}                  | No          | No
+Delete             | DELETE   | /{c}/{i}                  | No          | Optional
 Renew              | POST     | /{c}/{i}/renewals         | Yes         | Yes
 Transfer Request   | POST     | /{c}/{i}/transfers        | Optional    | Yes
 Transfer Query     | GET/POST | /{c}/{i}/transfers/latest | Optional    | Yes
 Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Optional
 Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | Optional    | Optional
 Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Optional
-Update             | PATCH    | /{c}/{i}                  | Yes         | No
+Update             | PATCH    | /{c}/{i}                  | Yes         | Optional
 Extension [1]      | *        | /{c}/{i}/extension/*      | *           | *
 Extension [2]      | *        | /extension/*              | *           | *
 Table: Mapping of EPP Command to REPP Request

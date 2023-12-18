@@ -384,7 +384,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
 <li>EPP request message</li>
 <li>EPP response message</li>
 </ol>
-<t><xref target="tbl-cmd-mapping"></xref> lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: &quot;/{context-root}/{version}/&quot;. For some EPP requests the request and/or response message is no longer used or has become optional, this is indicated by the table columns &quot;Request&quot; and &quot;response&quot;.</t>
+<t><xref target="tbl-cmd-mapping"></xref> lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: &quot;/{context-root}/{version}/&quot;. For some EPP requests the request and/or response message is no longer used or has become optional, this is indicated by the table columns &quot;Request&quot; and &quot;response&quot;. A request may have an optional response message, in the case of a successful response no response message is required. In an error situation, the server may return a response message containing 1 or more errors.</t>
 
 <ul spacing="compact">
 <li><tt>{c}</tt>:  An abbreviation for {collection}: this MUST be substituted with
@@ -433,7 +433,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
 <td>HEAD</td>
 <td>/{c}/{i}</td>
 <td>No</td>
-<td>No</td>
+<td>Optional</td>
 </tr>
 
 <tr>
@@ -457,7 +457,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
 <td>DELETE</td>
 <td>/messages/{i}</td>
 <td>No</td>
-<td>No</td>
+<td>Optional</td>
 </tr>
 
 <tr>
@@ -473,7 +473,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
 <td>DELETE</td>
 <td>/{c}/{i}</td>
 <td>No</td>
-<td>No</td>
+<td>Optional</td>
 </tr>
 
 <tr>
@@ -529,7 +529,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
 <td>PATCH</td>
 <td>/{c}/{i}</td>
 <td>Yes</td>
-<td>No</td>
+<td>Optional</td>
 </tr>
 
 <tr>

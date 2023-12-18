@@ -735,7 +735,10 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    in the table are assumed to be using the prefix: "/{context-
    root}/{version}/".  For some EPP requests the request and/or response
    message is no longer used or has become optional, this is indicated
-   by the table columns "Request" and "response".
+   by the table columns "Request" and "response".  A request may have an
+   optional response message, in the case of a successful response no
+   response message is required.  In an error situation, the server may
+   return a response message containing 1 or more errors.
 
    -  {c}: An abbreviation for {collection}: this MUST be substituted
       with "domains", "hosts", "contacts" or any other collection of
@@ -753,7 +756,7 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    +-----------+----------+----------------------+----------+----------+
    | Logout    | N/A      | N/A                  | N/A      | N/A      |
    +-----------+----------+----------------------+----------+----------+
-   | Check     | HEAD     | /{c}/{i}             | No       | No       |
+   | Check     | HEAD     | /{c}/{i}             | No       | Optional |
    +-----------+----------+----------------------+----------+----------+
    | Info      | GET/     | /{c}/{i}             | Optional | Yes      |
    |           | POST     |                      |          |          |
@@ -761,11 +764,11 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    | Poll      | GET      | /messages            | No       | Yes      |
    | Request   |          |                      |          |          |
    +-----------+----------+----------------------+----------+----------+
-   | Poll Ack  | DELETE   | /messages/{i}        | No       | No       |
+   | Poll Ack  | DELETE   | /messages/{i}        | No       | Optional |
    +-----------+----------+----------------------+----------+----------+
    | Create    | POST     | /{c}                 | Yes      | Yes      |
    +-----------+----------+----------------------+----------+----------+
-   | Delete    | DELETE   | /{c}/{i}             | No       | No       |
+   | Delete    | DELETE   | /{c}/{i}             | No       | Optional |
    +-----------+----------+----------------------+----------+----------+
    | Renew     | POST     | /{c}/{i}/renewals    | Yes      | Yes      |
    +-----------+----------+----------------------+----------+----------+
@@ -775,9 +778,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    | Transfer  | GET/     | /{c}/{i}/transfers/  | Optional | Yes      |
    | Query     | POST     | latest               |          |          |
    +-----------+----------+----------------------+----------+----------+
-   | Transfer  | DELETE   | /{c}/{i}/transfers/  | Optional | Optional |
-   | Cancel    |          | latest               |          |          |
-   +-----------+----------+----------------------+----------+----------+
 
 
 
@@ -786,13 +786,16 @@ Wullink & Davids          Expires 20 June 2024                 [Page 14]
 Internet-Draft          RESTful Transport for EPP          December 2023
 
 
+   | Transfer  | DELETE   | /{c}/{i}/transfers/  | Optional | Optional |
+   | Cancel    |          | latest               |          |          |
+   +-----------+----------+----------------------+----------+----------+
    | Transfer  | PUT      | /{c}/{i}/transfers/  | Optional | Optional |
    | Approve   |          | latest               |          |          |
    +-----------+----------+----------------------+----------+----------+
    | Transfer  | DELETE   | /{c}/{i}/transfers/  | Optional | Optional |
    | Reject    |          | latest               |          |          |
    +-----------+----------+----------------------+----------+----------+
-   | Update    | PATCH    | /{c}/{i}             | Yes      | No       |
+   | Update    | PATCH    | /{c}/{i}             | Yes      | Optional |
    +-----------+----------+----------------------+----------+----------+
    | Extension | *        | /{c}/{i}/extension/* | *        | *        |
    | [1]       |          |                      |          |          |
@@ -832,15 +835,14 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    value used for the {version} path segment in the URL used for the
    Hello request.
 
-   Example request:
-
-
 
 
 Wullink & Davids          Expires 20 June 2024                 [Page 15]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
+
+   Example request:
 
    C: OPTIONS /repp/v1/ HTTP/2
    C: Host: repp.example.nl
@@ -888,8 +890,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    -  version: Replaced by the {version} path segment in the request
       URL.
    -  lang: Replaced by the Accept-Language HTTP header.
-   -  svcs: Replaced by the REPP-svcs HTTP header.
-
 
 
 
@@ -897,6 +897,8 @@ Wullink & Davids          Expires 20 June 2024                 [Page 16]
 
 Internet-Draft          RESTful Transport for EPP          December 2023
 
+
+   -  svcs: Replaced by the REPP-svcs HTTP header.
 
    The server MUST check the namespaces used in the REPP-svcs HTTP
    header.  An unsupported namespace MUST result in the appropriate EPP
@@ -941,8 +943,6 @@ Internet-Draft          RESTful Transport for EPP          December 2023
    be checked.
 
    Example request for a domain name:
-
-
 
 
 
