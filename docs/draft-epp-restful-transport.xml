@@ -16,7 +16,7 @@
 
 <abstract>
 <t>This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol <xref target="RFC5730"></xref>. REPP enables the development a stateless and scaleable EPP service.</t>
-<t>This document includes a mapping of <xref target="RFC5730"></xref> XML EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are retained and reused in RESTful EPP.</t>
+<t>This document includes a mapping of <xref target="RFC5730"></xref> <xref target="XML"></xref> EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are retained and reused in RESTful EPP.</t>
 <t>The stateless REPP server does not maintain any client or application state, allowing for scalable EPP services and enabling load balancing at the request level instead of the session level as described in <xref target="RFC5734"></xref>.</t>
 </abstract>
 
@@ -61,7 +61,7 @@ of an EPP service, while maintaining compatibility with the existing EPP RFCs.
 This section lists the main design criteria.</t>
 
 <ul>
-<li><t>Ease of use, provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. On the basis of these principles a [REST] architectural style was chosen, where a client  interacts with a REPP server via HTTP.</t>
+<li><t>Ease of use, provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. On the basis of these principles a <xref target="REST"></xref> architectural style was chosen, where a client  interacts with a REPP server via HTTP.</t>
 </li>
 <li><t>Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as
 load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. During normal registry operations, the bulk of EPP requests canb be expected to be of the informational type, load balancing and possibly seperating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.</t>
@@ -73,7 +73,7 @@ for HTTP based applications. HTTP provides an Authorization header <xref target=
 </li>
 <li><t>Content negotiation, A server may choose to include support for multiple media types.
 The client must be able to signal the server what media type the should use for decoding request content en for encoding response content.
-This document only describes the use of [XML] but the use of other media types such as JSON <xref target="RFC7159"></xref> should also be possible.</t>
+This document only describes the use of <xref target="XML"></xref> but the use of other media types such as JSON <xref target="RFC7159"></xref> should also be possible.</t>
 </li>
 <li><t>Compatibility with existing EPP commands and corresponding request and response messages.</t>
 </li>
@@ -85,18 +85,15 @@ This document only describes the use of [XML] but the use of other media types s
 </section>
 
 <section anchor="epp-extension-framework"><name>EPP Extension Framework</name>
-<t><xref target="RFC3735" sectionFormat="bare" section="Section 2"></xref> describes how the EPP extension framework can be used to extend
-EPP functionality by adding new features at the protocol, object and command-response level.
-This section describes the impact of REPP on each of the extension levels:</t>
+<t><xref target="RFC3735" sectionFormat="bare" section="Section 2"></xref> describes how the EPP extension framework can be used to extend EPP functionality by adding new features at the protocol, object and command-response level. This section describes the impact of REPP on each of the extension levels:</t>
 
 <ul>
-<li><t>Protocol Extension: REPP does not define any new high level protocol elements.
-The <xref target="command-mapping"></xref> section describes an extension resource for use with existing and future command extensions.</t>
+<li><t>Protocol Extension: The <xref target="command-mapping"></xref> section describes an protocol extension resource for use with existing and future protocol extensions. REPP does not define a new Protocol extension. All existing and future Protocol extension level EPP extensions MAY be used.</t>
 </li>
-<li><t>Object extension: REPP does not use the &quot;command&quot; concept, because the &quot;command&quot; concept is part of a RPC style and not of the REST style. A REST URL resource and HTTP method combination have replaced the command concept. The <xref target="command-mapping"></xref> section describes a command extension resource for each object type and can be used for existing and future command extensions. REPP does not define any new object level extensions. All existing and future object level EPP extensions MAY be used.</t>
+<li><t>Object extension: REPP does not define any new object level extensions. All existing and future object level EPP extensions MAY be used.</t>
 </li>
 <li><t>Command-Response extension:
-RESTful EPP reuses the existing request and response messages defined in the EPP RFCs.</t>
+The <xref target="command-mapping"></xref> section describes a Command-Response extension resource for each object mapping and can be used for existing and future command extensions. REPP does not define a new Command-Response extension. All existing and future Command-Response extension level EPP extensions MAY be used.</t>
 </li>
 </ul>
 </section>
@@ -175,6 +172,8 @@ HTTP message body.</t>
 </li>
 <li><t><tt>REPP-svcs</tt>: The namespace used by the client in the EPP request message, this is equivalent to the &quot;svcs&quot; element in the Login command defined in <xref target="RFC5730" sectionFormat="of" section="2.9.1.1"></xref>. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.
 </t>
+</li>
+<li><t><tt>REPP-svcs-ext</tt>: The extension namespace used by the client in the EPP request message, this is equivalent to the &quot;svcExtension&quot; element in the Login command defined in <xref target="RFC5730" sectionFormat="of" section="2.9.1.1"></xref></t>
 </li>
 <li><t><tt>REPP-authInfo</tt>: The client MAY use this header for sending basic token-based authorization information, as described in <xref target="RFC5731" sectionFormat="of" section="2.6"></xref> and <xref target="RFC5733" sectionFormat="of" section="2.8"></xref>. If the authorization is linked to a contact object then the client MUST NOT use this header.
 </t>
@@ -376,7 +375,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
 </section>
 
 <section anchor="command-mapping"><name>Command Mapping</name>
-<t>EPP commands are mapped to RESTful EPP requests consisting out of four elements.</t>
+<t>EPP commands are mapped to RESTful EPP requests using four elements.</t>
 
 <ol spacing="compact">
 <li>Resource defined by a URL</li>
@@ -548,8 +547,8 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
 <td>*</td>
 </tr>
 </tbody>
-</table><t>[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2]</t>
-<t>[2] This mapping is used for protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1]</t>
+</table><t>[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2]
+[2] This mapping is used for Protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1]</t>
 <t>When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request).</t>
 
 <section anchor="hello"><name>Hello</name>
@@ -680,7 +679,7 @@ C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 <t>Example request using REPP-authInfo header for an object that has attached authorization information.</t>
 
 <ul spacing="compact">
-<li>Request: POST /{collection}/{id}</li>
+<li>Request: GET /{collection}/{id}</li>
 <li>Request message: None</li>
 <li>Response message: Info response</li>
 <li>OK status code: 200 (OK)</li>
@@ -1046,7 +1045,7 @@ S:      <result code="1000">
 S:         <msg>Command completed successfully</msg>
 S:      </result>
 S:      <resData>
-S:         <domain:creData
+S:         <domain:creData>
 S:            <!-- The rest of the response is omitted here -->
 S:         </domain:creData>
 S:      </resData>
@@ -1065,10 +1064,10 @@ S:</epp>
 <ul spacing="compact">
 <li>Request: DELETE /{collection}/{id}</li>
 <li>Request message: None</li>
-<li>Response message: None</li>
+<li>Response message: Optional error message</li>
 <li>OK status code: 204 (No Content)</li>
 </ul>
-<t>The client MUST the HTTP DELETE method and a resource identifying a unique object instance. This operation has no EPP request and response message and MUST return 204 (No Content) if the resources was deleted successfully.</t>
+<t>The client MUST the HTTP DELETE method and a resource identifying a unique object instance. This operation has no EPP request and response message and MUST return 204 (No Content) if the resource was deleted successfully.</t>
 <t>Example Domain Delete request:</t>
 
 <artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl HTTP/2
@@ -1261,7 +1260,7 @@ S:</epp>
 <ul spacing="compact">
 <li>Request: DELETE /{collection}/{id}/transfers/latest</li>
 <li>Request message: Optional Transfer Reject request</li>
-<li>Response message: Transfer cancel response message.</li>
+<li>Response message: Optional error message</li>
 <li>OK status code: 204 (No Content)</li>
 </ul>
 <t>The new sponsoring client MUST use the HTTP DELETE method to cancel a
@@ -1296,7 +1295,7 @@ S: REPP-eppcode: 1000
 <ul spacing="compact">
 <li>Request: DELETE /{collection}/{id}/transfers/latest</li>
 <li>Request message:  Optional Transfer Reject request</li>
-<li>Response message: Transfer response</li>
+<li>Response message: Optional error message</li>
 <li>OK status code: 204 (No Content)</li>
 </ul>
 <t>The semantics of the HTTP DELETE method are determined by the role of the client sending the request. For the current sponsoring client of the object, the DELETE method is defined as &quot;reject transfer&quot;. The server MAY return an empty message body when the transfer was rejected without an error. The server MUST return 204 (No Content) if the transfer resource was deleted successfully.</t>
@@ -1330,7 +1329,7 @@ S: REPP-eppcode: 1000
 <ul spacing="compact">
 <li>Request: PUT /{collection}/{id}/transfers/latest</li>
 <li>Request message: Optional Transfer Approve request</li>
-<li>Response message: Transfer response.</li>
+<li>Response message: Optional error message</li>
 <li>OK status code: 200 (OK)</li>
 </ul>
 <t>The current sponsoring client MUST use the HTTP PUT method to approve a transfer requested by the new sponsoring client. The server MAY return an empty message body when the transfer was cancelled without an error.</t>
@@ -1366,7 +1365,7 @@ S: REPP-eppcode: 1000
 <ul spacing="compact">
 <li>Request: PATCH /{collection}/{id}</li>
 <li>Request message: Object Update message</li>
-<li>Response message: Optional Update response message</li>
+<li>Response message: Optional error message</li>
 <li>OK status code: 200 (OK)</li>
 </ul>
 <t>An object Update request MUST be performed with the HTTP PATCH method on a unique object resource. The request message body MUST contain an Update request as described in the EPP RFCs. The server MUST NOT add content to the response message body.</t>
@@ -1411,7 +1410,10 @@ S: REPP-eppcode: 1000
 </section>
 </section>
 
-<section anchor="extensions"><name>Extensions</name>
+<section anchor="extension-framework"><name>Extension Framework</name>
+<t>The EPP Extension Framework allows for extending the EPP protocol at different locations, REPP defines additional REST resources for the Protocol and Command-Response extensions.</t>
+
+<section anchor="protocol-extension"><name>Protocol Extension</name>
 
 <ul spacing="compact">
 <li>Request: * /extensions/*</li>
@@ -1419,44 +1421,118 @@ S: REPP-eppcode: 1000
 <li>Response message: *</li>
 <li>OK status code: *</li>
 </ul>
-<t>EPP protocol extensions, as defined in <xref target="RFC5730" sectionFormat="bare" section="secion 2.7.3"></xref> are supported using the generic &quot;/extensions&quot; resource.
-The HTTP method used for a extension is not defined but must follow the RESTful principles.</t>
-<t>Example Extension request:
-The example below, shows the use of the &quot;Domain Cancel Delete&quot; command as defined as a custom command in <xref target="SIDN-EXT"></xref> by the .nl domain registry operator. Where the registrar can use the HTPP DELETE method on a domain name resource to cancel an active domain delete transaction and move the domain from the quarantine state back to the active state.</t>
+<t>EPP Protocol extensions, defined in <xref target="RFC5730" sectionFormat="of" section="2.7.1"></xref> are supported using the &quot;/extensions&quot; root resource.
+The HTTP method used for a new Protocol extension is not defined but must follow the RESTful principles.</t>
+<t>The example below, illustrates the use of the &quot;Domain Cancel Delete&quot; command as defined as a custom command in <xref target="SIDN-EXT"></xref>. The new command is created below the &quot;extensions&quot; path element and after this element follows the &quot;domains&quot; object collection, finally a special &quot;deletion&quot; path element is added to the end of the URL. A client MUST use the HTPP DELETE method on a domain name deletion resource to cancel an ongoing domain delete transaction and move the domain from the grace state back to the active state.</t>
+<t>Example Protocol Extension request:</t>
 
-<sourcecode type="xml"><![CDATA[C: DELETE /repp/v1/extensions/domains/example.nl/quarantine HTTP/2
+<ul spacing="compact">
+<li>Request: DELETE /extensions/{collection}/{id}/deletion</li>
+<li>Request message: None</li>
+<li>Response message: Optional error response</li>
+<li>OK status code: 204 (No Content)</li>
+</ul>
+
+<artwork><![CDATA[C: DELETE /repp/v1/extensions/domains/example.nl/deletion HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-svcs-ext: https://rxsd.domain-registry.nl/sidn-ext-epp-1.0
 C: REPP-cltrid: ABC-12345
 
 ]]>
-</sourcecode>
-<t>Example Extension response:</t>
+</artwork>
+<t>Example response:</t>
 
-<sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
+<sourcecode type="xml"><![CDATA[S: HTTP/2 204 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
-S: Content-Length: 328
-S: Content-Type: application/epp+xml
-S:
-S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-S:  <response>
-S:    <result code="1000">
-S:      <msg>Command completed successfully</msg>
-S:    </result>
-S:    <trID>
-S:      <clTRID>ABC-12345</clTRID>
-S:      <svTRID>XYZ-12345</svTRID>
-S:    </trID>
-S:  </response>
-S:</epp>
+S: Content-Length: 0
+S: REPP-svtrid: XYZ-12345
+S: REPP-cltrid: ABC-12345
+S: REPP-eppcode: 1000
+
 ]]>
 </sourcecode>
+</section>
+
+<section anchor="object-extension"><name>Object Extension</name>
+<t>An Object extension is differs from the other 2 extension types in the way that an Object extension is implemented using a new Object mapping for a new Object type, while re-using the existing EPP command and response structures. The newly created Object mapping, is simmilar to the existing Object mappings defined in <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref>, and MUST be used in a similar fashion.</t>
+<t>A hypothetical new Object mapping for IP addresses, may result in a new resource collection named &quot;ips&quot;, the semantics for the HTTP methods would have to be defined. Creating a new IP address may use the HTTP POST method on the &quot;ips&quot; collection.</t>
+
+<ul spacing="compact">
+<li>Request: POST /{collection}/{id}</li>
+<li>Request message: IP Create Request message</li>
+<li>Response message: IP Create Response message</li>
+<li>OK status code: 201 (Created)</li>
+</ul>
+<t>Example request:</t>
+
+<sourcecode type="xml"><![CDATA[C: POST /repp/v1/ips HTTP/2
+C: Host: repp.example.nl
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Accept-Language: en
+C: REPP-svcs-ext: https://example.nl/epp-ips-1.0
+C: REPP-cltrid: ABC-12345
+C: Content-Type: application/epp+xml
+C: Content-Length: 220
+C:
+C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:  <command>
+C:    <create>
+C:      <ips:create
+C:       xmlns:ip="https://example.nl/epp-ips-1.0">
+C:        <ips:address>192.0.2.1</ips:address>
+C:        <!-- The rest of the request is omitted here -->
+C:      </ips:create>
+C:    </create>
+C:    <clTRID>ABC-12345</clTRID>
+C:  </command>
+C:</epp>
+
+]]>
+</sourcecode>
+<t>Example response:</t>
+
+<sourcecode type="xml"><![CDATA[S: HTTP/2 201 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Example REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 642
+S: Content-Type: application/epp+xml
+S: Location: https://repp.example.nl/repp/v1/ips/192.0.2.1
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+S:     xmlns:ips="https://example.nl/epp-ips-1.0">
+S:   <response>
+S:      <result code="1000">
+S:         <msg>Command completed successfully</msg>
+S:      </result>
+S:      <resData>
+S:         <ips:creData>
+S:            <!-- The rest of the response is omitted here -->
+S:         </ips:creData>
+S:      </resData>
+S:      <trID>
+S:         <clTRID>ABC-12345</clTRID>
+S:         <svTRID>54321-XYZ</svTRID>
+S:      </trID>
+S:   </response>
+S:</epp>
+
+]]>
+</sourcecode>
+</section>
+
+<section anchor="command-response-extension"><name>Command-Response Extension</name>
+<t>Command-Response Extensions allow for adding elements to an existing object mapping, therefore no new extension reource is required, the existing resources can be used for existing and future extensions of this type.</t>
+</section>
 </section>
 </section>
 
@@ -1576,6 +1652,15 @@ Move Miek from Authors to Acknowledgments section?</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7234.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9110.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9113.xml"/>
+<reference anchor="XML" target="https://www.w3.org/TR/xml">
+  <front>
+    <title>Extensible Markup Language (XML) 1.0 (Fifth Edition)</title>
+    <author>
+      <organization>W3C</organization>
+    </author>
+    <date year="2013"></date>
+  </front>
+</reference>
 </references>
 <references><name>Informative References</name>
 <reference anchor="SIDN-EXT" target="http://rxsd.domain-registry.nl/sidn-ext-epp-1.0.xsd">

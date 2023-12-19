@@ -9,7 +9,7 @@
 <meta content="Marco Davids" name="author">
 <meta content="
        This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol  . REPP enables the development a stateless and scaleable EPP service. 
-       This document includes a mapping of   XML EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in  ,   and   are retained and reused in RESTful EPP. 
+       This document includes a mapping of     EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in  ,   and   are retained and reused in RESTful EPP. 
        The stateless REPP server does not maintain any client or application state, allowing for scalable EPP services and enabling load balancing at the request level instead of the session level as described in  . 
     " name="description">
 <meta content="xml2rfc 3.18.2" name="generator">
@@ -1211,7 +1211,7 @@ li > p:last-of-type:only-child {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Wullink &amp; Davids</td>
-<td class="center">Expires 20 June 2024</td>
+<td class="center">Expires 21 June 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1224,12 +1224,12 @@ li > p:last-of-type:only-child {
 <dd class="internet-draft">draft-wullink-restful-epp-01</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-12-18" class="published">18 December 2023</time>
+<time datetime="2023-12-19" class="published">19 December 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-06-20">20 June 2024</time></dd>
+<dd class="expires"><time datetime="2024-06-21">21 June 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1247,7 +1247,7 @@ li > p:last-of-type:only-child {
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>. REPP enables the development a stateless and scaleable EPP service.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">This document includes a mapping of <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> XML EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>, <span>[<a href="#RFC5732" class="cite xref">RFC5732</a>]</span> and <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span> are retained and reused in RESTful EPP.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">This document includes a mapping of <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> <span>[<a href="#XML" class="cite xref">XML</a>]</span> EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>, <span>[<a href="#RFC5732" class="cite xref">RFC5732</a>]</span> and <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span> are retained and reused in RESTful EPP.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">The stateless REPP server does not maintain any client or application state, allowing for scalable EPP services and enabling load balancing at the request level instead of the session level as described in <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span>.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
@@ -1269,7 +1269,7 @@ li > p:last-of-type:only-child {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 20 June 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 June 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1416,7 +1416,18 @@ li > p:last-of-type:only-child {
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.6">
-                <p id="section-toc.1-1.9.2.6.1"><a href="#section-9.6" class="auto internal xref">9.6</a>.  <a href="#name-extensions" class="internal xref">Extensions</a></p>
+                <p id="section-toc.1-1.9.2.6.1"><a href="#section-9.6" class="auto internal xref">9.6</a>.  <a href="#name-extension-framework" class="internal xref">Extension Framework</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.6.2.1">
+                    <p id="section-toc.1-1.9.2.6.2.1.1"><a href="#section-9.6.1" class="auto internal xref">9.6.1</a>.  <a href="#name-protocol-extension" class="internal xref">Protocol Extension</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.6.2.2">
+                    <p id="section-toc.1-1.9.2.6.2.2.1"><a href="#section-9.6.2" class="auto internal xref">9.6.2</a>.  <a href="#name-object-extension" class="internal xref">Object Extension</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.6.2.3">
+                    <p id="section-toc.1-1.9.2.6.2.3.1"><a href="#section-9.6.3" class="auto internal xref">9.6.3</a>.  <a href="#name-command-response-extension" class="internal xref">Command-Response Extension</a></p>
+</li>
+                </ul>
 </li>
             </ul>
 </li>
@@ -1509,7 +1520,7 @@ of an EPP service, while maintaining compatibility with the existing EPP RFCs.
 This section lists the main design criteria.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4-2.1">
-          <p id="section-4-2.1.1">Ease of use, provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. On the basis of these principles a [REST] architectural style was chosen, where a client  interacts with a REPP server via HTTP.<a href="#section-4-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-4-2.1.1">Ease of use, provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. On the basis of these principles a <span>[<a href="#REST" class="cite xref">REST</a>]</span> architectural style was chosen, where a client  interacts with a REPP server via HTTP.<a href="#section-4-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-2.2">
           <p id="section-4-2.2.1">Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as
@@ -1525,7 +1536,7 @@ for HTTP based applications. HTTP provides an Authorization header <span><a href
         <li class="normal" id="section-4-2.5">
           <p id="section-4-2.5.1">Content negotiation, A server may choose to include support for multiple media types.
 The client must be able to signal the server what media type the should use for decoding request content en for encoding response content.
-This document only describes the use of [XML] but the use of other media types such as JSON <span>[<a href="#RFC7159" class="cite xref">RFC7159</a>]</span> should also be possible.<a href="#section-4-2.5.1" class="pilcrow">¶</a></p>
+This document only describes the use of <span>[<a href="#XML" class="cite xref">XML</a>]</span> but the use of other media types such as JSON <span>[<a href="#RFC7159" class="cite xref">RFC7159</a>]</span> should also be possible.<a href="#section-4-2.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-2.6">
           <p id="section-4-2.6.1">Compatibility with existing EPP commands and corresponding request and response messages.<a href="#section-4-2.6.1" class="pilcrow">¶</a></p>
@@ -1544,20 +1555,17 @@ This document only describes the use of [XML] but the use of other media types s
       <h2 id="name-epp-extension-framework">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-epp-extension-framework" class="section-name selfRef">EPP Extension Framework</a>
       </h2>
-<p id="section-5-1"><a href="https://rfc-editor.org/rfc/rfc3735#appendix-Section%202" class="relref">Section 2</a> describes how the EPP extension framework can be used to extend
-EPP functionality by adding new features at the protocol, object and command-response level.
-This section describes the impact of REPP on each of the extension levels:<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1"><a href="https://rfc-editor.org/rfc/rfc3735#appendix-Section%202" class="relref">Section 2</a> describes how the EPP extension framework can be used to extend EPP functionality by adding new features at the protocol, object and command-response level. This section describes the impact of REPP on each of the extension levels:<a href="#section-5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-2.1">
-          <p id="section-5-2.1.1">Protocol Extension: REPP does not define any new high level protocol elements.
-The <a href="#command-mapping" class="auto internal xref">Section 9</a> section describes an extension resource for use with existing and future command extensions.<a href="#section-5-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-5-2.1.1">Protocol Extension: The <a href="#command-mapping" class="auto internal xref">Section 9</a> section describes an protocol extension resource for use with existing and future protocol extensions. REPP does not define a new Protocol extension. All existing and future Protocol extension level EPP extensions MAY be used.<a href="#section-5-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-2.2">
-          <p id="section-5-2.2.1">Object extension: REPP does not use the "command" concept, because the "command" concept is part of a RPC style and not of the REST style. A REST URL resource and HTTP method combination have replaced the command concept. The <a href="#command-mapping" class="auto internal xref">Section 9</a> section describes a command extension resource for each object type and can be used for existing and future command extensions. REPP does not define any new object level extensions. All existing and future object level EPP extensions MAY be used.<a href="#section-5-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-5-2.2.1">Object extension: REPP does not define any new object level extensions. All existing and future object level EPP extensions MAY be used.<a href="#section-5-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-5-2.3">
           <p id="section-5-2.3.1">Command-Response extension:
-RESTful EPP reuses the existing request and response messages defined in the EPP RFCs.<a href="#section-5-2.3.1" class="pilcrow">¶</a></p>
+The <a href="#command-mapping" class="auto internal xref">Section 9</a> section describes a Command-Response extension resource for each object mapping and can be used for existing and future command extensions. REPP does not define a new Command-Response extension. All existing and future Command-Response extension level EPP extensions MAY be used.<a href="#section-5-2.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1671,13 +1679,16 @@ HTTP message body.<a href="#section-8.3-2.1.1" class="pilcrow">¶</a></p>
             <p id="section-8.3-2.2.1"><code>REPP-svcs</code>: The namespace used by the client in the EPP request message, this is equivalent to the "svcs" element in the Login command defined in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.<a href="#section-8.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.3-2.3">
-            <p id="section-8.3-2.3.1"><code>REPP-authInfo</code>: The client MAY use this header for sending basic token-based authorization information, as described in <span><a href="https://rfc-editor.org/rfc/rfc5731#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC5731" class="cite xref">RFC5731</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc5733#section-2.8" class="relref">Section 2.8</a> of [<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>. If the authorization is linked to a contact object then the client MUST NOT use this header.<a href="#section-8.3-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-8.3-2.3.1"><code>REPP-svcs-ext</code>: The extension namespace used by the client in the EPP request message, this is equivalent to the "svcExtension" element in the Login command defined in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span><a href="#section-8.3-2.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.3-2.4">
-            <p id="section-8.3-2.4.1"><code>Accept-Language</code>:  This header is equivalent to the "lang" element of the EPP Login command. The server MUST support the use of HTTP Accept-Language header by clients. The client MAY issue a Hello request to discover the languages supported by the server. Multiple servers in a load-balanced environment SHOULD reply with consistent "lang" elements in the Greeting response. The value of the Accept-Language header MUST match 1 of the languages from the Greeting. When the server receives a request using an unsupported langauge, the server MUST respond using the default language configured for the server, as required in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span><a href="#section-8.3-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-8.3-2.4.1"><code>REPP-authInfo</code>: The client MAY use this header for sending basic token-based authorization information, as described in <span><a href="https://rfc-editor.org/rfc/rfc5731#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC5731" class="cite xref">RFC5731</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc5733#section-2.8" class="relref">Section 2.8</a> of [<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>. If the authorization is linked to a contact object then the client MUST NOT use this header.<a href="#section-8.3-2.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.3-2.5">
-            <p id="section-8.3-2.5.1"><code>Connection</code>: If the server uses HTTP/1.1 or lower, the CLIENT MAY choose to use this header to request the server to keep op the TCT-connection. The client MUST not use this header when the server uses HTTP/2 <span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.2.2" class="relref">Section 8.2.2</a> of [<a href="#RFC9113" class="cite xref">RFC9113</a>]</span> or HTTP/3 <span><a href="https://rfc-editor.org/rfc/rfc9113#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC9113" class="cite xref">RFC9113</a>]</span><a href="#section-8.3-2.5.1" class="pilcrow">¶</a></p>
+            <p id="section-8.3-2.5.1"><code>Accept-Language</code>:  This header is equivalent to the "lang" element of the EPP Login command. The server MUST support the use of HTTP Accept-Language header by clients. The client MAY issue a Hello request to discover the languages supported by the server. Multiple servers in a load-balanced environment SHOULD reply with consistent "lang" elements in the Greeting response. The value of the Accept-Language header MUST match 1 of the languages from the Greeting. When the server receives a request using an unsupported langauge, the server MUST respond using the default language configured for the server, as required in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span><a href="#section-8.3-2.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-8.3-2.6">
+            <p id="section-8.3-2.6.1"><code>Connection</code>: If the server uses HTTP/1.1 or lower, the CLIENT MAY choose to use this header to request the server to keep op the TCT-connection. The client MUST not use this header when the server uses HTTP/2 <span><a href="https://rfc-editor.org/rfc/rfc9113#section-8.2.2" class="relref">Section 8.2.2</a> of [<a href="#RFC9113" class="cite xref">RFC9113</a>]</span> or HTTP/3 <span><a href="https://rfc-editor.org/rfc/rfc9113#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC9113" class="cite xref">RFC9113</a>]</span><a href="#section-8.3-2.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-8.3-3"></p>
@@ -1866,7 +1877,7 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
       <h2 id="name-command-mapping">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-command-mapping" class="section-name selfRef">Command Mapping</a>
       </h2>
-<p id="section-9-1">EPP commands are mapped to RESTful EPP requests consisting out of four elements.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-1">EPP commands are mapped to RESTful EPP requests using four elements.<a href="#section-9-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="compact type-1" id="section-9-2">
 <li id="section-9-2.1">Resource defined by a URL<a href="#section-9-2.1" class="pilcrow">¶</a>
 </li>
@@ -2032,9 +2043,9 @@ Restful EPP is designed atop of the HTTP protocol, both are an application layer
         </tbody>
       </table>
 </div>
-<p id="section-9-6">[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2]<a href="#section-9-6" class="pilcrow">¶</a></p>
-<p id="section-9-7">[2] This mapping is used for protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1]<a href="#section-9-7" class="pilcrow">¶</a></p>
-<p id="section-9-8">When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request).<a href="#section-9-8" class="pilcrow">¶</a></p>
+<p id="section-9-6">[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2]
+[2] This mapping is used for Protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1]<a href="#section-9-6" class="pilcrow">¶</a></p>
+<p id="section-9-7">When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request).<a href="#section-9-7" class="pilcrow">¶</a></p>
 <div id="hello">
 <section id="section-9.1">
         <h3 id="name-hello">
@@ -2210,7 +2221,7 @@ C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 </div>
 <p id="section-9.4.2-5">Example request using REPP-authInfo header for an object that has attached authorization information.<a href="#section-9.4.2-5" class="pilcrow">¶</a></p>
 <ul class="compact">
-<li class="compact" id="section-9.4.2-6.1">Request: POST /{collection}/{id}<a href="#section-9.4.2-6.1" class="pilcrow">¶</a>
+<li class="compact" id="section-9.4.2-6.1">Request: GET /{collection}/{id}<a href="#section-9.4.2-6.1" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.4.2-6.2">Request message: None<a href="#section-9.4.2-6.2" class="pilcrow">¶</a>
 </li>
@@ -2649,7 +2660,7 @@ S:      &lt;result code="1000"&gt;
 S:         &lt;msg&gt;Command completed successfully&lt;/msg&gt;
 S:      &lt;/result&gt;
 S:      &lt;resData&gt;
-S:         &lt;domain:creData
+S:         &lt;domain:creData&gt;
 S:            &lt;!-- The rest of the response is omitted here --&gt;
 S:         &lt;/domain:creData&gt;
 S:      &lt;/resData&gt;
@@ -2674,12 +2685,12 @@ S:&lt;/epp&gt;
 </li>
             <li class="compact" id="section-9.5.2-1.2">Request message: None<a href="#section-9.5.2-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-9.5.2-1.3">Response message: None<a href="#section-9.5.2-1.3" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.5.2-1.3">Response message: Optional error message<a href="#section-9.5.2-1.3" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.5.2-1.4">OK status code: 204 (No Content)<a href="#section-9.5.2-1.4" class="pilcrow">¶</a>
 </li>
           </ul>
-<p id="section-9.5.2-2">The client MUST the HTTP DELETE method and a resource identifying a unique object instance. This operation has no EPP request and response message and MUST return 204 (No Content) if the resources was deleted successfully.<a href="#section-9.5.2-2" class="pilcrow">¶</a></p>
+<p id="section-9.5.2-2">The client MUST the HTTP DELETE method and a resource identifying a unique object instance. This operation has no EPP request and response message and MUST return 204 (No Content) if the resource was deleted successfully.<a href="#section-9.5.2-2" class="pilcrow">¶</a></p>
 <p id="section-9.5.2-3">Example Domain Delete request:<a href="#section-9.5.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-9.5.2-4">
 <pre>C: DELETE /repp/v1/domains/example.nl HTTP/2
@@ -2902,7 +2913,7 @@ S:&lt;/epp&gt;
 </li>
               <li class="compact" id="section-9.5.4.2-1.2">Request message: Optional Transfer Reject request<a href="#section-9.5.4.2-1.2" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.5.4.2-1.3">Response message: Transfer cancel response message.<a href="#section-9.5.4.2-1.3" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.5.4.2-1.3">Response message: Optional error message<a href="#section-9.5.4.2-1.3" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.5.4.2-1.4">OK status code: 204 (No Content)<a href="#section-9.5.4.2-1.4" class="pilcrow">¶</a>
 </li>
@@ -2946,7 +2957,7 @@ S: REPP-eppcode: 1000
 </li>
               <li class="compact" id="section-9.5.4.3-1.2">Request message:  Optional Transfer Reject request<a href="#section-9.5.4.3-1.2" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.5.4.3-1.3">Response message: Transfer response<a href="#section-9.5.4.3-1.3" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.5.4.3-1.3">Response message: Optional error message<a href="#section-9.5.4.3-1.3" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.5.4.3-1.4">OK status code: 204 (No Content)<a href="#section-9.5.4.3-1.4" class="pilcrow">¶</a>
 </li>
@@ -2989,7 +3000,7 @@ S: REPP-eppcode: 1000
 </li>
               <li class="compact" id="section-9.5.4.4-1.2">Request message: Optional Transfer Approve request<a href="#section-9.5.4.4-1.2" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.5.4.4-1.3">Response message: Transfer response.<a href="#section-9.5.4.4-1.3" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.5.4.4-1.3">Response message: Optional error message<a href="#section-9.5.4.4-1.3" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.5.4.4-1.4">OK status code: 200 (OK)<a href="#section-9.5.4.4-1.4" class="pilcrow">¶</a>
 </li>
@@ -3035,7 +3046,7 @@ S: REPP-eppcode: 1000
 </li>
             <li class="compact" id="section-9.5.5-1.2">Request message: Object Update message<a href="#section-9.5.5-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-9.5.5-1.3">Response message: Optional Update response message<a href="#section-9.5.5-1.3" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.5.5-1.3">Response message: Optional error message<a href="#section-9.5.5-1.3" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.5.5-1.4">OK status code: 200 (OK)<a href="#section-9.5.5-1.4" class="pilcrow">¶</a>
 </li>
@@ -3085,60 +3096,157 @@ S: REPP-eppcode: 1000
 </div>
 </section>
 </div>
-<div id="extensions">
+<div id="extension-framework">
 <section id="section-9.6">
-        <h3 id="name-extensions">
-<a href="#section-9.6" class="section-number selfRef">9.6. </a><a href="#name-extensions" class="section-name selfRef">Extensions</a>
+        <h3 id="name-extension-framework">
+<a href="#section-9.6" class="section-number selfRef">9.6. </a><a href="#name-extension-framework" class="section-name selfRef">Extension Framework</a>
         </h3>
+<p id="section-9.6-1">The EPP Extension Framework allows for extending the EPP protocol at different locations, REPP defines additional REST resources for the Protocol and Command-Response extensions.<a href="#section-9.6-1" class="pilcrow">¶</a></p>
+<div id="protocol-extension">
+<section id="section-9.6.1">
+          <h4 id="name-protocol-extension">
+<a href="#section-9.6.1" class="section-number selfRef">9.6.1. </a><a href="#name-protocol-extension" class="section-name selfRef">Protocol Extension</a>
+          </h4>
 <ul class="compact">
-<li class="compact" id="section-9.6-1.1">Request: * /extensions/*<a href="#section-9.6-1.1" class="pilcrow">¶</a>
+<li class="compact" id="section-9.6.1-1.1">Request: * /extensions/*<a href="#section-9.6.1-1.1" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-9.6-1.2">Request message: *<a href="#section-9.6-1.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.6.1-1.2">Request message: *<a href="#section-9.6.1-1.2" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-9.6-1.3">Response message: *<a href="#section-9.6-1.3" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.6.1-1.3">Response message: *<a href="#section-9.6.1-1.3" class="pilcrow">¶</a>
 </li>
-          <li class="compact" id="section-9.6-1.4">OK status code: *<a href="#section-9.6-1.4" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.6.1-1.4">OK status code: *<a href="#section-9.6.1-1.4" class="pilcrow">¶</a>
 </li>
-        </ul>
-<p id="section-9.6-2">EPP protocol extensions, as defined in <a href="https://rfc-editor.org/rfc/rfc5730#appendix-Secion%202.7.3" class="relref">secion 2.7.3</a> are supported using the generic "/extensions" resource.
-The HTTP method used for a extension is not defined but must follow the RESTful principles.<a href="#section-9.6-2" class="pilcrow">¶</a></p>
-<p id="section-9.6-3">Example Extension request:
-The example below, shows the use of the "Domain Cancel Delete" command as defined as a custom command in <span>[<a href="#SIDN-EXT" class="cite xref">SIDN-EXT</a>]</span> by the .nl domain registry operator. Where the registrar can use the HTPP DELETE method on a domain name resource to cancel an active domain delete transaction and move the domain from the quarantine state back to the active state.<a href="#section-9.6-3" class="pilcrow">¶</a></p>
-<div class="lang-xml sourcecode" id="section-9.6-4">
-<pre>C: DELETE /repp/v1/extensions/domains/example.nl/quarantine HTTP/2
+          </ul>
+<p id="section-9.6.1-2">EPP Protocol extensions, defined in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.7.1" class="relref">Section 2.7.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> are supported using the "/extensions" root resource.
+The HTTP method used for a new Protocol extension is not defined but must follow the RESTful principles.<a href="#section-9.6.1-2" class="pilcrow">¶</a></p>
+<p id="section-9.6.1-3">The example below, illustrates the use of the "Domain Cancel Delete" command as defined as a custom command in <span>[<a href="#SIDN-EXT" class="cite xref">SIDN-EXT</a>]</span>. The new command is created below the "extensions" path element and after this element follows the "domains" object collection, finally a special "deletion" path element is added to the end of the URL. A client MUST use the HTPP DELETE method on a domain name deletion resource to cancel an ongoing domain delete transaction and move the domain from the grace state back to the active state.<a href="#section-9.6.1-3" class="pilcrow">¶</a></p>
+<p id="section-9.6.1-4">Example Protocol Extension request:<a href="#section-9.6.1-4" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-9.6.1-5.1">Request: DELETE /extensions/{collection}/{id}/deletion<a href="#section-9.6.1-5.1" class="pilcrow">¶</a>
+</li>
+            <li class="compact" id="section-9.6.1-5.2">Request message: None<a href="#section-9.6.1-5.2" class="pilcrow">¶</a>
+</li>
+            <li class="compact" id="section-9.6.1-5.3">Response message: Optional error response<a href="#section-9.6.1-5.3" class="pilcrow">¶</a>
+</li>
+            <li class="compact" id="section-9.6.1-5.4">OK status code: 204 (No Content)<a href="#section-9.6.1-5.4" class="pilcrow">¶</a>
+</li>
+          </ul>
+<div class="alignLeft art-text artwork" id="section-9.6.1-6">
+<pre>C: DELETE /repp/v1/extensions/domains/example.nl/deletion HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-svcs-ext: https://rxsd.domain-registry.nl/sidn-ext-epp-1.0
 C: REPP-cltrid: ABC-12345
 
 
-</pre><a href="#section-9.6-4" class="pilcrow">¶</a>
+</pre><a href="#section-9.6.1-6" class="pilcrow">¶</a>
 </div>
-<p id="section-9.6-5">Example Extension response:<a href="#section-9.6-5" class="pilcrow">¶</a></p>
-<div class="lang-xml sourcecode" id="section-9.6-6">
-<pre>S: HTTP/2 200 OK
+<p id="section-9.6.1-7">Example response:<a href="#section-9.6.1-7" class="pilcrow">¶</a></p>
+<div class="lang-xml sourcecode" id="section-9.6.1-8">
+<pre>S: HTTP/2 204 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
-S: Content-Length: 328
+S: Content-Length: 0
+S: REPP-svtrid: XYZ-12345
+S: REPP-cltrid: ABC-12345
+S: REPP-eppcode: 1000
+
+
+</pre><a href="#section-9.6.1-8" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="object-extension">
+<section id="section-9.6.2">
+          <h4 id="name-object-extension">
+<a href="#section-9.6.2" class="section-number selfRef">9.6.2. </a><a href="#name-object-extension" class="section-name selfRef">Object Extension</a>
+          </h4>
+<p id="section-9.6.2-1">An Object extension is differs from the other 2 extension types in the way that an Object extension is implemented using a new Object mapping for a new Object type, while re-using the existing EPP command and response structures. The newly created Object mapping, is simmilar to the existing Object mappings defined in <span>[<a href="#RFC5731" class="cite xref">RFC5731</a>]</span>, <span>[<a href="#RFC5732" class="cite xref">RFC5732</a>]</span> and <span>[<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>, and MUST be used in a similar fashion.<a href="#section-9.6.2-1" class="pilcrow">¶</a></p>
+<p id="section-9.6.2-2">A hypothetical new Object mapping for IP addresses, may result in a new resource collection named "ips", the semantics for the HTTP methods would have to be defined. Creating a new IP address may use the HTTP POST method on the "ips" collection.<a href="#section-9.6.2-2" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-9.6.2-3.1">Request: POST /{collection}/{id}<a href="#section-9.6.2-3.1" class="pilcrow">¶</a>
+</li>
+            <li class="compact" id="section-9.6.2-3.2">Request message: IP Create Request message<a href="#section-9.6.2-3.2" class="pilcrow">¶</a>
+</li>
+            <li class="compact" id="section-9.6.2-3.3">Response message: IP Create Response message<a href="#section-9.6.2-3.3" class="pilcrow">¶</a>
+</li>
+            <li class="compact" id="section-9.6.2-3.4">OK status code: 201 (Created)<a href="#section-9.6.2-3.4" class="pilcrow">¶</a>
+</li>
+          </ul>
+<p id="section-9.6.2-4">Example request:<a href="#section-9.6.2-4" class="pilcrow">¶</a></p>
+<div class="lang-xml sourcecode" id="section-9.6.2-5">
+<pre>C: POST /repp/v1/ips HTTP/2
+C: Host: repp.example.nl
+C: Authorization: Bearer &lt;token&gt;
+C: Accept: application/epp+xml
+C: Accept-Language: en
+C: REPP-svcs-ext: https://example.nl/epp-ips-1.0
+C: REPP-cltrid: ABC-12345
+C: Content-Type: application/epp+xml
+C: Content-Length: 220
+C:
+C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
+C:&lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
+C:  &lt;command&gt;
+C:    &lt;create&gt;
+C:      &lt;ips:create
+C:       xmlns:ip="https://example.nl/epp-ips-1.0"&gt;
+C:        &lt;ips:address&gt;192.0.2.1&lt;/ips:address&gt;
+C:        &lt;!-- The rest of the request is omitted here --&gt;
+C:      &lt;/ips:create&gt;
+C:    &lt;/create&gt;
+C:    &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
+C:  &lt;/command&gt;
+C:&lt;/epp&gt;
+
+
+</pre><a href="#section-9.6.2-5" class="pilcrow">¶</a>
+</div>
+<p id="section-9.6.2-6">Example response:<a href="#section-9.6.2-6" class="pilcrow">¶</a></p>
+<div class="lang-xml sourcecode" id="section-9.6.2-7">
+<pre>S: HTTP/2 201 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Example REPP server v1.0
+S: Content-Language: en
+S: Content-Length: 642
 S: Content-Type: application/epp+xml
+S: Location: https://repp.example.nl/repp/v1/ips/192.0.2.1
 S:
 S:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
-S:&lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
-S:  &lt;response&gt;
-S:    &lt;result code="1000"&gt;
-S:      &lt;msg&gt;Command completed successfully&lt;/msg&gt;
-S:    &lt;/result&gt;
-S:    &lt;trID&gt;
-S:      &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
-S:      &lt;svTRID&gt;XYZ-12345&lt;/svTRID&gt;
-S:    &lt;/trID&gt;
-S:  &lt;/response&gt;
+S:&lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+S:     xmlns:ips="https://example.nl/epp-ips-1.0"&gt;
+S:   &lt;response&gt;
+S:      &lt;result code="1000"&gt;
+S:         &lt;msg&gt;Command completed successfully&lt;/msg&gt;
+S:      &lt;/result&gt;
+S:      &lt;resData&gt;
+S:         &lt;ips:creData&gt;
+S:            &lt;!-- The rest of the response is omitted here --&gt;
+S:         &lt;/ips:creData&gt;
+S:      &lt;/resData&gt;
+S:      &lt;trID&gt;
+S:         &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
+S:         &lt;svTRID&gt;54321-XYZ&lt;/svTRID&gt;
+S:      &lt;/trID&gt;
+S:   &lt;/response&gt;
 S:&lt;/epp&gt;
 
-</pre><a href="#section-9.6-6" class="pilcrow">¶</a>
+
+</pre><a href="#section-9.6.2-7" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="command-response-extension">
+<section id="section-9.6.3">
+          <h4 id="name-command-response-extension">
+<a href="#section-9.6.3" class="section-number selfRef">9.6.3. </a><a href="#name-command-response-extension" class="section-name selfRef">Command-Response Extension</a>
+          </h4>
+<p id="section-9.6.3-1">Command-Response Extensions allow for adding elements to an existing object mapping, therefore no new extension reource is required, the existing resources can be used for existing and future extensions of this type.<a href="#section-9.6.3-1" class="pilcrow">¶</a></p>
+</section>
 </div>
 </section>
 </div>
@@ -3330,8 +3438,12 @@ Move Miek from Authors to Acknowledgments section?<a href="#section-15-1" class=
 <span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9113">[RFC9113]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9113">https://www.rfc-editor.org/info/rfc9113</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="XML">[XML]</dt>
+      <dd>
+<span class="refAuthor">W3C</span>, <span class="refTitle">"Extensible Markup Language (XML) 1.0 (Fifth Edition)"</span>, <time datetime="2013" class="refDate">2013</time>, <span>&lt;<a href="https://www.w3.org/TR/xml">https://www.w3.org/TR/xml</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
