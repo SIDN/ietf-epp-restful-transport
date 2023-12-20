@@ -29,7 +29,7 @@
 <t>REPP includes a mapping of <xref target="RFC5730"></xref> EPP commands to REST resources based on Uniform Resource Locators (URLs) defined in <xref target="RFC1738"></xref>. REPP uses a stateless architecture. It aims to provide a solution that is more suitable for complex, high availability environments.</t>
 <t><xref target="RFC5730" sectionFormat="bare" section="Section 2.1"></xref> describes how EPP can be layered over multiple transport protocols. Currently, EPP transport over TCP <xref target="RFC5734"></xref> is the only widely deployed transport mapping for EPP. <xref target="RFC5730" sectionFormat="bare" section="Section 2.1"></xref> requires that newly defined transport mappings preserve the stateful nature of EPP. This document updates this requirement to also allow stateless for EPP transport.</t>
 <t>The stateless nature of REPP requires that no client or application state is maintained on the server. Each client request to the server must contain all the information necessary for the server to process the request.</t>
-<t>REPP is data format agnostic, the client uses agent-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as XML and JSON.</t>
+<t>REPP is data format agnostic, the client uses agent-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as XML, JSON <xref target="RFC8259"></xref> or <xref target="YAML"></xref>.</t>
 <t>A good understanding of the EPP base protocol specification <xref target="RFC5730"></xref> is advised, to grasp the command mapping described in this document.</t>
 <t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <xref target="RFC2119"></xref>.</t>
 </section>
@@ -72,7 +72,7 @@ load balancing. Load balancing at the level of request messages is more efficien
 for HTTP based applications. HTTP provides an Authorization header <xref target="RFC2616" sectionFormat="of" section="14.8"></xref>.</t>
 </li>
 <li><t>Content negotiation, A server may choose to include support for multiple media types.
-The client must be able to signal the server what media type the should use for decoding request content en for encoding response content.
+The client must be able to signal to the server what media type the server should expect for the request content en to use for the response content.
 This document only describes the use of <xref target="XML"></xref> but the use of other media types such as JSON <xref target="RFC7159"></xref> should also be possible.</t>
 </li>
 <li><t>Compatibility with existing EPP commands and corresponding request and response messages.</t>
@@ -122,17 +122,16 @@ is the equivalent of the Version element in the EPP RFCs. The version used in th
 </section>
 
 <section anchor="session-management"><name>Session Management</name>
-<t>Session management as described in <xref target="RFC5730"></xref> requires a stateful server, maintaining client and application state. One of the main design considerations of REPP is to enable more scalable EPP services, for this the REPP server MUST use a stateless architecture. Session management functionality MUST be delegated to the HTTP layer.</t>
-<t>The server MUST not create and maintain client sessions for use over multiple client requests and NOT
-maintain any state information relating to the client or EPP process.</t>
-<t>Due to stateless nature of REPP, a request MUST contain all information required for the
-server to be able to successfully process the request. The client MUST include authentication credentials for each request. This MAY be done by using any of the available HTTP authentication mechanisms, such as those described in <xref target="RFC2617"></xref>.</t>
+<t>One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP server MUST use a stateless architecture and MUST NOT create and maintain client sessions. The Session concept is considered to be an anti pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.</t>
+<t>Session management as described in <xref target="RFC5730"></xref> requires a stateful server architecture for maintaining client and application state over multiple client request and is therefore no longer supported.</t>
+<t>A REPP request MUST contain all information required for the server to be able to successfully process the request. The client MUST include authentication credentials for each request. This MAY be done by using any of the available HTTP authentication mechanisms, such as those described in <xref target="RFC2617"></xref>.</t>
+<t>A REPP server MUST listen for HTTP connection requests on the standard TCP port assigned in <xref target="RFC2616"></xref>. After a connection has been established, the server MUST NOT return a Greeting message. The server MAY close open TCP connections when these violate server policies, for instance connections having a long inactivity period or a long connection lifetime.</t>
 </section>
 
 <section anchor="rest"><name>REST</name>
 <t>REPP uses the REST semantics, each HTTP method is assigned a distinct behaviour, section <xref target="http-method"></xref> provides a overview of the behaviour assinged to each method. REPP requests are expressed by using a URL refering to a resource, a HTTP method, HTTP headers and an optional message body containing the EPP request message.</t>
-<t>An REPP HTTP message body MUST contain at most a single EPP request or response. HTTP requests MUST be processed independently of each other and in the same order as received by the server.</t>
-<t>When using a HTTP version where the TCP connection is not reused, the client MAY use the &quot;Connection&quot; header to request for the server not to close the existing connection, so it can be re-used for future requests. The server MAY choose not to honor this request.</t>
+<t>An REPP HTTP message body MUST contain at most a single EPP request or response. HTTP requests MUST be processed independently of each other and in the same order as received by the server. A client MAY choose to send a new request, using a existing connection, before the response for the previous request has been received (pipelining). A server using HTTP/2 <xref target="RFC7540"></xref> or HTTP/3 <xref target="RFC9114"></xref> contains builtin support for stream multiplexing and MAY choose to support pipelining using this mechanism. Requests MUST be processed by the server in the order they have been received. The response MAY be returned out of order back to the client, due to the fact that some request may be processed faster than others.</t>
+<t>HTTP/1 does not use persistent connections by default, the client MAY use the &quot;Connection&quot; header to request for the server not to close the existing connection, so it can be re-used for future requests. The server MAY choose not to honor this request.</t>
 
 <section anchor="http-method"><name>Method Definition</name>
 <t>REPP commands MUST be executed by using an HTTP method on a resource identified by an URL. The server MUST support the following methods.</t>
@@ -183,6 +182,8 @@ HTTP message body.</t>
 <li><t><tt>Connection</tt>: If the server uses HTTP/1.1 or lower, the CLIENT MAY choose to use this header to request the server to keep op the TCT-connection. The client MUST not use this header when the server uses HTTP/2 <xref target="RFC9113" sectionFormat="of" section="8.2.2"></xref> or HTTP/3 <xref target="RFC9113" sectionFormat="of" section="4.2"></xref>
 </t>
 </li>
+<li><t><tt>Accept-Encoding</tt>: The client MAY choose to use the Accept-Encoding HTTP header to request the server to use compression for the response message body.</t>
+</li>
 </ul>
 <t></t>
 </section>
@@ -210,6 +211,8 @@ HTTP message body.</t>
 </li>
 <li><t><tt>Content-Language</tt>: The server MUST include this header in every response that contains an EPP message in the message body.</t>
 </li>
+<li><t><tt>Content-Encoding</tt>: The server MAY choose to compresses the responses message body, using a algorithm selected from the list of algorithms provided by the client using the Accept-Encoding request header.</t>
+</li>
 </ul>
 <t>REPP does not always return an EPP response message in the HTTP message body. The <tt>Object Check</tt> request for example, does not require the server to return an EPP response message. When the server does not return a EPP message, it MUST return at least the REPP-svtrid, REPP-cltrid and REPP-eppcode headers.</t>
 </section>
@@ -217,7 +220,7 @@ HTTP message body.</t>
 <section anchor="error-handling"><name>Error Handling</name>
 <t>
 Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. The endpoints described in <xref target="command-mapping"></xref> MUST return the specified HTTP status code for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.</t>
-<t>When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. An explanation of the error MUST be included in the message body of the HTTP response, as described in <xref target="RFC9110"></xref>. <xref target="tbl-error-mapping"></xref> contains the mapping for EPP result codes to HTTP status codes.</t>
+<t>When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. An explanation of the error MUST be included in the message body of the HTTP response, as described in <xref target="RFC9110"></xref>. <xref target="tbl-error-mapping"></xref> contains the mapping for EPP result codes to HTTP status codes. A error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.</t>
 <t>The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successful. The client MAY use the well defined HTTP status codes for error handling logic, without first having to parse the EPP result message.</t>
 <t>For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will cause the server to respond using an EPP result code 2106 this code is mapped to HTTP status code 400. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.</t>
 <table anchor="tbl-error-mapping"><name>EPP code to HTTP code mapping
@@ -656,7 +659,7 @@ S: REPP-result-code: 1000
 </section>
 
 <section anchor="info"><name>Info</name>
-<t>The Object Info request MUST use the HTTP GET method on a resource identifying an object instance. An object MAY have authorization attachted to it, the client then MUST use the HTTP POST method and include the authorization information in the request.</t>
+<t>The Object Info request MUST use the HTTP GET method on a resource identifying an object instance, using an empty message body. If the object has authorization information attachted and the authorization is not linked to a registrant or contact object, then the client MUST use the REPP-authInfo HTTP header. If the authorization is linked to a registrant or contact object the client MUST use the HTTP POST method and include the authorization information in the Object Info request.</t>
 <t>Example request for an object not using authorization information.</t>
 
 <ul spacing="compact">
@@ -1460,7 +1463,7 @@ S: REPP-eppcode: 1000
 </section>
 
 <section anchor="object-extension"><name>Object Extension</name>
-<t>An Object extension is differs from the other 2 extension types in the way that an Object extension is implemented using a new Object mapping for a new Object type, while re-using the existing EPP command and response structures. The newly created Object mapping, is simmilar to the existing Object mappings defined in <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref>, and MUST be used in a similar fashion.</t>
+<t>An Object extension is differs from the other 2 extension types in the way that an Object extension is implemented using a new Object mapping for a new Object type, while re-using the existing EPP command and response structures. The newly created Object mapping, is similar to the existing Object mappings defined in <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref>, and MUST be used in a similar fashion.</t>
 <t>A hypothetical new Object mapping for IP addresses, may result in a new resource collection named &quot;ips&quot;, the semantics for the HTTP methods would have to be defined. Creating a new IP address may use the HTTP POST method on the &quot;ips&quot; collection.</t>
 
 <ul spacing="compact">
@@ -1539,10 +1542,28 @@ S:</epp>
 <section anchor="transport-mapping-considerations"><name>Transport Mapping Considerations</name>
 <t>
   </t>
-<t><xref target="RFC5730" sectionFormat="of" section="2.1"></xref> of the EPP protocol specification describes considerations to be addressed by a protocol transport mapping. This section updates the following consideration.</t>
-<t>&quot;The transport mapping MUST preserve the stateful nature of the protocol&quot; is updated to:
-&quot;The transport mapping MAY preserve the stateful nature of the protocol.&quot;</t>
-<t>REPP uses the REST architectural style for defining a stateless API based on the stateless HTTP protocol. The server MUST not keep any client state, only the state of resources MUST be maintained.</t>
+<t><xref target="RFC5730" sectionFormat="of" section="2.1"></xref> of the EPP protocol specification describes considerations to be addressed by a protocol transport mapping.
+These considerations are satisfied by a combination of REPP features and features provided by HTTP and underlying transport protocols.</t>
+
+<ul>
+<li><t>The consideration: &quot;The transport mapping MUST preserve the stateful nature of the protocol&quot;, is updated to: &quot;The transport mapping MUST preserve the stateful nature of the protocol, when using a stateful transport protocol&quot;. REPP uses the REST architectural style for defining a stateless API based on the stateless HTTP protocol, and therefore satisfies the updated consideration.</t>
+</li>
+<li><t>Section <xref target="rest"></xref> describes how HTTP multiplexing may be used for pipelining multiple requests. A server may allow pipelining, requests are to be processed in the order they have been received.</t>
+</li>
+<li><t>REPP is based on the HTTP protocol, which uses the client-server model.</t>
+</li>
+<li><t>REPP requests are transmitted using HTTP, this document refrers to the HTTP protocol specification for how data units are framed.</t>
+</li>
+<li><t>HTTP/1 and HTTP/2 use TCP as a transport protocol and this includes features to provide reliability, flow control, ordered delivery, and congestion control <xref target="RFC793" sectionFormat="of" section="1.5"></xref> describes these features in detail; congestion control principles are described further in <xref target="RFC2581"></xref> and <xref target="RFC2914"></xref>. HTTP/3 is uses QUIC (UDP) as a transport protocol, which has builtin congestion control over UDP.</t>
+</li>
+<li><t>Section <xref target="rest"></xref> describes how requests are processed independently of each other.</t>
+</li>
+<li><t>Errors while processing a REPP request are isolated to this request and do not effect other requests sent by the client or other clients, this is described in section <xref target="error-handling"></xref>.</t>
+</li>
+<li><t>Batch-oriented processing (combining multiple EPP commands in a single HTTP request) is not permitted. To maximize scalability
+every request must contain a single command, as described in section <xref target="rest"></xref>.</t>
+</li>
+</ul>
 </section>
 
 <section anchor="iana-considerations"><name>IANA Considerations</name>
@@ -1556,7 +1577,11 @@ Accept-Language in HTTP Header</t>
 
 <section anchor="security-considerations"><name>Security Considerations</name>
 <t>All REPP endpoints MUST be secure, even Hello.</t>
-<t>HTTP Basic Authentication with an API Key is used by many APIs, this is a simple and effective authentication mechanism.</t>
+<t>HTTP Authentication with an API Key is used by many APIs, this is a simple and effective authentication mechanism.
+schemes: Bearer, JWT, Basic?
+short lived tokens?
+see: <eref target="https://datatracker.ietf.org/doc/html/rfc6750">https://datatracker.ietf.org/doc/html/rfc6750</eref>
+see: <eref target="https://apidog.com/blog/api-authorization/">https://apidog.com/blog/api-authorization/</eref></t>
 <t></t>
 <t><xref target="RFC5730"></xref> describes a Login command for transmitting client
 credentials. This command MUST NOT be used for REPP. Due to
@@ -1636,8 +1661,10 @@ Move Miek from Authors to Acknowledgments section?</t>
 </reference>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.1738.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2581.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2616.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2617.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2914.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3735.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3986.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5246.xml"/>
@@ -1650,8 +1677,12 @@ Move Miek from Authors to Acknowledgments section?</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6648.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7159.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7234.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7540.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.793.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9110.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9113.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9114.xml"/>
 <reference anchor="XML" target="https://www.w3.org/TR/xml">
   <front>
     <title>Extensible Markup Language (XML) 1.0 (Fifth Edition)</title>
@@ -1659,6 +1690,15 @@ Move Miek from Authors to Acknowledgments section?</t>
       <organization>W3C</organization>
     </author>
     <date year="2013"></date>
+  </front>
+</reference>
+<reference anchor="YAML" target="https://yaml.org/spec/1.2.2/">
+  <front>
+    <title>YAML: YAML Ain&#39;t Markup Language</title>
+    <author>
+      <organization>YAML Language Development Team</organization>
+    </author>
+    <date year="2000"></date>
   </front>
 </reference>
 </references>
