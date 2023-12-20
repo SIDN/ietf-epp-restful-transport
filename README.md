@@ -14,6 +14,10 @@ For generated output see:
 [PDF](https://sidn.github.io/ietf-epp-restful-transport/draft-epp-restful-transport.pdf)  
 [XML](https://sidn.github.io/ietf-epp-restful-transport/draft-epp-restful-transport.xml)  
 
+## Related
+
+ [EPP-RESTful-JSON](https://github.com/SIDN/ietf-epp-restful-json) is a draft describing how EPP XML messages can be mapped to JSON
+
 ## REST
 
 For more information about designing a good REST API, see:
