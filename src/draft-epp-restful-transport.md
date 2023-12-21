@@ -576,7 +576,7 @@ The client MAY choose to use filtering to limit the number of objects returned f
 
 Query string parameters used for filtering:
 
-- `attr`: The name of the object attribute or field to apply the filter on
+- `filter`: The name of the object attribute or field to apply the filter on
 - `val`: The value used for filtering objects
 
 The domain name Info request is different from the Contact- and Host Info request, in the sense that EPP Domain Name Mapping [@!RFC5731, Section 3.1.2] describes an OPTIONAL "hosts" attribute. This attribute is used for filtering hosts returned in the response, the "hosts" attribute is mapped to the generic query string parameters used for filtering.
@@ -584,15 +584,15 @@ The domain name Info request is different from the Contact- and Host Info reques
 The filtering value for the hosts attribute is "all". This default MUST be used by the server when the query string parameter is absent from the request URL.
 
 -  default: GET /domains/{id}
--  all: GET /domains/{id}?attr=hosts&val=all
--  del: GET /domains/{id}?attr=hosts&val=del
--  sub: GET /domains/{id}?attr=hosts&val=sub
--  none: GET /domains/{id}?attr=hosts&val=none
+-  all: GET /domains/{id}?filter=hosts&val=all
+-  del: GET /domains/{id}?filter=hosts&val=del
+-  sub: GET /domains/{id}?filter=hosts&val=sub
+-  none: GET /domains/{id}?filter=hosts&val=none
 
 Example request including all hosts objects, without any required authorization data:
 
 ```
-C: GET /repp/v1/domains/example.nl?attr=hosts&val=all HTTP/2
+C: GET /repp/v1/domains/example.nl?filter=hosts&val=all HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
