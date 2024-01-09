@@ -1427,8 +1427,7 @@ Table: Obsolete EPP result codes
 
 # Acknowledgments
 
-TODO
-Move Miek from Authors to Acknowledgments section?
+The authors would like to thank Miek Gieben who worked with us on an earlier, similar draft.
 
 {backmatter}
 
