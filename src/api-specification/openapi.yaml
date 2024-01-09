@@ -1,0 +1,754 @@
+openapi: '3.0.2'
+info:
+  title: RESTful EPP
+  version: '1.0'
+servers:
+  - url: https://api.example.nl/repp/v1/
+paths:
+# common
+  /:
+    get:
+      summary: Hello
+      tags:
+        - common
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+
+  /messages:
+    get:
+      summary: Poll request
+      tags:
+        - common
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+  /messages/{id}:
+    head:
+      summary: Poll ack
+      tags:
+        - common
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string     
+              application/epp+json:
+                schema:
+                  type: string 
+
+ # domains
+  /domains/{id}:
+    head:
+      summary: Domain check
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    get:
+      summary: Domain info
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      - name: attr
+        in: query
+        required: false
+      - name: val
+        in: query
+        required: false
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    post:
+      summary: Domain info using request message body
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      - name: attr
+        in: query
+        required: false
+      - name: val
+        in: query
+        required: false
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+            schema:
+              type: string
+
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    delete:
+      summary: Domain delete
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string       
+
+    patch:
+      summary: Domain update
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+                  
+
+  /domains:
+    post:
+      summary: Domain create
+      tags:
+        - domains
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '201':
+            description: CREATED
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+
+  /domains/{id}/renewals:
+    post:
+      summary: Domain renew
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '201':
+            description: CREATED
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+
+  /domains/{id}/transfers:
+    post:
+      summary: Domain transfer request
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      requestBody:
+        required: false
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '201':
+            description: CREATED
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+                
+  /domains/{id}/transfers/latest:
+    get:
+      summary: Domain transfer query
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    post:
+      summary: Domain transfer query using message body
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      requestBody:
+        required: false
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    
+    delete:
+      summary: Domain transfer cancel
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+            
+    put:
+      summary: Domain transfer approve
+      tags:
+        - domains
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+
+
+ # hosts
+  /hosts/{id}:
+    head:
+      summary: Host check
+      tags:
+        - hosts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    get:
+      summary: Host info
+      tags:
+        - hosts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      - name: attr
+        in: query
+        required: false
+      - name: val
+        in: query
+        required: false
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    post:
+      summary: Host info using request message body
+      tags:
+        - hosts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    delete:
+      summary: Host delete
+      tags:
+        - hosts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string       
+              application/epp+json:
+                schema:
+                  type: string
+
+    patch:
+      summary: Host update
+      tags:
+        - hosts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+                  
+
+  /hosts:
+    post:
+      summary: Host create
+      tags:
+        - hosts
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '201':
+            description: CREATED
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+
+ 
+ # contacts
+  /contacts/{id}:
+    head:
+      summary: Contact check
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    get:
+      summary: Contact info
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      - name: attr
+        in: query
+        required: false
+      - name: val
+        in: query
+        required: false
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    post:
+      summary: Contact info using request message body
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      - name: attr
+        in: query
+        required: false
+      - name: val
+        in: query
+        required: false
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+            schema:
+              type: string
+
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    delete:
+      summary: Contact delete
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string       
+
+    patch:
+      summary: Contact update
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+                  
+
+  /contacts:
+    post:
+      summary: Contact create
+      tags:
+        - contacts
+      requestBody:
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '201':
+            description: CREATED
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+
+  /contacts/{id}/transfers:
+    post:
+      summary: Contact transfer request
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      requestBody:
+        required: false
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '201':
+            description: CREATED
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+                
+  /contacts/{id}/transfers/latest:
+    get:
+      summary: Contact transfer query
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    post:
+      summary: Contact transfer query using message body
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      requestBody:
+        required: false
+        content:
+          application/epp+xml:
+            schema:
+              type: string
+          application/epp+json:
+                schema:
+                  type: string
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+    
+    delete:
+      summary: Contact transfer cancel
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+            
+    put:
+      summary: Contact transfer approve
+      tags:
+        - contacts
+      parameters:
+      - name: id
+        in: path
+        required: true
+      responses:
+          '200':
+            description: OK
+            content:
+              application/epp+xml:
+                schema:
+                  type: string
+              application/epp+json:
+                schema:
+                  type: string
+
