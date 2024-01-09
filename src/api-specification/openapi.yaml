@@ -4,6 +4,7 @@ info:
   version: '1.0'
 servers:
   - url: https://api.example.nl/repp/v1/
+
 paths:
 # common
   /:
@@ -27,6 +28,8 @@ paths:
       summary: Poll request
       tags:
         - common
+      parameters:
+        - $ref: '#/components/parameters/p_cltrid'
       responses:
           '200':
             description: OK
@@ -43,9 +46,9 @@ paths:
       tags:
         - common
       parameters:
-      - name: id
-        in: path
-        required: true
+        - $ref: '#/components/parameters/p_id'
+        - $ref: '#/components/parameters/p_cltrid'
+        - $ref: '#/components/parameters/p_svcs'
       responses:
           '200':
             description: OK
@@ -59,14 +62,12 @@ paths:
 
  # domains
   /domains/{id}:
+    parameters:
+     - $ref: '#/components/parameters/p_id'
     head:
       summary: Domain check
       tags:
         - domains
-      parameters:
-      - name: id
-        in: path
-        required: true
       responses:
           '200':
             description: OK
@@ -82,15 +83,16 @@ paths:
       tags:
         - domains
       parameters:
-      - name: id
-        in: path
-        required: true
-      - name: attr
-        in: query
-        required: false
-      - name: val
-        in: query
-        required: false
+        - name: attr
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: val
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
           '200':
             description: OK
@@ -106,15 +108,16 @@ paths:
       tags:
         - domains
       parameters:
-      - name: id
-        in: path
-        required: true
-      - name: attr
-        in: query
-        required: false
-      - name: val
-        in: query
-        required: false
+        - name: attr
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: val
+          in: query
+          required: false
+          schema:
+            type: string
       requestBody:
         content:
           application/epp+xml:
@@ -138,10 +141,6 @@ paths:
       summary: Domain delete
       tags:
         - domains
-      parameters:
-      - name: id
-        in: path
-        required: true
       responses:
           '200':
             description: OK
@@ -157,10 +156,6 @@ paths:
       summary: Domain update
       tags:
         - domains
-      parameters:
-      - name: id
-        in: path
-        required: true
       requestBody:
         content:
           application/epp+xml:
@@ -206,14 +201,12 @@ paths:
                   type: string
 
   /domains/{id}/renewals:
+    parameters:
+     - $ref: '#/components/parameters/p_id'
     post:
       summary: Domain renew
       tags:
         - domains
-      parameters:
-      - name: id
-        in: path
-        required: true
       requestBody:
         content:
           application/epp+xml:
@@ -234,14 +227,12 @@ paths:
                   type: string
 
   /domains/{id}/transfers:
+    parameters:
+     - $ref: '#/components/parameters/p_id'
     post:
       summary: Domain transfer request
       tags:
         - domains
-      parameters:
-      - name: id
-        in: path
-        required: true
       requestBody:
         required: false
         content:
@@ -263,14 +254,12 @@ paths:
                   type: string
                 
   /domains/{id}/transfers/latest:
+    parameters:
+     - $ref: '#/components/parameters/p_id'
     get:
       summary: Domain transfer query
       tags:
         - domains
-      parameters:
-      - name: id
-        in: path
-        required: true
       responses:
           '200':
             description: OK
@@ -285,10 +274,6 @@ paths:
       summary: Domain transfer query using message body
       tags:
         - domains
-      parameters:
-      - name: id
-        in: path
-        required: true
       requestBody:
         required: false
         content:
@@ -313,10 +298,6 @@ paths:
       summary: Domain transfer cancel
       tags:
         - domains
-      parameters:
-      - name: id
-        in: path
-        required: true
       responses:
           '200':
             description: OK
@@ -332,10 +313,6 @@ paths:
       summary: Domain transfer approve
       tags:
         - domains
-      parameters:
-      - name: id
-        in: path
-        required: true
       responses:
           '200':
             description: OK
@@ -350,14 +327,18 @@ paths:
 
  # hosts
   /hosts/{id}:
+    parameters:
+     - $ref: '#/components/parameters/p_id'
     head:
       summary: Host check
       tags:
         - hosts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
           '200':
             description: OK
@@ -373,15 +354,21 @@ paths:
       tags:
         - hosts
       parameters:
-      - name: id
-        in: path
-        required: true
-      - name: attr
-        in: query
-        required: false
-      - name: val
-        in: query
-        required: false
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: attr
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: val
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
           '200':
             description: OK
@@ -397,9 +384,11 @@ paths:
       tags:
         - hosts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/epp+xml:
@@ -423,9 +412,11 @@ paths:
       tags:
         - hosts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
           '200':
             description: OK
@@ -442,9 +433,11 @@ paths:
       tags:
         - hosts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/epp+xml:
@@ -492,14 +485,18 @@ paths:
  
  # contacts
   /contacts/{id}:
+    parameters:
+     - $ref: '#/components/parameters/p_id'
     head:
       summary: Contact check
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
           '200':
             description: OK
@@ -515,15 +512,21 @@ paths:
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
-      - name: attr
-        in: query
-        required: false
-      - name: val
-        in: query
-        required: false
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: attr
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: val
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
           '200':
             description: OK
@@ -539,15 +542,21 @@ paths:
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
-      - name: attr
-        in: query
-        required: false
-      - name: val
-        in: query
-        required: false
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: attr
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: val
+          in: query
+          required: false
+          schema:
+            type: string
       requestBody:
         content:
           application/epp+xml:
@@ -572,9 +581,11 @@ paths:
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
           '200':
             description: OK
@@ -591,9 +602,11 @@ paths:
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/epp+xml:
@@ -639,14 +652,18 @@ paths:
                   type: string
 
   /contacts/{id}/transfers:
+    parameters:
+     - $ref: '#/components/parameters/p_id'
     post:
       summary: Contact transfer request
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         required: false
         content:
@@ -668,14 +685,18 @@ paths:
                   type: string
                 
   /contacts/{id}/transfers/latest:
+    parameters:
+     - $ref: '#/components/parameters/p_id'
     get:
       summary: Contact transfer query
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
           '200':
             description: OK
@@ -691,9 +712,11 @@ paths:
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         required: false
         content:
@@ -719,36 +742,67 @@ paths:
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
             
     put:
       summary: Contact transfer approve
       tags:
         - contacts
       parameters:
-      - name: id
-        in: path
-        required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
-          '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
-
+        '200':
+          $ref: '#/components/responses/200okWithBody'
+          
+components:
+  parameters:
+    p_id:
+      name: id
+      in: path
+      required: true
+      schema:
+         type: string
+    p_cltrid:
+      name: REPP-cltrid
+      in: header
+      schema:
+        type: string
+      required: true
+    p_svcs:
+      name: REPP-svcs
+      in: header
+      schema:
+        type: string
+      required: false
+      
+  headers:
+    svtrid:
+      schema:
+        type: string
+      required: true
+  
+  responses:
+    200okWithBody:
+      description: OK
+      content:
+        application/epp+xml:
+           schema:
+             type: string
+        application/epp+json:
+           schema:
+             type: string
+      headers:
+        REPP-svtrid:
+          $ref: '#/components/headers/svtrid'
+      
