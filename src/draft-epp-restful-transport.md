@@ -1354,7 +1354,7 @@ These considerations are satisfied by a combination of REPP features and feature
 
 - The consideration: "The transport mapping MUST preserve the stateful nature of the protocol", is updated to: "The transport mapping MUST preserve the stateful nature of the protocol, when using a stateful transport protocol". REPP uses the REST architectural style for defining a stateless API based on the stateless HTTP protocol, and therefore satisfies the updated consideration. 
 
-- Section (#rest) describes how HTTP multiplexing may be used for pipelining multiple requests. A server may allow pipelining, requests are to be processed in the order they have been received.
+- (#rest) describes how HTTP multiplexing may be used for pipelining multiple requests. A server may allow pipelining, requests are to be processed in the order they have been received.
 
 - REPP is based on the HTTP protocol, which uses the client-server model.
 - REPP requests are transmitted using HTTP, this document refrers to the HTTP protocol specification for how data units are framed.
