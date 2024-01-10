@@ -15,7 +15,7 @@
 <workgroup>Network Working Group</workgroup>
 
 <abstract>
-<t>This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol <xref target="RFC5730"></xref>. REPP enables the development a stateless and scaleable EPP service.</t>
+<t>This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol <xref target="RFC5730"></xref>. REPP enables the development of a stateless and scaleable EPP service.</t>
 <t>This document includes a mapping of <xref target="RFC5730"></xref> <xref target="XML"></xref> EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are retained and reused in RESTful EPP.</t>
 <t>The stateless REPP server does not maintain any client or application state, allowing for scalable EPP services and enabling load balancing at the request level instead of the session level as described in <xref target="RFC5734"></xref>.</t>
 </abstract>
@@ -25,7 +25,7 @@
 <middle>
 
 <section anchor="introduction"><name>Introduction</name>
-<t>This document describes an Application Programming Interface (API) for the Extensible Provisioning Protocol (EPP) protocol described in <xref target="RFC5730"></xref>. The API leverages the HTTP protocol <xref target="RFC2616"></xref> and the principles of <xref target="REST"></xref>. Conforming to the REST constraints is generally referred to as being &quot;RESTful&quot;. Hence we dubbed the API: &quot;'RESTful EPP&quot; or &quot;REPP&quot; for short.</t>
+<t>This document describes an Application Programming Interface (API) for the Extensible Provisioning Protocol (EPP) protocol described in <xref target="RFC5730"></xref>. The API leverages the HTTP protocol <xref target="RFC2616"></xref> and the principles of <xref target="REST"></xref>. Conforming to the REST constraints is generally referred to as being &quot;RESTful&quot;. Hence the API is dubbed: &quot;'RESTful EPP&quot; or &quot;REPP&quot; for short.</t>
 <t>REPP includes a mapping of <xref target="RFC5730"></xref> EPP commands to REST resources based on Uniform Resource Locators (URLs) defined in <xref target="RFC1738"></xref>. REPP uses a stateless architecture. It aims to provide a solution that is more suitable for complex, high availability environments.</t>
 <t><xref target="RFC5730" sectionFormat="bare" section="Section 2.1"></xref> describes how EPP can be layered over multiple transport protocols. Currently, EPP transport over TCP <xref target="RFC5734"></xref> is the only widely deployed transport mapping for EPP. <xref target="RFC5730" sectionFormat="bare" section="Section 2.1"></xref> requires that newly defined transport mappings preserve the stateful nature of EPP. This document updates this requirement to also allow stateless for EPP transport.</t>
 <t>The stateless nature of REPP requires that no client or application state is maintained on the server. Each client request to the server must contain all the information necessary for the server to process the request.</t>
@@ -88,12 +88,12 @@ This document only describes the use of <xref target="XML"></xref> but the use o
 <t><xref target="RFC3735" sectionFormat="bare" section="Section 2"></xref> describes how the EPP extension framework can be used to extend EPP functionality by adding new features at the protocol, object and command-response level. This section describes the impact of REPP on each of the extension levels:</t>
 
 <ul>
-<li><t>Protocol Extension: The <xref target="command-mapping"></xref> section describes an protocol extension resource for use with existing and future protocol extensions. REPP does not define a new Protocol extension. All existing and future Protocol extension level EPP extensions MAY be used.</t>
+<li><t>Protocol Extension: <xref target="command-mapping"></xref> describes an protocol extension resource for use with existing and future protocol extensions. REPP does not define a new Protocol extension. All existing and future Protocol extension level EPP extensions MAY be used.</t>
 </li>
 <li><t>Object extension: REPP does not define any new object level extensions. All existing and future object level EPP extensions MAY be used.</t>
 </li>
 <li><t>Command-Response extension:
-The <xref target="command-mapping"></xref> section describes a Command-Response extension resource for each object mapping and can be used for existing and future command extensions. REPP does not define a new Command-Response extension. All existing and future Command-Response extension level EPP extensions MAY be used.</t>
+<xref target="command-mapping"></xref> describes a Command-Response extension resource for each object mapping and can be used for existing and future command extensions. REPP does not define a new Command-Response extension. All existing and future Command-Response extension level EPP extensions MAY be used.</t>
 </li>
 </ul>
 </section>
@@ -129,7 +129,7 @@ is the equivalent of the Version element in the EPP RFCs. The version used in th
 </section>
 
 <section anchor="rest"><name>REST</name>
-<t>REPP uses the REST semantics, each HTTP method is assigned a distinct behaviour, section <xref target="http-method"></xref> provides a overview of the behaviour assinged to each method. REPP requests are expressed by using a URL refering to a resource, a HTTP method, HTTP headers and an optional message body containing the EPP request message.</t>
+<t>REPP uses the REST semantics, each HTTP method is assigned a distinct behaviour, <xref target="http-method"></xref> provides a overview of the behaviour assinged to each method. REPP requests are expressed by using a URL refering to a resource, a HTTP method, HTTP headers and an optional message body containing the EPP request message.</t>
 <t>An REPP HTTP message body MUST contain at most a single EPP request or response. HTTP requests MUST be processed independently of each other and in the same order as received by the server. A client MAY choose to send a new request, using a existing connection, before the response for the previous request has been received (pipelining). A server using HTTP/2 <xref target="RFC7540"></xref> or HTTP/3 <xref target="RFC9114"></xref> contains builtin support for stream multiplexing and MAY choose to support pipelining using this mechanism. Requests MUST be processed by the server in the order they have been received. The response MAY be returned out of order back to the client, due to the fact that some request may be processed faster than others.</t>
 <t>HTTP/1 does not use persistent connections by default, the client MAY use the &quot;Connection&quot; header to request for the server not to close the existing connection, so it can be re-used for future requests. The server MAY choose not to honor this request.</t>
 
@@ -166,8 +166,7 @@ The client and server MUST support agent-driven content negotiation and related 
 HTTP request headers are used to transmit additional or optional request data to the server. All REPP HTTP headers MUST have the &quot;REPP-&quot; prefix, following the recommendations in <xref target="RFC6648"></xref>.</t>
 
 <ul>
-<li><t><tt>REPP-cltrid</tt>:  The client transaction identifier is the equivalent of the <tt>clTRID</tt> element defined in <xref target="RFC5730"></xref> and MUST be used accordingly when the REPP request does not contain an EPP request in the
-HTTP message body.</t>
+<li><t><tt>REPP-cltrid</tt>:  The client transaction identifier is the equivalent of the <tt>clTRID</tt> element defined in <xref target="RFC5730"></xref> and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.</t>
 </li>
 <li><t><tt>REPP-svcs</tt>: The namespace used by the client in the EPP request message, this is equivalent to the &quot;svcs&quot; element in the Login command defined in <xref target="RFC5730" sectionFormat="of" section="2.9.1.1"></xref>. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.
 </t>
@@ -194,7 +193,7 @@ HTTP message body.</t>
 <ul>
 <li><t><tt>REPP-svtrid</tt>:  This header is the equivalent of the &quot;svTRID&quot; element defined in <xref target="RFC5730"></xref> and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If an HTTP message body with the EPP XML equivalent &quot;svTRID&quot; exists, both values MUST be consistent.</t>
 </li>
-<li><t><tt>REPP-cltrid</tt>: This header is the equivalent of the &quot;clTRID&quot; element defined in <xref target="RFC5730"></xref> and MUST be used accordingly. If the contents of the HTTP message body contains a &quot;clTRID&quot; value, then both values MUST be consistent.</t>
+<li><t><tt>REPP-cltrid</tt>: This header is the equivalent of the &quot;clTRID&quot; element defined in <xref target="RFC5730"></xref> and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a &quot;clTRID&quot; value, then both values MUST be consistent.</t>
 </li>
 <li><t><tt>REPP-eppcode</tt>: This header is the equivalent of the result code defined in <xref target="RFC5730"></xref> and MUST be used accordingly. This header MUST be used when a response HTTP message body has no content, and MAY be used in all other situations to provide easy access to the EPP result code.
 </t>
@@ -219,161 +218,10 @@ HTTP message body.</t>
 
 <section anchor="error-handling"><name>Error Handling</name>
 <t>
-Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. The endpoints described in <xref target="command-mapping"></xref> MUST return the specified HTTP status code for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.</t>
-<t>When an EPP command results in a negative completion result code (2xxx), the server MUST return a semantically equivalent HTTP status code. An explanation of the error MUST be included in the message body of the HTTP response, as described in <xref target="RFC9110"></xref>. <xref target="tbl-error-mapping"></xref> contains the mapping for EPP result codes to HTTP status codes. A error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.</t>
-<t>The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successful. The client MAY use the well defined HTTP status codes for error handling logic, without first having to parse the EPP result message.</t>
-<t>For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will cause the server to respond using an EPP result code 2106 this code is mapped to HTTP status code 400. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.</t>
-<table anchor="tbl-error-mapping"><name>EPP code to HTTP code mapping
-</name>
-<thead>
-<tr>
-<th>EPP result code</th>
-<th>HTTP status code</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-<td>2000</td>
-<td>501</td>
-</tr>
-
-<tr>
-<td>2001</td>
-<td>400</td>
-</tr>
-
-<tr>
-<td>2002</td>
-<td>405</td>
-</tr>
-
-<tr>
-<td>2003</td>
-<td>400</td>
-</tr>
-
-<tr>
-<td>2004</td>
-<td>400</td>
-</tr>
-
-<tr>
-<td>2005</td>
-<td>400</td>
-</tr>
-
-<tr>
-<td>2100</td>
-<td>400</td>
-</tr>
-
-<tr>
-<td>2101</td>
-<td>501</td>
-</tr>
-
-<tr>
-<td>2102</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2103</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2104</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2105</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2106</td>
-<td>400</td>
-</tr>
-
-<tr>
-<td>2201</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2202</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2300</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2301</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2302</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2303</td>
-<td>404</td>
-</tr>
-
-<tr>
-<td>2304</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2305</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2306</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2307</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2308</td>
-<td></td>
-</tr>
-
-<tr>
-<td>2400</td>
-<td>500</td>
-</tr>
-
-<tr>
-<td>2500</td>
-<td>500</td>
-</tr>
-
-<tr>
-<td>2501</td>
-<td>401</td>
-</tr>
-
-<tr>
-<td>2502</td>
-<td>429</td>
-</tr>
-</tbody>
-</table><t>TODO: complete the table</t>
+Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. The endpoints described in <xref target="command-mapping"></xref> MUST return HTTP status code 200 (Ok) for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.</t>
+<t>When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in <xref target="RFC9110"></xref>. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.</t>
+<t>The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status codes andf the REPP-eppcode HTTP header for error handling logic, without having to parse the EPP result message.</t>
+<t>For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.</t>
 </section>
 </section>
 
@@ -767,7 +615,7 @@ The client MAY choose to use filtering to limit the number of objects returned f
 <t>Query string parameters used for filtering:</t>
 
 <ul spacing="compact">
-<li><tt>attr</tt>: The name of the object attribute or field to apply the filter on</li>
+<li><tt>filter</tt>: The name of the object attribute or field to apply the filter on</li>
 <li><tt>val</tt>: The value used for filtering objects</li>
 </ul>
 <t>The domain name Info request is different from the Contact- and Host Info request, in the sense that EPP Domain Name Mapping <xref target="RFC5731" sectionFormat="bare" section="Section 3.1.2"></xref> describes an OPTIONAL &quot;hosts&quot; attribute. This attribute is used for filtering hosts returned in the response, the &quot;hosts&quot; attribute is mapped to the generic query string parameters used for filtering.</t>
@@ -775,14 +623,14 @@ The client MAY choose to use filtering to limit the number of objects returned f
 
 <ul spacing="compact">
 <li>default: GET /domains/{id}</li>
-<li>all: GET /domains/{id}?attr=hosts&amp;val=all</li>
-<li>del: GET /domains/{id}?attr=hosts&amp;val=del</li>
-<li>sub: GET /domains/{id}?attr=hosts&amp;val=sub</li>
-<li>none: GET /domains/{id}?attr=hosts&amp;val=none</li>
+<li>all: GET /domains/{id}?filter=hosts&amp;val=all</li>
+<li>del: GET /domains/{id}?filter=hosts&amp;val=del</li>
+<li>sub: GET /domains/{id}?filter=hosts&amp;val=sub</li>
+<li>none: GET /domains/{id}?filter=hosts&amp;val=none</li>
 </ul>
 <t>Example request including all hosts objects, without any required authorization data:</t>
 
-<artwork><![CDATA[C: GET /repp/v1/domains/example.nl?attr=hosts&val=all HTTP/2
+<artwork><![CDATA[C: GET /repp/v1/domains/example.nl?filter=hosts&val=all HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
@@ -857,7 +705,7 @@ S:</epp>
 <li>Response message: None</li>
 <li>OK status code: 200 (OK)</li>
 </ul>
-<t>The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The &quot;op=ack&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.2.3"></xref> are assigned to the HTTP DELETE method. The &quot;msgID&quot; attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body.</t>
+<t>The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The &quot;op=ack&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.2.3"></xref> are assigned to the HTTP DELETE method. The &quot;msgID&quot; attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successfull response, the server may add content to the message body of an error response.</t>
 <t>Example request:</t>
 
 <artwork><![CDATA[C: DELETE /repp/v1/messages/12345 HTTP/2
@@ -1032,7 +880,7 @@ C:</epp>
 </sourcecode>
 <t>Example Domain Create response:</t>
 
-<sourcecode type="xml"><![CDATA[S: HTTP/2 201 OK
+<sourcecode type="xml"><![CDATA[S: HTTP/2 201 CREATED
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
@@ -1084,7 +932,7 @@ C: REPP-cltrid: ABC-12345
 </artwork>
 <t>Example Domain Delete response:</t>
 
-<artwork><![CDATA[S: HTTP/2 204 OK
+<artwork><![CDATA[S: HTTP/2 204 NO CONTENT
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
@@ -1281,7 +1129,7 @@ C: REPP-cltrid: ABC-12345
 </artwork>
 <t>Example response:</t>
 
-<artwork><![CDATA[S: HTTP/2 204 OK
+<artwork><![CDATA[S: HTTP/2 204 NO CONTENT
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
@@ -1315,7 +1163,7 @@ C: REPP-cltrid: ABC-12345
 </artwork>
 <t>Example Reject response:</t>
 
-<artwork><![CDATA[S: HTTP/2 204 OK
+<artwork><![CDATA[S: HTTP/2 204 NO CONTENT
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
@@ -1449,7 +1297,7 @@ C: REPP-cltrid: ABC-12345
 </artwork>
 <t>Example response:</t>
 
-<sourcecode type="xml"><![CDATA[S: HTTP/2 204 OK
+<sourcecode type="xml"><![CDATA[S: HTTP/2 204 NO CONTENT
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
@@ -1548,7 +1396,7 @@ These considerations are satisfied by a combination of REPP features and feature
 <ul>
 <li><t>The consideration: &quot;The transport mapping MUST preserve the stateful nature of the protocol&quot;, is updated to: &quot;The transport mapping MUST preserve the stateful nature of the protocol, when using a stateful transport protocol&quot;. REPP uses the REST architectural style for defining a stateless API based on the stateless HTTP protocol, and therefore satisfies the updated consideration.</t>
 </li>
-<li><t>Section <xref target="rest"></xref> describes how HTTP multiplexing may be used for pipelining multiple requests. A server may allow pipelining, requests are to be processed in the order they have been received.</t>
+<li><t><xref target="rest"></xref> describes how HTTP multiplexing may be used for pipelining multiple requests. A server may allow pipelining, requests are to be processed in the order they have been received.</t>
 </li>
 <li><t>REPP is based on the HTTP protocol, which uses the client-server model.</t>
 </li>
@@ -1567,7 +1415,7 @@ every request must contain a single command, as described in section <xref targe
 </section>
 
 <section anchor="iana-considerations"><name>IANA Considerations</name>
-<t>TODO: any?</t>
+<t>TODO: any? See <eref target="https://datatracker.ietf.org/doc/html/draft-wullink-restful-epp-00#section-12">https://datatracker.ietf.org/doc/html/draft-wullink-restful-epp-00#section-12</eref></t>
 </section>
 
 <section anchor="internationalization-considerations"><name>Internationalization Considerations</name>
@@ -1641,8 +1489,7 @@ meaningful in the context of RESTful EPP and MUST NOT be used.</t>
 </section>
 
 <section anchor="acknowledgments"><name>Acknowledgments</name>
-<t>TODO
-Move Miek from Authors to Acknowledgments section?</t>
+<t>The authors would like to thank Miek Gieben who worked with us on an earlier, similar draft.</t>
 </section>
 
 </middle>
