@@ -117,7 +117,7 @@ This section lists the main design criteria.
   This document only describes the use of [@!XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
 - Compatibility with existing EPP commands and corresponding request and response messages.
-- Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of an request message should ne optional. If the EPP response message is limited to the EPP result code and transaction identifiers, sending a response message should be optional.
+- Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of an request message should be optional. If the EPP response message is limited to the EPP result code and transaction identifiers, sending a response message should be optional.
 
 - Performance, reducing the number of required request and response messages, improves the performance and bandwidth used for both client and server. Fewer messages have to be created, marshalled, transmitted and parsed.
 
@@ -237,8 +237,7 @@ The server HTTP response contains a status code, headers and MAY contain an EPP 
 
 - `REPP-cltrid`: This header is the equivalent of the "clTRID" element defined in [@!RFC5730] and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a "clTRID" value, then both values MUST be consistent.
   
-- `REPP-eppcode`: This header is the equivalent of the result code defined in [@!RFC5730] and MUST be used accordingly. This header MUST be used when a response HTTP message body has no content, and MAY be used in all other situations to provide easy access to the EPP result code.
-   <!-- do we keep REPP-eppcode? yes but only for responses with empty message body issue #20 -->
+- `REPP-eppcode`: This header is the equivalent of the EPP result code defined in [@!RFC5730] and MUST be used accordingly. This header may be used by the client for easy access to the EPP result code, without having to parse th content of a HTTP response message body. This header MUST be for responses where the message body content contains a EPP result code. 
 
 - `REPP-check-avail`: An alternative for the "avail" attribute of the object:name element in an Object Check response and MUST be used accordingly. The server does not return a HTTP message body in response to a REPP Object Check request.   
 
@@ -314,7 +313,6 @@ When there is a mismatch between a resource identifier in the HTTP message body 
 - Request: OPTIONS /
 - Request message: None
 - Response message: Greeting response
-- OK status code: 200 (OK)
 
 Due to the stateless nature of REPP, the server does not respond by sending a Greeting message when a connection is created, as described in [@!RFC5730, section 2]. The client MUST request a Greeting by using the Hello request as described in [@!RFC5730, section 2.3]. The server MUST respond by returning a Greeting response, as defined in [@!RFC5730, section 2.4].
 
@@ -383,7 +381,6 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 - Request: HEAD /{collection}/{id}
 - Request message: None
 - Response message: None
-- OK status code: 200 (OK)
 
 The server MUST support the HTTP HEAD method for the Check endpoint, both client and server MUST NOT put any content into the HTTP message body. The response MUST contain the REPP-check-avail and MAY contain the REPP-check-reason header. The value of the REPP-check-avail header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not.
 
@@ -423,7 +420,6 @@ Example request for an object not using authorization information.
 - Request: GET /{collection}/{id}
 - Request message: None
 - Response message: Info response
-- OK status code: 200 (OK)
 
 ```
 C: GET /repp/v1/domains/example.nl HTTP/2
@@ -441,7 +437,6 @@ Example request using REPP-authInfo header for an object that has attached autho
 - Request: GET /{collection}/{id}
 - Request message: None
 - Response message: Info response
-- OK status code: 200 (OK)
 
 ```
 C: GET /repp/v1/domains/example.nl HTTP/2
@@ -460,7 +455,6 @@ Example request using POST method for an object that has attached authorization 
 - Request: POST /{collection}/{id}
 - Request message: Info request
 - Response message: Info response
-- OK status code: 200 (OK)
 
 ```xml
 C: POST /repp/v1/domains/example.nl HTTP/2
@@ -556,7 +550,6 @@ C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 - Request: GET /messages
 - Request message: None
 - Response message: Poll response
-- OK status code: 200 (OK)
 
 The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue. The "op=req" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP GET method.
 
@@ -607,7 +600,6 @@ S:</epp>
 - Request: DELETE /messages/{id}
 - Request message: None
 - Response message: None
-- OK status code: 200 (OK)
 
 The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "op=ack" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP DELETE method. The "msgID" attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successfull response, the server may add content to the message body of an error response. 
 
@@ -645,7 +637,6 @@ latest object transfer. A latest transfer object may not exist, when no transfer
 - Request: GET {collection}/{id}/transfers/latest
 - Request message: None
 - Response message: Transfer Query response
-- OK status code: 200 (OK)
 
 Example domain name Transfer Query request without authorization information required:
 
@@ -665,7 +656,6 @@ If the requested object has associated authorization information that is not lin
 - Request: GET {collection}/{id}/transfers/latest
 - Request message: None
 - Response message: Transfer Query response.
-- OK status code: 200 (OK)
 
 Example domain name Transfer Query request using REPP-authInfo header:
 
@@ -686,7 +676,6 @@ If the requested object has associated authorization information linked to a con
 - Request: GET {collection}/{id}/transfers/latest
 - Request message: NoTransfer Query request
 - Response message: Transfer Query response.
-- OK status code: 200 (OK)
 
 Example domain name Transfer Query request and authorization information in request message:
 
@@ -750,9 +739,8 @@ S:</epp>
 - Request: POST /{collection}
 - Request message: Object Create request
 - Response message: Object Create response
-- OK status code: 201 (CREATED)
 
-The client MUST use the HTTP POST method to create a new object resource. If the EPP request results in a newly created object, then the server MUST return HTTP status code 201 (Created). The server MUST add the "Location" header to the response, the value of this header MUST be the URL for the newly created resource.
+The client MUST use the HTTP POST method to create a new object resource. If the EPP request results in a newly created object, then the server MUST return HTTP status code 200 (OK). The server MUST add the "Location" header to the response, the value of this header MUST be the URL for the newly created resource.
 
 Example Domain Create request:
 
@@ -784,7 +772,7 @@ C:</epp>
 Example Domain Create response:
 
 ```xml
-S: HTTP/2 201 CREATED
+S: HTTP/2 200
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
@@ -817,9 +805,8 @@ S:</epp>
 - Request: DELETE /{collection}/{id} 
 - Request message: None
 - Response message: Optional error message
-- OK status code: 204 (No Content)
 
-The client MUST the HTTP DELETE method and a resource identifying a unique object instance. This operation has no EPP request and response message and MUST return 204 (No Content) if the resource was deleted successfully.
+The client MUST the HTTP DELETE method and a resource identifying a unique object instance. This operation has no EPP request and response message and MUST return HTTP status code 200 (OK) if the resource was deleted successfully.
 
 Example Domain Delete request:
 
@@ -836,7 +823,7 @@ C: REPP-cltrid: ABC-12345
 Example Domain Delete response:
 
 ```
-S: HTTP/2 204 NO CONTENT
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
@@ -851,10 +838,9 @@ S: REPP-eppcode: 1000
 - Request: POST /{collection}/{id}/renewals
 - Request message: object Renew request
 - Response message: object Renew response
-- OK status code: 201 (CREATED)
 
 The EPP Renew command is mapped to a nested collection resource, named "renewals".
-Not all EPP object types include support for the renew command. The server MUST return a HTTP status code 501 (Not Implemented) when receiving a Renew request for an object that does not support Renew. If the EPP request results in a renewal of the object, then the server MUST return HTTP status code 201 (Created).
+Not all EPP object types include support for the renew command. If the EPP request results in a renewal of the object, then the server MUST return HTTP status code 200 (OK).
 
 Example Domain Renew request:
 
@@ -887,7 +873,7 @@ C:</epp>
 Example Renew response:
 
 ```xml
-S: HTTP/2 201 CREATED
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
@@ -921,11 +907,10 @@ Transferring an object from one sponsoring client to another client is specified
 - Request: POST /{collection}/{id}/transfers
 - Request message: Optional Transfer request
 - Response message: Transfer response.
-- OK status code: 201 (CREATED)
 
 To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource to create a new transfer resource object, not all EPP objects support the Transfer command as described in [@!RFC5730, section 3.2.4], [@!RFC5731, section 3.2.4] and [@!RFC5733, section 3.2.4].
 
-If the EPP request is successful, then the server MUST return HTTP status code 201 (Created). The client MAY choose to send an empty HTTP message body when the object is not linked to authorization information associated with a contact object. The server MUST also include the Location header in the HTTP response.
+If the EPP request is successful, then the server MUST return HTTP status code 200 (OK)). The client MAY choose to send an empty HTTP message body when the object is not linked to authorization information associated with a contact object. The server MUST also include the Location header in the HTTP response.
 
 Example request not using using object authorization:
 
@@ -1018,10 +1003,9 @@ S:</epp>
 - Request: DELETE /{collection}/{id}/transfers/latest
 - Request message: Optional Transfer Reject request
 - Response message: Optional error message
-- OK status code: 204 (No Content)
 
 The new sponsoring client MUST use the HTTP DELETE method to cancel a
-requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request. The server MAY return an empty message body when the transfer was cancelled without an error. The server MUST return 204 (No Content) if the transfer resource was deleted successfully.
+requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request. The server MAY return an empty message body when the transfer was cancelled without an error. The server MUST return HTTP status code 200 (OK) if the transfer resource was deleted successfully.
 
 Example request:
 
@@ -1038,7 +1022,7 @@ C: REPP-cltrid: ABC-12345
 Example response:
 
 ```
-S: HTTP/2 204 NO CONTENT
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
@@ -1053,9 +1037,8 @@ S: REPP-eppcode: 1000
 - Request: DELETE /{collection}/{id}/transfers/latest
 - Request message:  Optional Transfer Reject request
 - Response message: Optional error message
-- OK status code: 204 (No Content)
 
-The semantics of the HTTP DELETE method are determined by the role of the client sending the request. For the current sponsoring client of the object, the DELETE method is defined as "reject transfer". The server MAY return an empty message body when the transfer was rejected without an error. The server MUST return 204 (No Content) if the transfer resource was deleted successfully.
+The semantics of the HTTP DELETE method are determined by the role of the client sending the request. For the current sponsoring client of the object, the DELETE method is defined as "reject transfer". The server MAY return an empty message body when the transfer was rejected without an error. The server MUST return HTTP status code 200 (OK) if the transfer resource was deleted successfully.
 
 Example request:
 
@@ -1072,7 +1055,7 @@ C: REPP-cltrid: ABC-12345
 Example Reject response:
 
 ```
-S: HTTP/2 204 NO CONTENT
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
@@ -1087,7 +1070,6 @@ S: REPP-eppcode: 1000
 - Request: PUT /{collection}/{id}/transfers/latest
 - Request message: Optional Transfer Approve request
 - Response message: Optional error message
-- OK status code: 200 (OK)
 
 The current sponsoring client MUST use the HTTP PUT method to approve a transfer requested by the new sponsoring client. The server MAY return an empty message body when the transfer was cancelled without an error.
 
@@ -1122,7 +1104,6 @@ S: REPP-eppcode: 1000
 - Request: PATCH /{collection}/{id}
 - Request message: Object Update message
 - Response message: Optional error message
-- OK status code: 200 (OK)
 
 An object Update request MUST be performed with the HTTP PATCH method on a unique object resource. The request message body MUST contain an Update request as described in the EPP RFCs. The server MUST NOT add content to the response message body.
 
@@ -1175,7 +1156,6 @@ The EPP Extension Framework allows for extending the EPP protocol at different l
 - Request: * /extensions/*
 - Request message: *
 - Response message: *
-- OK status code: *
 
 EPP Protocol extensions, defined in [@!RFC5730, section 2.7.1] are supported using the "/extensions" root resource.
 The HTTP method used for a new Protocol extension is not defined but must follow the RESTful principles.
@@ -1187,7 +1167,6 @@ Example Protocol Extension request:
 - Request: DELETE /extensions/{collection}/{id}/deletion
 - Request message: None
 - Response message: Optional error response
-- OK status code: 204 (No Content)
 
 ```
 C: DELETE /repp/v1/extensions/domains/example.nl/deletion HTTP/2
@@ -1204,7 +1183,7 @@ C: REPP-cltrid: ABC-12345
 Example response:
 
 ```xml
-S: HTTP/2 204 NO CONTENT
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
@@ -1224,7 +1203,6 @@ A hypothetical new Object mapping for IP addresses, may result in a new resource
 - Request: POST /{collection}/{id}
 - Request message: IP Create Request message
 - Response message: IP Create Response message
-- OK status code: 201 (Created)
 
 Example request:
 
@@ -1258,7 +1236,7 @@ C:</epp>
 Example response:
 
 ```xml
-S: HTTP/2 201 OK
+S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en

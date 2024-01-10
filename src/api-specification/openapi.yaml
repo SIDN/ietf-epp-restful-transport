@@ -92,7 +92,7 @@ paths:
       tags:
         - domains
       parameters:
-        - name: attr
+        - name: filter
           in: query
           required: false
           schema:
