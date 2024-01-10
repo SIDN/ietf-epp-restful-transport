@@ -210,8 +210,7 @@ The client MUST synchronize the value for the Content-Type and Accept headers, f
 In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers is, for some use cases, sufficient for the server to be able to successfully proceses the request. The `Object Info` request for example, does not require an EPP message.
 HTTP request headers are used to transmit additional or optional request data to the server. All REPP HTTP headers MUST have the "REPP-" prefix, following the recommendations in [@!RFC6648].
 
-- `REPP-cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly when the REPP request does not contain an EPP request in the
-  HTTP message body.
+- `REPP-cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.
 
 - `REPP-svcs`: The namespace used by the client in the EPP request message, this is equivalent to the "svcs" element in the Login command defined in [@!RFC5730, section 2.9.1.1]. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.
     <!--TODO issue #31: do we add all namespaces to this header, also for extensions or do we need another header for extension -->
@@ -236,7 +235,7 @@ The server HTTP response contains a status code, headers and MAY contain an EPP 
 
 - `REPP-svtrid`:  This header is the equivalent of the "svTRID" element defined in [@!RFC5730] and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If an HTTP message body with the EPP XML equivalent "svTRID" exists, both values MUST be consistent.
 
-- `REPP-cltrid`: This header is the equivalent of the "clTRID" element defined in [@!RFC5730] and MUST be used accordingly. If the contents of the HTTP message body contains a "clTRID" value, then both values MUST be consistent.
+- `REPP-cltrid`: This header is the equivalent of the "clTRID" element defined in [@!RFC5730] and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a "clTRID" value, then both values MUST be consistent.
   
 - `REPP-eppcode`: This header is the equivalent of the result code defined in [@!RFC5730] and MUST be used accordingly. This header MUST be used when a response HTTP message body has no content, and MAY be used in all other situations to provide easy access to the EPP result code.
    <!-- do we keep REPP-eppcode? yes but only for responses with empty message body issue #20 -->
@@ -837,7 +836,7 @@ C:</epp>
 Example Domain Create response:
 
 ```xml
-S: HTTP/2 201 OK
+S: HTTP/2 201 CREATED
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
@@ -889,7 +888,7 @@ C: REPP-cltrid: ABC-12345
 Example Domain Delete response:
 
 ```
-S: HTTP/2 204 OK
+S: HTTP/2 204 NO CONTENT
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
@@ -1091,7 +1090,7 @@ C: REPP-cltrid: ABC-12345
 Example response:
 
 ```
-S: HTTP/2 204 OK
+S: HTTP/2 204 NO CONTENT
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
@@ -1125,7 +1124,7 @@ C: REPP-cltrid: ABC-12345
 Example Reject response:
 
 ```
-S: HTTP/2 204 OK
+S: HTTP/2 204 NO CONTENT
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
@@ -1257,7 +1256,7 @@ C: REPP-cltrid: ABC-12345
 Example response:
 
 ```xml
-S: HTTP/2 204 OK
+S: HTTP/2 204 NO CONTENT
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en

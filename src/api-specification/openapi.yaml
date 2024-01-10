@@ -1,9 +1,9 @@
-openapi: '3.0.2'
+openapi: '3.0.0'
 info:
   title: RESTful EPP
   version: '1.0'
 servers:
-  - url: https://api.example.nl/repp/v1/
+  - url: http://localhost:8080/repp/v1/
 
 paths:
 # common
@@ -21,7 +21,7 @@ paths:
                   type: string
               application/epp+json:
                 schema:
-                  type: string
+                  type: string               
 
   /messages:
     get:
@@ -30,6 +30,9 @@ paths:
         - common
       parameters:
         - $ref: '#/components/parameters/p_cltrid'
+        - $ref: '#/components/parameters/p_svcs'
+        - $ref: '#/components/parameters/p_svcs-ext'
+        - $ref: '#/components/parameters/p_acceptLanguage'
       responses:
           '200':
             description: OK
@@ -49,6 +52,8 @@ paths:
         - $ref: '#/components/parameters/p_id'
         - $ref: '#/components/parameters/p_cltrid'
         - $ref: '#/components/parameters/p_svcs'
+        - $ref: '#/components/parameters/p_svcs-ext'
+        - $ref: '#/components/parameters/p_acceptLanguage'
       responses:
           '200':
             description: OK
@@ -64,6 +69,10 @@ paths:
   /domains/{id}:
     parameters:
      - $ref: '#/components/parameters/p_id'
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     head:
       summary: Domain check
       tags:
@@ -177,6 +186,11 @@ paths:
                   
 
   /domains:
+    parameters:
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     post:
       summary: Domain create
       tags:
@@ -203,6 +217,10 @@ paths:
   /domains/{id}/renewals:
     parameters:
      - $ref: '#/components/parameters/p_id'
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     post:
       summary: Domain renew
       tags:
@@ -229,6 +247,10 @@ paths:
   /domains/{id}/transfers:
     parameters:
      - $ref: '#/components/parameters/p_id'
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     post:
       summary: Domain transfer request
       tags:
@@ -256,6 +278,10 @@ paths:
   /domains/{id}/transfers/latest:
     parameters:
      - $ref: '#/components/parameters/p_id'
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     get:
       summary: Domain transfer query
       tags:
@@ -329,6 +355,10 @@ paths:
   /hosts/{id}:
     parameters:
      - $ref: '#/components/parameters/p_id'
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     head:
       summary: Host check
       tags:
@@ -459,6 +489,11 @@ paths:
                   
 
   /hosts:
+    parameters:
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     post:
       summary: Host create
       tags:
@@ -487,6 +522,10 @@ paths:
   /contacts/{id}:
     parameters:
      - $ref: '#/components/parameters/p_id'
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     head:
       summary: Contact check
       tags:
@@ -628,6 +667,11 @@ paths:
                   
 
   /contacts:
+    parameters:
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     post:
       summary: Contact create
       tags:
@@ -654,6 +698,10 @@ paths:
   /contacts/{id}/transfers:
     parameters:
      - $ref: '#/components/parameters/p_id'
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     post:
       summary: Contact transfer request
       tags:
@@ -687,6 +735,10 @@ paths:
   /contacts/{id}/transfers/latest:
     parameters:
      - $ref: '#/components/parameters/p_id'
+     - $ref: '#/components/parameters/p_cltrid'
+     - $ref: '#/components/parameters/p_svcs'
+     - $ref: '#/components/parameters/p_svcs-ext'
+     - $ref: '#/components/parameters/p_acceptLanguage'
     get:
       summary: Contact transfer query
       tags:
@@ -764,34 +816,80 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/200okWithBody'
-          
+
+
+#
+# Components
+#   
 components:
   parameters:
     p_id:
       name: id
+      description: Object identifier
       in: path
       required: true
       schema:
          type: string
     p_cltrid:
       name: REPP-cltrid
-      in: header
-      schema:
-        type: string
-      required: true
-    p_svcs:
-      name: REPP-svcs
+      description: Client transaction identifier
       in: header
       schema:
         type: string
       required: false
-      
-  headers:
-    svtrid:
+    p_svcs:
+      name: REPP-svcs
+      description: Namespace used
+      in: header
       schema:
         type: string
       required: true
-  
+    p_svcs-ext:
+      name: REPP-svcs-ext
+      description: Extension namespace used
+      in: header
+      schema:
+        type: string
+      required: false
+    p_authinfo:
+      name: REPP-authInfo
+      description: Object authorization details
+      in: header
+      schema:
+        type: string
+      required: false
+    p_acceptLanguage:
+      in: header
+      name: Accept-Language
+      description: Language used for response
+      schema:
+        type: string
+      required: true
+
+      
+      
+  headers:
+    cltrid:
+      description: Client transaction identifier
+      schema:
+        type: string
+      required: false
+    svtrid:
+      description: Server transaction identifier
+      schema:
+        type: string
+      required: false
+    eppcode:
+      description: EPP result code
+      schema:
+        type: integer
+      required: false
+    queue-size:
+      description: Number of messages in the queue
+      schema:
+        type: integer
+      required: false
+      
   responses:
     200okWithBody:
       description: OK
@@ -803,6 +901,12 @@ components:
            schema:
              type: string
       headers:
+        REPP-cltrid:
+          $ref: '#/components/headers/cltrid'
         REPP-svtrid:
           $ref: '#/components/headers/svtrid'
+        REPP-eppcode:
+          $ref: '#/components/headers/eppcode'
+        REPP-Queue-Size:
+          $ref: '#/components/headers/queue-size'
       
