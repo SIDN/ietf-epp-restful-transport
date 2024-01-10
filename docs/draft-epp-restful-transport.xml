@@ -195,7 +195,7 @@ HTTP request headers are used to transmit additional or optional request data to
 </li>
 <li><t><tt>REPP-cltrid</tt>: This header is the equivalent of the &quot;clTRID&quot; element defined in <xref target="RFC5730"></xref> and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a &quot;clTRID&quot; value, then both values MUST be consistent.</t>
 </li>
-<li><t><tt>REPP-eppcode</tt>: This header is the equivalent of the EPP result code defined in <xref target="RFC5730"></xref> and MUST be used accordingly. This header may be used by the client for easy access to the EPP result code, without having to parse th content of a HTTP response message body. This header MUST be for responses where the message body content contains a EPP result code.</t>
+<li><t><tt>REPP-eppcode</tt>: This header is the equivalent of the EPP result code defined in <xref target="RFC5730"></xref> and MUST be used accordingly. This header MUST be used for all responses and MAY be used by the client for easy access to the EPP result code, without having to parse the content of the HTTP response message body.</t>
 </li>
 <li><t><tt>REPP-check-avail</tt>: An alternative for the &quot;avail&quot; attribute of the object:name element in an Object Check response and MUST be used accordingly. The server does not return a HTTP message body in response to a REPP Object Check request.</t>
 </li>
@@ -217,9 +217,9 @@ HTTP request headers are used to transmit additional or optional request data to
 
 <section anchor="error-handling"><name>Error Handling</name>
 <t>
-Restful EPP is designed atop of the HTTP protocol, both are an application layer protocol with their own status- and result codes. The endpoints described in <xref target="command-mapping"></xref> MUST return HTTP status code 200 (Ok) for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.</t>
+Restful EPP and HTTP protocol are both an application layer protocol, having their own status- and result codes. The endpoints described in <xref target="command-mapping"></xref> MUST return HTTP status code 200 (OK) for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.</t>
 <t>When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in <xref target="RFC9110"></xref>. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.</t>
-<t>The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status codes andf the REPP-eppcode HTTP header for error handling logic, without having to parse the EPP result message.</t>
+<t>The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-eppcode HTTP header for error handling logic, without having to parse the EPP result message.</t>
 <t>For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.</t>
 </section>
 </section>
