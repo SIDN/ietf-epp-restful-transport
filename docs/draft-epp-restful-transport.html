@@ -1671,16 +1671,16 @@ The client and server MUST support agent-driven content negotiation and related 
 HTTP request headers are used to transmit additional or optional request data to the server. All REPP HTTP headers MUST have the "REPP-" prefix, following the recommendations in <span>[<a href="#RFC6648" class="cite xref">RFC6648</a>]</span>.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-8.3-2.1">
-            <p id="section-8.3-2.1.1"><code>REPP-cltrid</code>:  The client transaction identifier is the equivalent of the <code>clTRID</code> element defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.<a href="#section-8.3-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-8.3-2.1.1"><code>REPP-Cltrid</code>:  The client transaction identifier is the equivalent of the <code>clTRID</code> element defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.<a href="#section-8.3-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.3-2.2">
-            <p id="section-8.3-2.2.1"><code>REPP-svcs</code>: The namespace used by the client in the EPP request message, this is equivalent to the "svcs" element in the Login command defined in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.<a href="#section-8.3-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-8.3-2.2.1"><code>REPP-Svcs</code>: The namespace used by the client in the EPP request message, this is equivalent to the "svcs" element in the Login command defined in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.<a href="#section-8.3-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.3-2.3">
-            <p id="section-8.3-2.3.1"><code>REPP-svcs-ext</code>: The extension namespace used by the client in the EPP request message, this is equivalent to the "svcExtension" element in the Login command defined in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span><a href="#section-8.3-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-8.3-2.3.1"><code>REPP-Svcs-Ext</code>: The extension namespace used by the client in the EPP request message, this is equivalent to the "svcExtension" element in the Login command defined in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span><a href="#section-8.3-2.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.3-2.4">
-            <p id="section-8.3-2.4.1"><code>REPP-authInfo</code>: The client MAY use this header for sending basic token-based authorization information, as described in <span><a href="https://rfc-editor.org/rfc/rfc5731#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC5731" class="cite xref">RFC5731</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc5733#section-2.8" class="relref">Section 2.8</a> of [<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>. If the authorization is linked to a contact object then the client MUST NOT use this header.<a href="#section-8.3-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-8.3-2.4.1"><code>REPP-AuthInfo</code>: The client MAY use this header for sending basic token-based authorization information, as described in <span><a href="https://rfc-editor.org/rfc/rfc5731#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC5731" class="cite xref">RFC5731</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc5733#section-2.8" class="relref">Section 2.8</a> of [<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>. If the authorization is linked to a contact object then the client MUST NOT use this header.<a href="#section-8.3-2.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.3-2.5">
             <p id="section-8.3-2.5.1"><code>Accept-Language</code>:  This header is equivalent to the "lang" element of the EPP Login command. The server MUST support the use of HTTP Accept-Language header by clients. The client MAY issue a Hello request to discover the languages supported by the server. Multiple servers in a load-balanced environment SHOULD reply with consistent "lang" elements in the Greeting response. The value of the Accept-Language header MUST match 1 of the languages from the Greeting. When the server receives a request using an unsupported langauge, the server MUST respond using the default language configured for the server, as required in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span><a href="#section-8.3-2.5.1" class="pilcrow">¶</a></p>
@@ -1703,19 +1703,19 @@ HTTP request headers are used to transmit additional or optional request data to
 <p id="section-8.4-1">The server HTTP response contains a status code, headers and MAY contain an EPP response message in the message body. HTTP headers are used to transmit additional data to the client and MAY be used to send EPP process related data to the client. HTTP headers used by REPP MUST use the "REPP-" prefix, the following response headers have been defined for REPP.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-8.4-2.1">
-            <p id="section-8.4-2.1.1"><code>REPP-svtrid</code>:  This header is the equivalent of the "svTRID" element defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If an HTTP message body with the EPP XML equivalent "svTRID" exists, both values MUST be consistent.<a href="#section-8.4-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-8.4-2.1.1"><code>REPP-Svtrid</code>:  This header is the equivalent of the "svTRID" element defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If an HTTP message body with the EPP XML equivalent "svTRID" exists, both values MUST be consistent.<a href="#section-8.4-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.4-2.2">
-            <p id="section-8.4-2.2.1"><code>REPP-cltrid</code>: This header is the equivalent of the "clTRID" element defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a "clTRID" value, then both values MUST be consistent.<a href="#section-8.4-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-8.4-2.2.1"><code>REPP-Cltrid</code>: This header is the equivalent of the "clTRID" element defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a "clTRID" value, then both values MUST be consistent.<a href="#section-8.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.4-2.3">
-            <p id="section-8.4-2.3.1"><code>REPP-eppcode</code>: This header is the equivalent of the EPP result code defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly. This header MUST be used for all responses and MAY be used by the client for easy access to the EPP result code, without having to parse the content of the HTTP response message body.<a href="#section-8.4-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-8.4-2.3.1"><code>REPP-Eppcode</code>: This header is the equivalent of the EPP result code defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly. This header MUST be used for all responses and MAY be used by the client for easy access to the EPP result code, without having to parse the content of the HTTP response message body.<a href="#section-8.4-2.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.4-2.4">
-            <p id="section-8.4-2.4.1"><code>REPP-check-avail</code>: An alternative for the "avail" attribute of the object:name element in an Object Check response and MUST be used accordingly. The server does not return a HTTP message body in response to a REPP Object Check request.<a href="#section-8.4-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-8.4-2.4.1"><code>REPP-Check-Avail</code>: An alternative for the "avail" attribute of the object:name element in an Object Check response and MUST be used accordingly. The server does not return a HTTP message body in response to a REPP Object Check request.<a href="#section-8.4-2.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.4-2.5">
-            <p id="section-8.4-2.5.1"><code>REPP-check-reason</code>: An optional alternative for the "object:reason" element in an Object Check response and MUST be used accordingly.<a href="#section-8.4-2.5.1" class="pilcrow">¶</a></p>
+            <p id="section-8.4-2.5.1"><code>REPP-Check-Reason</code>: An optional alternative for the "object:reason" element in an Object Check response and MUST be used accordingly.<a href="#section-8.4-2.5.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.4-2.6">
             <p id="section-8.4-2.6.1"><code>REPP-Queue-Size</code>: Return the number of unackknowledged messages in the client message queue. The server MAY include this header in all REPP responses.<a href="#section-8.4-2.6.1" class="pilcrow">¶</a></p>
@@ -1730,7 +1730,7 @@ HTTP request headers are used to transmit additional or optional request data to
             <p id="section-8.4-2.9.1"><code>Content-Encoding</code>: The server MAY choose to compresses the responses message body, using a algorithm selected from the list of algorithms provided by the client using the Accept-Encoding request header.<a href="#section-8.4-2.9.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.4-3">REPP does not always return an EPP response message in the HTTP message body. The <code>Object Check</code> request for example, does not require the server to return an EPP response message. When the server does not return a EPP message, it MUST return at least the REPP-svtrid, REPP-cltrid and REPP-eppcode headers.<a href="#section-8.4-3" class="pilcrow">¶</a></p>
+<p id="section-8.4-3">REPP does not always return an EPP response message in the HTTP message body. The <code>Object Check</code> request for example may return an empty HTTP response body. When the server does not return a EPP message, it MUST return at least the REPP-Svtrid, REPP-Cltrid and REPP-Eppcode headers.<a href="#section-8.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="error-handling">
@@ -1741,8 +1741,8 @@ HTTP request headers are used to transmit additional or optional request data to
 <p id="section-8.5-1">
 Restful EPP and HTTP protocol are both an application layer protocol, having their own status- and result codes. The endpoints described in <a href="#command-mapping" class="auto internal xref">Section 9</a> MUST return HTTP status code 200 (OK) for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.<a href="#section-8.5-1" class="pilcrow">¶</a></p>
 <p id="section-8.5-2">When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.<a href="#section-8.5-2" class="pilcrow">¶</a></p>
-<p id="section-8.5-3">The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-eppcode HTTP header for error handling logic, without having to parse the EPP result message.<a href="#section-8.5-3" class="pilcrow">¶</a></p>
-<p id="section-8.5-4">For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.<a href="#section-8.5-4" class="pilcrow">¶</a></p>
+<p id="section-8.5-3">The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-Eppcode HTTP header for error handling logic, without having to parse the EPP result message.<a href="#section-8.5-3" class="pilcrow">¶</a></p>
+<p id="section-8.5-4">For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-Eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.<a href="#section-8.5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1997,10 +1997,10 @@ The request attributes from the Login command that are used to configure the cli
             <code>lang</code>: Replaced by the <code>Accept-Language</code> HTTP header.<a href="#section-9.2-3.5" class="pilcrow">¶</a>
 </li>
           <li class="compact" id="section-9.2-3.6">
-            <code>svcs</code>: Replaced by the <code>REPP-svcs</code> HTTP header.<a href="#section-9.2-3.6" class="pilcrow">¶</a>
+            <code>svcs</code>: Replaced by the <code>REPP-Svcs</code> HTTP header.<a href="#section-9.2-3.6" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-9.2-4">The server MUST check the namespaces used in the REPP-svcs HTTP header. An unsupported namespace MUST result in the appropriate EPP result code.<a href="#section-9.2-4" class="pilcrow">¶</a></p>
+<p id="section-9.2-4">The server MUST check the namespaces used in the REPP-Svcs HTTP header. An unsupported namespace MUST result in the appropriate EPP result code.<a href="#section-9.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="logout">
@@ -2031,7 +2031,7 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
             <li class="compact" id="section-9.4.1-1.3">Response message: None<a href="#section-9.4.1-1.3" class="pilcrow">¶</a>
 </li>
           </ul>
-<p id="section-9.4.1-2">The server MUST support the HTTP HEAD method for the Check endpoint, both client and server MUST NOT put any content into the HTTP message body. The response MUST contain the REPP-check-avail and MAY contain the REPP-check-reason header. The value of the REPP-check-avail header MUST be "0" or "1" as described in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.2.1" class="relref">Section 2.9.2.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>, depending on whether the object can be provisioned or not.<a href="#section-9.4.1-2" class="pilcrow">¶</a></p>
+<p id="section-9.4.1-2">The server MUST support the HTTP HEAD method for the Check endpoint, both client and server MUST NOT put any content into the HTTP message body. The response MUST contain the REPP-Check-Avail and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be "0" or "1" as described in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.2.1" class="relref">Section 2.9.2.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>, depending on whether the object can be provisioned or not.<a href="#section-9.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-9.4.1-3">The REPP Check endpoint is limited to checking only a single resource {id} per request. This may seem a limitation compared to the Check command defined in the <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> where multiple object-ids may be added to a  Check message. The RESTful Check request can be load balanced more efficiently when only a single resource {id} needs to be checked.<a href="#section-9.4.1-3" class="pilcrow">¶</a></p>
 <p id="section-9.4.1-4">Example request for a domain name:<a href="#section-9.4.1-4" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-9.4.1-5">
@@ -2039,8 +2039,8 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 
 </pre><a href="#section-9.4.1-5" class="pilcrow">¶</a>
@@ -2050,10 +2050,10 @@ C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
 <pre>S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
-S: REPP-cltrid: ABC-12345
-S: REPP-svtrid: XYZ-12345
-S: REPP-check-avail: 0
-S: REPP-check-reason: In use
+S: REPP-Cltrid: ABC-12345
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Check-Avail: 0
+S: REPP-Check-Reason: In use
 S: REPP-result-code: 1000
 
 
@@ -2066,7 +2066,7 @@ S: REPP-result-code: 1000
           <h4 id="name-info">
 <a href="#section-9.4.2" class="section-number selfRef">9.4.2. </a><a href="#name-info" class="section-name selfRef">Info</a>
           </h4>
-<p id="section-9.4.2-1">The Object Info request MUST use the HTTP GET method on a resource identifying an object instance, using an empty message body. If the object has authorization information attachted and the authorization is not linked to a registrant or contact object, then the client MUST use the REPP-authInfo HTTP header. If the authorization is linked to a registrant or contact object the client MUST use the HTTP POST method and include the authorization information in the Object Info request.<a href="#section-9.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-9.4.2-1">The Object Info request MUST use the HTTP GET method on a resource identifying an object instance, using an empty message body. If the object has authorization information attachted and the authorization is not linked to a registrant or contact object, then the client MUST use the REPP-AuthInfo HTTP header. If the authorization is linked to a registrant or contact object the client MUST use the HTTP POST method and include the authorization information in the Object Info request.<a href="#section-9.4.2-1" class="pilcrow">¶</a></p>
 <p id="section-9.4.2-2">Example request for an object not using authorization information.<a href="#section-9.4.2-2" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-9.4.2-3.1">Request: GET /{collection}/{id}<a href="#section-9.4.2-3.1" class="pilcrow">¶</a>
@@ -2082,13 +2082,13 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 
 </pre><a href="#section-9.4.2-4" class="pilcrow">¶</a>
 </div>
-<p id="section-9.4.2-5">Example request using REPP-authInfo header for an object that has attached authorization information.<a href="#section-9.4.2-5" class="pilcrow">¶</a></p>
+<p id="section-9.4.2-5">Example request using REPP-AuthInfo header for an object that has attached authorization information.<a href="#section-9.4.2-5" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-9.4.2-6.1">Request: GET /{collection}/{id}<a href="#section-9.4.2-6.1" class="pilcrow">¶</a>
 </li>
@@ -2103,9 +2103,9 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-authInfo: secret-token
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-AuthInfo: secret-token
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 
 </pre><a href="#section-9.4.2-7" class="pilcrow">¶</a>
@@ -2211,8 +2211,8 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 
 </pre><a href="#section-9.4.2.1-8" class="pilcrow">¶</a>
@@ -2247,7 +2247,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 
 </pre><a href="#section-9.4.3.1-4" class="pilcrow">¶</a>
@@ -2306,7 +2306,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 
 </pre><a href="#section-9.4.3.2-4" class="pilcrow">¶</a>
@@ -2317,10 +2317,10 @@ C: REPP-cltrid: ABC-12345
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
-S: REPP-eppcode: 1000
+S: REPP-Eppcode: 1000
 S: REPP-Queue-Size: 4
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
 S: Content-Length: 0
 
 
@@ -2352,13 +2352,13 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 
 </pre><a href="#section-9.4.4-4" class="pilcrow">¶</a>
 </div>
-<p id="section-9.4.4-5">If the requested object has associated authorization information that is not linked to a contact object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-authInfo header.<a href="#section-9.4.4-5" class="pilcrow">¶</a></p>
+<p id="section-9.4.4-5">If the requested object has associated authorization information that is not linked to a contact object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-AuthInfo header.<a href="#section-9.4.4-5" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-9.4.4-6.1">Request: GET {collection}/{id}/transfers/latest<a href="#section-9.4.4-6.1" class="pilcrow">¶</a>
 </li>
@@ -2367,16 +2367,16 @@ C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
             <li class="compact" id="section-9.4.4-6.3">Response message: Transfer Query response.<a href="#section-9.4.4-6.3" class="pilcrow">¶</a>
 </li>
           </ul>
-<p id="section-9.4.4-7">Example domain name Transfer Query request using REPP-authInfo header:<a href="#section-9.4.4-7" class="pilcrow">¶</a></p>
+<p id="section-9.4.4-7">Example domain name Transfer Query request using REPP-AuthInfo header:<a href="#section-9.4.4-7" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-9.4.4-8">
 <pre>C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-authInfo: secret-token
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-AuthInfo: secret-token
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 
 </pre><a href="#section-9.4.4-8" class="pilcrow">¶</a>
@@ -2475,7 +2475,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: Content-Length: 220
 C:
@@ -2549,7 +2549,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 
 </pre><a href="#section-9.5.2-4" class="pilcrow">¶</a>
@@ -2560,9 +2560,9 @@ C: REPP-cltrid: ABC-12345
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 
 </pre><a href="#section-9.5.2-6" class="pilcrow">¶</a>
@@ -2591,7 +2591,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: Content-Length: 325
 C:
@@ -2669,9 +2669,9 @@ S:&lt;/epp&gt;
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 C: Content-Length: 0
 
 
@@ -2683,9 +2683,9 @@ C: Content-Length: 0
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
-C: REPP-cltrid: ABC-12345
-C: REPP-authInfo: secret
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-AuthInfo: secret
 C: Accept-Language: en
 C: Content-Length: 0
 
@@ -2698,7 +2698,7 @@ C: Content-Length: 0
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: Content-Length: 252
 C:
@@ -2772,7 +2772,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 
 </pre><a href="#section-9.5.4.2-4" class="pilcrow">¶</a>
@@ -2783,9 +2783,9 @@ C: REPP-cltrid: ABC-12345
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 
 </pre><a href="#section-9.5.4.2-6" class="pilcrow">¶</a>
@@ -2813,7 +2813,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 
 </pre><a href="#section-9.5.4.3-4" class="pilcrow">¶</a>
@@ -2824,9 +2824,9 @@ C: REPP-cltrid: ABC-12345
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 
 </pre><a href="#section-9.5.4.3-6" class="pilcrow">¶</a>
@@ -2854,7 +2854,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 C: Content-Length: 0
 
 
@@ -2866,9 +2866,9 @@ C: Content-Length: 0
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 
 </pre><a href="#section-9.5.4.4-6" class="pilcrow">¶</a>
@@ -2899,7 +2899,7 @@ C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
 C: Accept-Language: en
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 252
 C:
 C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
@@ -2924,9 +2924,9 @@ C:&lt;/epp&gt;
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 
 </pre><a href="#section-9.5.5-6" class="pilcrow">¶</a>
@@ -2972,9 +2972,9 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
-C: REPP-svcs-ext: https://rxsd.domain-registry.nl/sidn-ext-epp-1.0
-C: REPP-cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs-Ext: https://rxsd.domain-registry.nl/sidn-ext-epp-1.0
+C: REPP-Cltrid: ABC-12345
 
 
 </pre><a href="#section-9.6.1-6" class="pilcrow">¶</a>
@@ -2986,9 +2986,9 @@ S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 
 </pre><a href="#section-9.6.1-8" class="pilcrow">¶</a>
@@ -3017,8 +3017,8 @@ C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-svcs-ext: https://example.nl/epp-ips-1.0
-C: REPP-cltrid: ABC-12345
+C: REPP-Svcs-Ext: https://example.nl/epp-ips-1.0
+C: REPP-Cltrid: ABC-12345
 C: Content-Type: application/epp+xml
 C: Content-Length: 220
 C:

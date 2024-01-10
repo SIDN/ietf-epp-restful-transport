@@ -526,12 +526,12 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    request data to the server.  All REPP HTTP headers MUST have the
    "REPP-" prefix, following the recommendations in [RFC6648].
 
-   -  REPP-cltrid: The client transaction identifier is the equivalent
+   -  REPP-Cltrid: The client transaction identifier is the equivalent
       of the clTRID element defined in [RFC5730] and MUST be used
       accordingly when the HTTP message body does not contain an EPP
       request that includes a cltrid.
 
-   -  REPP-svcs: The namespace used by the client in the EPP request
+   -  REPP-Svcs: The namespace used by the client in the EPP request
       message, this is equivalent to the "svcs" element in the Login
       command defined in Section 2.9.1.1 of [RFC5730].  The client MUST
       use this header if the media type of the request or response
@@ -540,12 +540,12 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       messages.  The header value MAY contain multiple comma separated
       namespaces.
 
-   -  REPP-svcs-ext: The extension namespace used by the client in the
+   -  REPP-Svcs-Ext: The extension namespace used by the client in the
       EPP request message, this is equivalent to the "svcExtension"
       element in the Login command defined in Section 2.9.1.1 of
       [RFC5730]
 
-   -  REPP-authInfo: The client MAY use this header for sending basic
+   -  REPP-AuthInfo: The client MAY use this header for sending basic
       token-based authorization information, as described in Section 2.6
       of [RFC5731] and Section 2.8 of [RFC5733].  If the authorization
       is linked to a contact object then the client MUST NOT use this
@@ -591,19 +591,19 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    REPP MUST use the "REPP-" prefix, the following response headers have
    been defined for REPP.
 
-   -  REPP-svtrid: This header is the equivalent of the "svTRID" element
+   -  REPP-Svtrid: This header is the equivalent of the "svTRID" element
       defined in [RFC5730] and MUST be used accordingly when the REPP
       response does not contain an EPP response in the HTTP message
       body.  If an HTTP message body with the EPP XML equivalent
       "svTRID" exists, both values MUST be consistent.
 
-   -  REPP-cltrid: This header is the equivalent of the "clTRID" element
+   -  REPP-Cltrid: This header is the equivalent of the "clTRID" element
       defined in [RFC5730] and MUST be used accordingly when the REPP
       response does not contain an EPP response in the HTTP message
       body.  If the contents of the HTTP message body contains a
       "clTRID" value, then both values MUST be consistent.
 
-   -  REPP-eppcode: This header is the equivalent of the EPP result code
+   -  REPP-Eppcode: This header is the equivalent of the EPP result code
       defined in [RFC5730] and MUST be used accordingly.  This header
       MUST be used for all responses and MAY be used by the client for
       easy access to the EPP result code, without having to parse the
@@ -618,12 +618,12 @@ Wullink & Davids          Expires 13 July 2024                 [Page 11]
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
-   -  REPP-check-avail: An alternative for the "avail" attribute of the
+   -  REPP-Check-Avail: An alternative for the "avail" attribute of the
       object:name element in an Object Check response and MUST be used
       accordingly.  The server does not return a HTTP message body in
       response to a REPP Object Check request.
 
-   -  REPP-check-reason: An optional alternative for the "object:reason"
+   -  REPP-Check-Reason: An optional alternative for the "object:reason"
       element in an Object Check response and MUST be used accordingly.
 
    -  REPP-Queue-Size: Return the number of unackknowledged messages in
@@ -643,10 +643,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       request header.
 
    REPP does not always return an EPP response message in the HTTP
-   message body.  The Object Check request for example, does not require
-   the server to return an EPP response message.  When the server does
-   not return a EPP message, it MUST return at least the REPP-svtrid,
-   REPP-cltrid and REPP-eppcode headers.
+   message body.  The Object Check request for example may return an
+   empty HTTP response body.  When the server does not return a EPP
+   message, it MUST return at least the REPP-Svtrid, REPP-Cltrid and
+   REPP-Eppcode headers.
 
 8.5.  Error Handling
 
@@ -677,13 +677,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    The client MUST be able to use the best practices for RESTful
    applications and use the HTTP status code to determine if the EPP
    request was successfully processed.  The client MAY use the well
-   defined HTTP status code and REPP-eppcode HTTP header for error
+   defined HTTP status code and REPP-Eppcode HTTP header for error
    handling logic, without having to parse the EPP result message.
 
    For example, a client sending an Object Tranfer request for an Object
    already linked to an active transfer process, will result in an EPP
    result code 2106, the HTTP response contains a status code 422 and he
-   value for the REPP-eppcode HTTP header is set to 2106.  The client
+   value for the REPP-Eppcode HTTP header is set to 2106.  The client
    MAY use the HTTP status code for checking if an EPP command failed
    and only parse the result message when additional information from
    the response message is required for handling the error.
@@ -879,9 +879,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  version: Replaced by the {version} path segment in the request
       URL.
    -  lang: Replaced by the Accept-Language HTTP header.
-   -  svcs: Replaced by the REPP-svcs HTTP header.
+   -  svcs: Replaced by the REPP-Svcs HTTP header.
 
-   The server MUST check the namespaces used in the REPP-svcs HTTP
+   The server MUST check the namespaces used in the REPP-Svcs HTTP
    header.  An unsupported namespace MUST result in the appropriate EPP
    result code.
 
@@ -917,8 +917,8 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    The server MUST support the HTTP HEAD method for the Check endpoint,
    both client and server MUST NOT put any content into the HTTP message
-   body.  The response MUST contain the REPP-check-avail and MAY contain
-   the REPP-check-reason header.  The value of the REPP-check-avail
+   body.  The response MUST contain the REPP-Check-Avail and MAY contain
+   the REPP-Check-Reason header.  The value of the REPP-Check-Avail
    header MUST be "0" or "1" as described in Section 2.9.2.1 of
    [RFC5730], depending on whether the object can be provisioned or not.
 
@@ -935,8 +935,8 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Host: repp.example.nl
    C: Authorization: Bearer <token>
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Cltrid: ABC-12345
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
    Example response:
 
@@ -957,10 +957,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S: HTTP/2 200 OK
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
    S: Server: Example REPP server v1.0
-   S: REPP-cltrid: ABC-12345
-   S: REPP-svtrid: XYZ-12345
-   S: REPP-check-avail: 0
-   S: REPP-check-reason: In use
+   S: REPP-Cltrid: ABC-12345
+   S: REPP-Svtrid: XYZ-12345
+   S: REPP-Check-Avail: 0
+   S: REPP-Check-Reason: In use
    S: REPP-result-code: 1000
 
 9.4.2.  Info
@@ -969,7 +969,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    identifying an object instance, using an empty message body.  If the
    object has authorization information attachted and the authorization
    is not linked to a registrant or contact object, then the client MUST
-   use the REPP-authInfo HTTP header.  If the authorization is linked to
+   use the REPP-AuthInfo HTTP header.  If the authorization is linked to
    a registrant or contact object the client MUST use the HTTP POST
    method and include the authorization information in the Object Info
    request.
@@ -985,10 +985,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Cltrid: ABC-12345
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
-   Example request using REPP-authInfo header for an object that has
+   Example request using REPP-AuthInfo header for an object that has
    attached authorization information.
 
    -  Request: GET /{collection}/{id}
@@ -1015,9 +1015,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
-   C: REPP-authInfo: secret-token
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Cltrid: ABC-12345
+   C: REPP-AuthInfo: secret-token
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
    Example request using POST method for an object that has attached
    authorization information.
@@ -1136,8 +1136,8 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Cltrid: ABC-12345
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 9.4.3.  Poll
 
@@ -1159,7 +1159,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
+   C: REPP-Cltrid: ABC-12345
 
    Example response:
 
@@ -1239,7 +1239,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
+   C: REPP-Cltrid: ABC-12345
 
    Example response:
 
@@ -1247,10 +1247,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Language: en
-   S: REPP-eppcode: 1000
+   S: REPP-Eppcode: 1000
    S: REPP-Queue-Size: 4
-   S: REPP-svtrid: XYZ-12345
-   S: REPP-cltrid: ABC-12345
+   S: REPP-Svtrid: XYZ-12345
+   S: REPP-Cltrid: ABC-12345
    S: Content-Length: 0
 
 9.4.4.  Transfer Query
@@ -1274,13 +1274,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Cltrid: ABC-12345
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
    If the requested object has associated authorization information that
    is not linked to a contact object, then the HTTP GET method MUST be
    used and the authorization information MUST be included using the
-   REPP-authInfo header.
+   REPP-AuthInfo header.
 
 
 
@@ -1294,7 +1294,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  Request message: None
    -  Response message: Transfer Query response.
 
-   Example domain name Transfer Query request using REPP-authInfo
+   Example domain name Transfer Query request using REPP-AuthInfo
    header:
 
    C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -1302,9 +1302,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
-   C: REPP-authInfo: secret-token
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Cltrid: ABC-12345
+   C: REPP-AuthInfo: secret-token
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
    If the requested object has associated authorization information
    linked to a contact object, then the HTTP GET method MUST NOT be used
@@ -1423,7 +1423,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Content-Type: application/epp+xml
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
    C: Accept-Language: en
    C: Content-Length: 220
    C:
@@ -1503,7 +1503,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
+   C: REPP-Cltrid: ABC-12345
 
    Example Domain Delete response:
 
@@ -1518,9 +1518,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 0
-   S: REPP-svtrid: XYZ-12345
-   S: REPP-cltrid: ABC-12345
-   S: REPP-eppcode: 1000
+   S: REPP-Svtrid: XYZ-12345
+   S: REPP-Cltrid: ABC-12345
+   S: REPP-Eppcode: 1000
 
 9.5.3.  Renew
 
@@ -1540,7 +1540,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Content-Type: application/epp+xml
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
    C: Accept-Language: en
    C: Content-Length: 325
    C:
@@ -1638,9 +1638,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Host: repp.example.nl
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
+   C: REPP-Cltrid: ABC-12345
    C: Content-Length: 0
 
    Example request using object authorization not linked to a contact:
@@ -1649,9 +1649,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Host: repp.example.nl
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
-   C: REPP-cltrid: ABC-12345
-   C: REPP-authInfo: secret
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Cltrid: ABC-12345
+   C: REPP-AuthInfo: secret
    C: Accept-Language: en
    C: Content-Length: 0
 
@@ -1686,7 +1686,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Host: repp.example.nl
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
    C: Accept-Language: en
    C: Content-Length: 252
    C:
@@ -1782,7 +1782,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
+   C: REPP-Cltrid: ABC-12345
 
    Example response:
 
@@ -1798,9 +1798,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 0
-   S: REPP-svtrid: XYZ-12345
-   S: REPP-cltrid: ABC-12345
-   S: REPP-eppcode: 1000
+   S: REPP-Svtrid: XYZ-12345
+   S: REPP-Cltrid: ABC-12345
+   S: REPP-Eppcode: 1000
 
 9.5.4.3.  Reject
 
@@ -1822,7 +1822,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
+   C: REPP-Cltrid: ABC-12345
 
    Example Reject response:
 
@@ -1830,9 +1830,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 0
-   S: REPP-svtrid: XYZ-12345
-   S: REPP-cltrid: ABC-12345
-   S: REPP-eppcode: 1000
+   S: REPP-Svtrid: XYZ-12345
+   S: REPP-Cltrid: ABC-12345
+   S: REPP-Eppcode: 1000
 
 9.5.4.4.  Approve
 
@@ -1862,7 +1862,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-cltrid: ABC-12345
+   C: REPP-Cltrid: ABC-12345
    C: Content-Length: 0
 
    Example Approve response:
@@ -1871,9 +1871,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 0
-   S: REPP-svtrid: XYZ-12345
-   S: REPP-cltrid: ABC-12345
-   S: REPP-eppcode: 1000
+   S: REPP-Svtrid: XYZ-12345
+   S: REPP-Cltrid: ABC-12345
+   S: REPP-Eppcode: 1000
 
 9.5.5.  Update
 
@@ -1912,7 +1912,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Accept: application/epp+xml
    C: Content-Type: application/epp+xml
    C: Accept-Language: en
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
    C: Content-Length: 252
    C:
    C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -1935,9 +1935,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 0
-   S: REPP-svtrid: XYZ-12345
-   S: REPP-cltrid: ABC-12345
-   S: REPP-eppcode: 1000
+   S: REPP-Svtrid: XYZ-12345
+   S: REPP-Cltrid: ABC-12345
+   S: REPP-Eppcode: 1000
 
 9.6.  Extension Framework
 
@@ -1987,9 +1987,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
-   C: REPP-svcs-ext: https://rxsd.domain-registry.nl/sidn-ext-epp-1.0
-   C: REPP-cltrid: ABC-12345
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+   C: REPP-Svcs-Ext: https://rxsd.domain-registry.nl/sidn-ext-epp-1.0
+   C: REPP-Cltrid: ABC-12345
 
    Example response:
 
@@ -1998,9 +1998,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S: Server: Example REPP server v1.0
    S: Content-Language: en
    S: Content-Length: 0
-   S: REPP-svtrid: XYZ-12345
-   S: REPP-cltrid: ABC-12345
-   S: REPP-eppcode: 1000
+   S: REPP-Svtrid: XYZ-12345
+   S: REPP-Cltrid: ABC-12345
+   S: REPP-Eppcode: 1000
 
 9.6.2.  Object Extension
 
@@ -2034,8 +2034,8 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: Authorization: Bearer <token>
    C: Accept: application/epp+xml
    C: Accept-Language: en
-   C: REPP-svcs-ext: https://example.nl/epp-ips-1.0
-   C: REPP-cltrid: ABC-12345
+   C: REPP-Svcs-Ext: https://example.nl/epp-ips-1.0
+   C: REPP-Cltrid: ABC-12345
    C: Content-Type: application/epp+xml
    C: Content-Length: 220
    C:

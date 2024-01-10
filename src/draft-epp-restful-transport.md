@@ -210,14 +210,14 @@ The client MUST synchronize the value for the Content-Type and Accept headers, f
 In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers is, for some use cases, sufficient for the server to be able to successfully proceses the request. The `Object Info` request for example, does not require an EPP message.
 HTTP request headers are used to transmit additional or optional request data to the server. All REPP HTTP headers MUST have the "REPP-" prefix, following the recommendations in [@!RFC6648].
 
-- `REPP-cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.
+- `REPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.
 
-- `REPP-svcs`: The namespace used by the client in the EPP request message, this is equivalent to the "svcs" element in the Login command defined in [@!RFC5730, section 2.9.1.1]. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.
+- `REPP-Svcs`: The namespace used by the client in the EPP request message, this is equivalent to the "svcs" element in the Login command defined in [@!RFC5730, section 2.9.1.1]. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.
     <!--TODO issue #31: do we add all namespaces to this header, also for extensions or do we need another header for extension -->
 
-- `REPP-svcs-ext`: The extension namespace used by the client in the EPP request message, this is equivalent to the "svcExtension" element in the Login command defined in [@!RFC5730, section 2.9.1.1]
+- `REPP-Svcs-Ext`: The extension namespace used by the client in the EPP request message, this is equivalent to the "svcExtension" element in the Login command defined in [@!RFC5730, section 2.9.1.1]
 
-- `REPP-authInfo`: The client MAY use this header for sending basic token-based authorization information, as described in [@!RFC5731, section 2.6] and [@!RFC5733, section 2.8]. If the authorization is linked to a contact object then the client MUST NOT use this header.
+- `REPP-AuthInfo`: The client MAY use this header for sending basic token-based authorization information, as described in [@!RFC5731, section 2.6] and [@!RFC5733, section 2.8]. If the authorization is linked to a contact object then the client MUST NOT use this header.
   <!-- TODO issue #33 : use header for simple auth token -->
 
 - `Accept-Language`:  This header is equivalent to the "lang" element of the EPP Login command. The server MUST support the use of HTTP Accept-Language header by clients. The client MAY issue a Hello request to discover the languages supported by the server. Multiple servers in a load-balanced environment SHOULD reply with consistent "lang" elements in the Greeting response. The value of the Accept-Language header MUST match 1 of the languages from the Greeting. When the server receives a request using an unsupported langauge, the server MUST respond using the default language configured for the server, as required in [@!RFC5730, section 2.9.1.1] 
@@ -233,15 +233,15 @@ HTTP request headers are used to transmit additional or optional request data to
 
 The server HTTP response contains a status code, headers and MAY contain an EPP response message in the message body. HTTP headers are used to transmit additional data to the client and MAY be used to send EPP process related data to the client. HTTP headers used by REPP MUST use the "REPP-" prefix, the following response headers have been defined for REPP.
 
-- `REPP-svtrid`:  This header is the equivalent of the "svTRID" element defined in [@!RFC5730] and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If an HTTP message body with the EPP XML equivalent "svTRID" exists, both values MUST be consistent.
+- `REPP-Svtrid`:  This header is the equivalent of the "svTRID" element defined in [@!RFC5730] and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If an HTTP message body with the EPP XML equivalent "svTRID" exists, both values MUST be consistent.
 
-- `REPP-cltrid`: This header is the equivalent of the "clTRID" element defined in [@!RFC5730] and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a "clTRID" value, then both values MUST be consistent.
+- `REPP-Cltrid`: This header is the equivalent of the "clTRID" element defined in [@!RFC5730] and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a "clTRID" value, then both values MUST be consistent.
   
-- `REPP-eppcode`: This header is the equivalent of the EPP result code defined in [@!RFC5730] and MUST be used accordingly. This header MUST be used for all responses and MAY be used by the client for easy access to the EPP result code, without having to parse the content of the HTTP response message body.
+- `REPP-Eppcode`: This header is the equivalent of the EPP result code defined in [@!RFC5730] and MUST be used accordingly. This header MUST be used for all responses and MAY be used by the client for easy access to the EPP result code, without having to parse the content of the HTTP response message body.
 
-- `REPP-check-avail`: An alternative for the "avail" attribute of the object:name element in an Object Check response and MUST be used accordingly. The server does not return a HTTP message body in response to a REPP Object Check request.   
+- `REPP-Check-Avail`: An alternative for the "avail" attribute of the object:name element in an Object Check response and MUST be used accordingly. The server does not return a HTTP message body in response to a REPP Object Check request.   
 
-- `REPP-check-reason`: An optional alternative for the "object:reason" element in an Object Check response and MUST be used accordingly.
+- `REPP-Check-Reason`: An optional alternative for the "object:reason" element in an Object Check response and MUST be used accordingly.
 
 - `REPP-Queue-Size`: Return the number of unackknowledged messages in the client message queue. The server MAY include this header in all REPP responses.
     <!--TODO ISSUE 40: return queue size for all results-->   
@@ -250,9 +250,10 @@ The server HTTP response contains a status code, headers and MAY contain an EPP 
    <!--TODO ISSUE 10: How to handle caching -->   
 
 - `Content-Language`: The server MUST include this header in every response that contains an EPP message in the message body.
+
 - `Content-Encoding`: The server MAY choose to compresses the responses message body, using a algorithm selected from the list of algorithms provided by the client using the Accept-Encoding request header.
 
-REPP does not always return an EPP response message in the HTTP message body. The `Object Check` request for example, does not require the server to return an EPP response message. When the server does not return a EPP message, it MUST return at least the REPP-svtrid, REPP-cltrid and REPP-eppcode headers.
+REPP does not always return an EPP response message in the HTTP message body. The `Object Check` request for example may return an empty HTTP response body. When the server does not return a EPP message, it MUST return at least the REPP-Svtrid, REPP-Cltrid and REPP-Eppcode headers.
 
 ## Error Handling {#error-handling}
 
@@ -261,9 +262,9 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 
 When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in [@!RFC9110]. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.
 
-The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-eppcode HTTP header for error handling logic, without having to parse the EPP result message. 
+The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-Eppcode HTTP header for error handling logic, without having to parse the EPP result message. 
 
-For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.
+For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-Eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.
 
 # Command Mapping {#command-mapping}
 
@@ -363,9 +364,9 @@ The request attributes from the Login command that are used to configure the cli
 - `newPW`: Replaced by out of band process
 - `version`: Replaced by the `{version}` path segment in the request URL.
 - `lang`: Replaced by the `Accept-Language` HTTP header.
-- `svcs`: Replaced by the `REPP-svcs` HTTP header.
+- `svcs`: Replaced by the `REPP-Svcs` HTTP header.
 
-The server MUST check the namespaces used in the REPP-svcs HTTP header. An unsupported namespace MUST result in the appropriate EPP result code.
+The server MUST check the namespaces used in the REPP-Svcs HTTP header. An unsupported namespace MUST result in the appropriate EPP result code.
 
 ##  Logout
 
@@ -382,7 +383,7 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 - Request message: None
 - Response message: None
 
-The server MUST support the HTTP HEAD method for the Check endpoint, both client and server MUST NOT put any content into the HTTP message body. The response MUST contain the REPP-check-avail and MAY contain the REPP-check-reason header. The value of the REPP-check-avail header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not.
+The server MUST support the HTTP HEAD method for the Check endpoint, both client and server MUST NOT put any content into the HTTP message body. The response MUST contain the REPP-Check-Avail and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not.
 
 The REPP Check endpoint is limited to checking only a single resource {id} per request. This may seem a limitation compared to the Check command defined in the [@!RFC5730] where multiple object-ids may be added to a  Check message. The RESTful Check request can be load balanced more efficiently when only a single resource {id} needs to be checked. 
 
@@ -393,8 +394,8 @@ C: HEAD /repp/v1/domains/example.nl HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 Example response:
@@ -403,17 +404,17 @@ Example response:
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
-S: REPP-cltrid: ABC-12345
-S: REPP-svtrid: XYZ-12345
-S: REPP-check-avail: 0
-S: REPP-check-reason: In use
+S: REPP-Cltrid: ABC-12345
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Check-Avail: 0
+S: REPP-Check-Reason: In use
 S: REPP-result-code: 1000
 
 ```
 
 ### Info
 
-The Object Info request MUST use the HTTP GET method on a resource identifying an object instance, using an empty message body. If the object has authorization information attachted and the authorization is not linked to a registrant or contact object, then the client MUST use the REPP-authInfo HTTP header. If the authorization is linked to a registrant or contact object the client MUST use the HTTP POST method and include the authorization information in the Object Info request.
+The Object Info request MUST use the HTTP GET method on a resource identifying an object instance, using an empty message body. If the object has authorization information attachted and the authorization is not linked to a registrant or contact object, then the client MUST use the REPP-AuthInfo HTTP header. If the authorization is linked to a registrant or contact object the client MUST use the HTTP POST method and include the authorization information in the Object Info request.
 
 Example request for an object not using authorization information.  
 
@@ -427,12 +428,12 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
-Example request using REPP-authInfo header for an object that has attached authorization information.  
+Example request using REPP-AuthInfo header for an object that has attached authorization information.  
 
 - Request: GET /{collection}/{id}
 - Request message: None
@@ -444,9 +445,9 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-authInfo: secret-token
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-AuthInfo: secret-token
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -538,8 +539,8 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -561,7 +562,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 ```
 Example response:
@@ -611,7 +612,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 ```
 Example response:
@@ -621,10 +622,10 @@ S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
-S: REPP-eppcode: 1000
+S: REPP-Eppcode: 1000
 S: REPP-Queue-Size: 4
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
 S: Content-Length: 0
 
 ```
@@ -646,18 +647,18 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
-If the requested object has associated authorization information that is not linked to a contact object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-authInfo header.
+If the requested object has associated authorization information that is not linked to a contact object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-AuthInfo header.
 
 - Request: GET {collection}/{id}/transfers/latest
 - Request message: None
 - Response message: Transfer Query response.
 
-Example domain name Transfer Query request using REPP-authInfo header:
+Example domain name Transfer Query request using REPP-AuthInfo header:
 
 ```
 C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -665,9 +666,9 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
-C: REPP-authInfo: secret-token
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-AuthInfo: secret-token
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -750,7 +751,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: Content-Length: 220
 C:
@@ -816,7 +817,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 ```
 
@@ -827,9 +828,9 @@ S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 ```
 
@@ -850,7 +851,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: Content-Length: 325
 C: 
@@ -919,9 +920,9 @@ C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 C: Content-Length: 0
 
 ```
@@ -933,9 +934,9 @@ C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
-C: REPP-cltrid: ABC-12345
-C: REPP-authInfo: secret
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Cltrid: ABC-12345
+C: REPP-AuthInfo: secret
 C: Accept-Language: en
 C: Content-Length: 0
 
@@ -948,7 +949,7 @@ C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: Content-Length: 252
 C:
@@ -1015,7 +1016,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 ```
 
@@ -1026,9 +1027,9 @@ S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 ```
 
@@ -1048,7 +1049,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 
 ```
 
@@ -1059,9 +1060,9 @@ S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 ```
 
@@ -1081,7 +1082,7 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-cltrid: ABC-12345
+C: REPP-Cltrid: ABC-12345
 C: Content-Length: 0
 
 ```
@@ -1093,9 +1094,9 @@ S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 ```
 
@@ -1116,7 +1117,7 @@ C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
 C: Accept-Language: en
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 252
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -1141,9 +1142,9 @@ S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 ```
 
@@ -1174,9 +1175,9 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-svcs: urn:ietf:params:xml:ns:domain-1.0
-C: REPP-svcs-ext: https://rxsd.domain-registry.nl/sidn-ext-epp-1.0
-C: REPP-cltrid: ABC-12345
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+C: REPP-Svcs-Ext: https://rxsd.domain-registry.nl/sidn-ext-epp-1.0
+C: REPP-Cltrid: ABC-12345
 
 ```
 
@@ -1188,9 +1189,9 @@ S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 0
-S: REPP-svtrid: XYZ-12345
-S: REPP-cltrid: ABC-12345
-S: REPP-eppcode: 1000
+S: REPP-Svtrid: XYZ-12345
+S: REPP-Cltrid: ABC-12345
+S: REPP-Eppcode: 1000
 
 ```
 
@@ -1212,8 +1213,8 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-svcs-ext: https://example.nl/epp-ips-1.0
-C: REPP-cltrid: ABC-12345
+C: REPP-Svcs-Ext: https://example.nl/epp-ips-1.0
+C: REPP-Cltrid: ABC-12345
 C: Content-Type: application/epp+xml
 C: Content-Length: 220
 C:
