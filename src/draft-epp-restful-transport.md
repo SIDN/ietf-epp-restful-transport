@@ -117,9 +117,9 @@ This section lists the main design criteria.
   This document only describes the use of [@!XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
 - Compatibility with existing EPP commands and corresponding request and response messages.
-- Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of an request message should be optional. If the EPP response message is limited to the EPP result code and transaction identifiers, sending a response message should be optional.
+- Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of an request message should be optional.
 
-- Performance, reducing the number of required request and response messages, improves the performance and bandwidth used for both client and server. Fewer messages have to be created, marshalled, transmitted and parsed.
+- Performance, reducing the number of required request and response messages, improves the performance and network bandwidth requirements for both client and server. Fewer messages have to be created, marshalled and transmitted.
 
 # EPP Extension Framework
 
@@ -218,6 +218,8 @@ HTTP request headers are used to transmit additional or optional request data to
 - `REPP-Svcs-Ext`: The extension namespace used by the client in the EPP request message, this is equivalent to the "svcExtension" element in the Login command defined in [@!RFC5730, section 2.9.1.1]
 
 - `REPP-AuthInfo`: The client MAY use this header for sending basic token-based authorization information, as described in [@!RFC5731, section 2.6] and [@!RFC5733, section 2.8]. If the authorization is linked to a contact object then the client MUST NOT use this header.
+
+- `REPP-Roid`: If the authorization info, is linked to a database object, the client MAY use this header for the Repository Object IDentifier (ROID), as described in [@!RFC5730, section 4.2].
   <!-- TODO issue #33 : use header for simple auth token -->
 
 - `Accept-Language`:  This header is equivalent to the "lang" element of the EPP Login command. The server MUST support the use of HTTP Accept-Language header by clients. The client MAY issue a Hello request to discover the languages supported by the server. Multiple servers in a load-balanced environment SHOULD reply with consistent "lang" elements in the Greeting response. The value of the Accept-Language header MUST match 1 of the languages from the Greeting. When the server receives a request using an unsupported langauge, the server MUST respond using the default language configured for the server, as required in [@!RFC5730, section 2.9.1.1] 
@@ -237,7 +239,7 @@ The server HTTP response contains a status code, headers and MAY contain an EPP 
 
 - `REPP-Cltrid`: This header is the equivalent of the "clTRID" element defined in [@!RFC5730] and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If the contents of the HTTP message body contains a "clTRID" value, then both values MUST be consistent.
   
-- `REPP-Eppcode`: This header is the equivalent of the EPP result code defined in [@!RFC5730] and MUST be used accordingly. This header MUST be used for all responses and MAY be used by the client for easy access to the EPP result code, without having to parse the content of the HTTP response message body.
+- `REPP-Eppcode`: This header is the equivalent of the EPP result code defined in [@!RFC5730] and MUST be used accordingly. This header MUST be added to all responses, except for the Greeting, and MAY be used by the client for easy access to the EPP result code, without having to parse the content of the HTTP response message body.
 
 - `REPP-Check-Avail`: An alternative for the "avail" attribute of the object:name element in an Object Check response and MUST be used accordingly. The server does not return a HTTP message body in response to a REPP Object Check request.   
 
@@ -260,7 +262,7 @@ REPP does not always return an EPP response message in the HTTP message body. Th
   <!--TODO: ISSUE #35: Mapping EPP code to HTTP status codes -->
 Restful EPP and HTTP protocol are both an application layer protocol, having their own status- and result codes. The endpoints described in (#command-mapping) MUST return HTTP status code 200 (OK) for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.
 
-When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in [@!RFC9110]. Errors related to the HTTP protocol MUST result in the use of an apropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.
+When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in [@!RFC9110], byut only when this is permitted for the used HTTP method. Errors related to the HTTP protocol MUST result in the use of an apropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.
 
 The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-Eppcode HTTP header for error handling logic, without having to parse the EPP result message. 
 
@@ -287,19 +289,19 @@ Command            | Method   | Resource                  | Request     | Respon
 Hello              | OPTIONS  | /                         | No          | Yes
 Login              | N/A      | N/A                       | N/A         | N/A
 Logout             | N/A      | N/A                       | N/A         | N/A
-Check              | HEAD     | /{c}/{i}                  | No          | Optional
-Info               | GET/POST | /{c}/{i}                  | Optional    | Yes
+Check              | HEAD     | /{c}/{i}                  | No          | No
+Info               | GET/POST | /{c}/{i}                  | No          | Yes
 Poll Request       | GET      | /messages                 | No          | Yes
-Poll Ack           | DELETE   | /messages/{i}             | No          | Optional
+Poll Ack           | DELETE   | /messages/{i}             | No          | Yes
 Create             | POST     | /{c}                      | Yes         | Yes
-Delete             | DELETE   | /{c}/{i}                  | No          | Optional
+Delete             | DELETE   | /{c}/{i}                  | No          | Yes
 Renew              | POST     | /{c}/{i}/renewals         | Yes         | Yes
-Transfer Request   | POST     | /{c}/{i}/transfers        | Optional    | Yes
-Transfer Query     | GET/POST | /{c}/{i}/transfers/latest | Optional    | Yes
-Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Optional
-Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | Optional    | Optional
-Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Optional
-Update             | PATCH    | /{c}/{i}                  | Yes         | Optional
+Transfer Request   | POST     | /{c}/{i}/transfers        | No          | Yes
+Transfer Query     | GET/POST | /{c}/{i}/transfers/latest | No          | Yes
+Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | No          | Yes
+Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | No          | Yes
+Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | No          | Yes
+Update             | PATCH    | /{c}/{i}                  | Yes         | Yes
 Extension [1]      | *        | /{c}/{i}/extension/*      | *           | *
 Extension [2]      | *        | /extension/*              | *           | *
 Table: Mapping of EPP Command to REPP Request
@@ -383,7 +385,7 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 - Request message: None
 - Response message: None
 
-The server MUST support the HTTP HEAD method for the Check endpoint, both client and server MUST NOT put any content into the HTTP message body. The response MUST contain the REPP-Check-Avail and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not.
+The server MUST support the HTTP HEAD method for the Check endpoint, both client and server MUST NOT put any content into the HTTP message body. The response MUST contain the REPP-Check-Avail and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not. If the EPP message cannot be processed correctly, the server MUST use the HTTP status code 422 for the response and include the REPP-Eppcode header.
 
 The REPP Check endpoint is limited to checking only a single resource {id} per request. This may seem a limitation compared to the Check command defined in the [@!RFC5730] where multiple object-ids may be added to a  Check message. The RESTful Check request can be load balanced more efficiently when only a single resource {id} needs to be checked. 
 
@@ -414,7 +416,7 @@ S: REPP-result-code: 1000
 
 ### Info
 
-The Object Info request MUST use the HTTP GET method on a resource identifying an object instance, using an empty message body. If the object has authorization information attachted and the authorization is not linked to a registrant or contact object, then the client MUST use the REPP-AuthInfo HTTP header. If the authorization is linked to a registrant or contact object the client MUST use the HTTP POST method and include the authorization information in the Object Info request.
+The Object Info request MUST use the HTTP GET method on a resource identifying an object instance, using an empty message body. If the object has authorization information attachted and the authorization then the client MUST include the REPP-AuthInfo HTTP header. If the authorization is linked to a database object the client MUST include the REPP-Roid header.
 
 Example request for an object not using authorization information.  
 
@@ -447,10 +449,12 @@ C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-Cltrid: ABC-12345
 C: REPP-AuthInfo: secret-token
+C: REPP-Roid: REG-XYZ-12345
 C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
+<!--
 Example request using POST method for an object that has attached authorization information.  
 
 - Request: POST /{collection}/{id}
@@ -491,6 +495,7 @@ S: Server: Example REPP server v1.0
 S: Content-Length: 424
 S: Content-Type: application/epp+xml
 S: Content-Language: en
+S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
@@ -500,7 +505,7 @@ S:      <msg>Command completed successfully</msg>
 S:    </result>
 S:    <resData>
 S:      <domain:infData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-S:         <!-- The rest of the response is omitted here -->
+S:         < !-- The rest of the response is omitted here -- >
 S:      </domain:infData>
 S:    </resData>
 S:    <trID>
@@ -510,6 +515,7 @@ S:    </trID>
 S:  </response>
 S:</epp>
 ```
+-->
 
 #### Object Filtering
 
@@ -574,6 +580,7 @@ S: Server: Example REPP server v1.0
 S: Content-Length: 312
 S: Content-Type: application/epp+xml
 S: Content-Language: en
+S: REPP-Eppcode: 1301
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
@@ -600,7 +607,7 @@ S:</epp>
 
 - Request: DELETE /messages/{id}
 - Request message: None
-- Response message: None
+- Response message: Poll Ack response
 
 The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "op=ack" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP DELETE method. The "msgID" attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successfull response, the server may add content to the message body of an error response. 
 
@@ -617,17 +624,30 @@ C: REPP-Cltrid: ABC-12345
 ```
 Example response:
 
-```
+```xml
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
 S: REPP-Eppcode: 1000
-S: REPP-Queue-Size: 4
+S: REPP-Queue-Size: 0
 S: REPP-Svtrid: XYZ-12345
 S: REPP-Cltrid: ABC-12345
-S: Content-Length: 0
-
+S: Content-Length: 145
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <msgQ count="0" id="12345"/>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
 ```
 
 ### Transfer Query
@@ -715,6 +735,7 @@ S: Server: Example REPP server v1.0
 S: Content-Length: 230
 S: Content-Type: application/epp+xml
 S: Content-Language: en
+S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
@@ -780,6 +801,7 @@ S: Content-Language: en
 S: Content-Length: 642
 S: Content-Type: application/epp+xml
 S: Location: https://repp.example.nl/repp/v1/domains/example.nl
+S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
@@ -805,9 +827,9 @@ S:</epp>
 
 - Request: DELETE /{collection}/{id} 
 - Request message: None
-- Response message: Optional error message
+- Response message: Status
 
-The client MUST the HTTP DELETE method and a resource identifying a unique object instance. This operation has no EPP request and response message and MUST return HTTP status code 200 (OK) if the resource was deleted successfully.
+The client MUST the HTTP DELETE method and a resource identifying a unique object instance. The server MUST return HTTP status code 200 (OK) if the resource was deleted successfully.
 
 Example Domain Delete request:
 
@@ -823,15 +845,27 @@ C: REPP-Cltrid: ABC-12345
 
 Example Domain Delete response:
 
-```
+```xml
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
-S: Content-Length: 0
+S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
 S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
-
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
 ```
 
 ### Renew
@@ -841,7 +875,7 @@ S: REPP-Eppcode: 1000
 - Response message: object Renew response
 
 The EPP Renew command is mapped to a nested collection resource, named "renewals".
-Not all EPP object types include support for the renew command. If the EPP request results in a renewal of the object, then the server MUST return HTTP status code 200 (OK).
+Not all EPP object types include support for the renew command. If the EPP request results in a renewal of the object, then the server MUST return HTTP status code 200 (OK) and include the Location header for the renewed object URL.
 
 Example Domain Renew request:
 
@@ -878,9 +912,10 @@ S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
-S: Content-Length: 505
+S: Content-Length: 205
 S: Location: https://repp.example.nl/repp/v1/domains/example.nl
 S: Content-Type: application/epp+xml
+S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
@@ -906,14 +941,14 @@ Transferring an object from one sponsoring client to another client is specified
 #### Request
 
 - Request: POST /{collection}/{id}/transfers
-- Request message: Optional Transfer request
-- Response message: Transfer response.
+- Request message: None
+- Response message: Status
 
 To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource to create a new transfer resource object, not all EPP objects support the Transfer command as described in [@!RFC5730, section 3.2.4], [@!RFC5731, section 3.2.4] and [@!RFC5733, section 3.2.4].
 
-If the EPP request is successful, then the server MUST return HTTP status code 200 (OK)). The client MAY choose to send an empty HTTP message body when the object is not linked to authorization information associated with a contact object. The server MUST also include the Location header in the HTTP response.
+If the EPP request is successful, then the server MUST return HTTP status code 200 (OK) and include the Location header.
 
-Example request not using using object authorization:
+Example request not using object authorization:
 
 ```
 C: POST /repp/v1/domains/example.nl/transfers HTTP/2
@@ -927,7 +962,7 @@ C: Content-Length: 0
 
 ```
 
-Example request using object authorization not linked to a contact:
+Example request using object authorization:
 
 ```xml
 C: POST /repp/v1/domains/example.nl/transfers HTTP/2
@@ -936,12 +971,13 @@ C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: REPP-Cltrid: ABC-12345
-C: REPP-AuthInfo: secret
+C: REPP-AuthInfo: secret-token
 C: Accept-Language: en
 C: Content-Length: 0
 
 ```
 
+<!--
 Example request using object authorization linked to a contact object:
 
 ```xml
@@ -969,6 +1005,7 @@ C:    <clTRID>ABC-12345</clTRID>
 C:  </command>
 C:</epp>
 ```
+-->
 
 Example Transfer response:
 
@@ -980,6 +1017,7 @@ S: Content-Language: en
 S: Content-Length: 328
 S: Content-Type: application/epp+xml
 S: Location: https://repp.example.nl/repp/v1/domains/example.nl/transfers/latest
+S: REPP-Eppcode: 1001
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
@@ -1002,11 +1040,10 @@ S:</epp>
 #### Cancel
 
 - Request: DELETE /{collection}/{id}/transfers/latest
-- Request message: Optional Transfer Reject request
-- Response message: Optional error message
+- Request message: None
+- Response message: Status
 
-The new sponsoring client MUST use the HTTP DELETE method to cancel a
-requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request. The server MAY return an empty message body when the transfer was cancelled without an error. The server MUST return HTTP status code 200 (OK) if the transfer resource was deleted successfully.
+The new sponsoring client MUST use the HTTP DELETE method to cancel a requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request. The server MUST return HTTP status code 200 (OK) if the transfer resource was deleted successfully.
 
 Example request:
 
@@ -1022,24 +1059,36 @@ C: REPP-Cltrid: ABC-12345
 
 Example response:
 
-```
+```xml
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
-S: Content-Length: 0
+S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
 S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
-
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
 ```
 
 #### Reject
 
 - Request: DELETE /{collection}/{id}/transfers/latest
-- Request message:  Optional Transfer Reject request
-- Response message: Optional error message
+- Request message:  None
+- Response message: Status
 
-The semantics of the HTTP DELETE method are determined by the role of the client sending the request. For the current sponsoring client of the object, the DELETE method is defined as "reject transfer". The server MAY return an empty message body when the transfer was rejected without an error. The server MUST return HTTP status code 200 (OK) if the transfer resource was deleted successfully.
+The semantics of the HTTP DELETE method are determined by the role of the client sending the request. For the current sponsoring client of the object, the DELETE method is defined as "reject transfer".
 
 Example request:
 
@@ -1055,24 +1104,37 @@ C: REPP-Cltrid: ABC-12345
 
 Example Reject response:
 
-```
+```xml
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
-S: Content-Length: 0
+S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
 S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
 
 ```
 
 #### Approve
 
 - Request: PUT /{collection}/{id}/transfers/latest
-- Request message: Optional Transfer Approve request
-- Response message: Optional error message
+- Request message: None
+- Response message: Status
 
-The current sponsoring client MUST use the HTTP PUT method to approve a transfer requested by the new sponsoring client. The server MAY return an empty message body when the transfer was cancelled without an error.
+The current sponsoring client MUST use the HTTP PUT method to approve a transfer requested by the new sponsoring client.
 
 Example Approve request:
 
@@ -1089,24 +1151,36 @@ C: Content-Length: 0
 
 Example Approve response:
 
-```
+```xml
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
-S: Content-Length: 0
+S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
 S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
-
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
 ```
 
 ### Update
 
 - Request: PATCH /{collection}/{id}
 - Request message: Object Update message
-- Response message: Optional error message
+- Response message: Status
 
-An object Update request MUST be performed with the HTTP PATCH method on a unique object resource. The request message body MUST contain an Update request as described in the EPP RFCs. The server MUST NOT add content to the response message body.
+An object Update request MUST be performed with the HTTP PATCH method on a unique object resource. The request message body MUST contain an Update request as described in the EPP RFCs.
 
 Example request:
 
@@ -1137,15 +1211,27 @@ C:</epp>
 
 Example response:
 
-```
+```xml
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
-S: Content-Length: 0
+S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
 S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
-
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
 ```
 
 ## Extension Framework
@@ -1192,7 +1278,19 @@ S: Content-Length: 0
 S: REPP-Svtrid: XYZ-12345
 S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
-
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
 ```
 
 ### Object Extension
@@ -1244,6 +1342,7 @@ S: Content-Language: en
 S: Content-Length: 642
 S: Content-Type: application/epp+xml
 S: Location: https://repp.example.nl/repp/v1/ips/192.0.2.1
+S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"

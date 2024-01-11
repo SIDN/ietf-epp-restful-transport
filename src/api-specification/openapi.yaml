@@ -1,4 +1,4 @@
-openapi: '3.0.0'
+openapi: '3.0.2'
 info:
   title: RESTful EPP
   version: '1.0'
@@ -14,14 +14,7 @@ paths:
         - common
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string               
+            $ref: '#/components/responses/200okWithBody'          
 
   /messages:
     get:
@@ -35,14 +28,10 @@ paths:
         - $ref: '#/components/parameters/p_acceptLanguage'
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
+
   /messages/{id}:
     head:
       summary: Poll ack
@@ -56,14 +45,9 @@ paths:
         - $ref: '#/components/parameters/p_acceptLanguage'
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string     
-              application/epp+json:
-                schema:
-                  type: string 
+            $ref: '#/components/responses/200okCheckNoBody'
+          '224':
+            $ref: '#/components/responses/422ErrorNoBody'
 
  # domains
   /domains/{id}:
@@ -79,14 +63,10 @@ paths:
         - domains
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okCheckNoBody'
+          '422':
+            $ref: '#/components/responses/422ErrorNoBody'
+
     get:
       summary: Domain info
       tags:
@@ -104,20 +84,16 @@ paths:
             type: string
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '422':
+            $ref: '#/components/responses/422ErrorBody'
+
     post:
       summary: Domain info using request message body
       tags:
         - domains
       parameters:
-        - name: attr
+        - name: filter
           in: query
           required: false
           schema:
@@ -128,63 +104,35 @@ paths:
           schema:
             type: string
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-            schema:
-              type: string
-
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
+
     delete:
       summary: Domain delete
       tags:
         - domains
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string       
+            $ref: '#/components/responses/200okWithBody'    
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
 
     patch:
       summary: Domain update
       tags:
         - domains
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
                   
-
   /domains:
     parameters:
      - $ref: '#/components/parameters/p_cltrid'
@@ -196,23 +144,12 @@ paths:
       tags:
         - domains
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
-          '201':
-            description: CREATED
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+          '200':
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
 
   /domains/{id}/renewals:
     parameters:
@@ -226,23 +163,12 @@ paths:
       tags:
         - domains
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
-          '201':
-            description: CREATED
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+          '200':
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
 
   /domains/{id}/transfers:
     parameters:
@@ -256,24 +182,12 @@ paths:
       tags:
         - domains
       requestBody:
-        required: false
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
-          '201':
-            description: CREATED
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+          '200':
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
                 
   /domains/{id}/transfers/latest:
     parameters:
@@ -288,37 +202,21 @@ paths:
         - domains
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
+
     post:
       summary: Domain transfer query using message body
       tags:
         - domains
       requestBody:
-        required: false
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
     
     delete:
       summary: Domain transfer cancel
@@ -326,14 +224,9 @@ paths:
         - domains
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
             
     put:
       summary: Domain transfer approve
@@ -341,15 +234,9 @@ paths:
         - domains
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
-
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
 
  # hosts
   /hosts/{id}:
@@ -363,33 +250,18 @@ paths:
       summary: Host check
       tags:
         - hosts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okCheckNoBody'
+          '224':
+            $ref: '#/components/responses/422ErrorNoBody'
+
     get:
       summary: Host info
       tags:
         - hosts
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: attr
+        - name: filter
           in: query
           required: false
           schema:
@@ -401,62 +273,31 @@ paths:
             type: string
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
+
     post:
       summary: Host info using request message body
       tags:
         - hosts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
+
     delete:
       summary: Host delete
       tags:
         - hosts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string       
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
 
     patch:
       summary: Host update
@@ -469,25 +310,13 @@ paths:
           schema:
             type: string
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
-                  
-
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
+          
   /hosts:
     parameters:
      - $ref: '#/components/parameters/p_cltrid'
@@ -499,25 +328,13 @@ paths:
       tags:
         - hosts
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
-          '201':
-            description: CREATED
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+          '200':
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
 
- 
  # contacts
   /contacts/{id}:
     parameters:
@@ -530,33 +347,18 @@ paths:
       summary: Contact check
       tags:
         - contacts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okCheckNoBody'
+          '224':
+            $ref: '#/components/responses/422ErrorNoBody'
+
     get:
       summary: Contact info
       tags:
         - contacts
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: attr
+        - name: filter
           in: query
           required: false
           schema:
@@ -568,25 +370,16 @@ paths:
             type: string
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
+
     post:
       summary: Contact info using request message body
       tags:
         - contacts
       parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: attr
+        - name: filter
           in: query
           required: false
           schema:
@@ -597,73 +390,35 @@ paths:
           schema:
             type: string
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-            schema:
-              type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
 
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
+
     delete:
       summary: Contact delete
       tags:
         - contacts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string       
+            $ref: '#/components/responses/200okWithBody'    
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
 
     patch:
       summary: Contact update
       tags:
         - contacts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
                   
 
   /contacts:
@@ -677,23 +432,12 @@ paths:
       tags:
         - contacts
       requestBody:
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
-          '201':
-            description: CREATED
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+          '200':
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
 
   /contacts/{id}/transfers:
     parameters:
@@ -706,31 +450,13 @@ paths:
       summary: Contact transfer request
       tags:
         - contacts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
-        required: false
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
-          '201':
-            description: CREATED
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+          '200':
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
                 
   /contacts/{id}/transfers/latest:
     parameters:
@@ -743,79 +469,42 @@ paths:
       summary: Contact transfer query
       tags:
         - contacts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
     post:
       summary: Contact transfer query using message body
       tags:
         - contacts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
-        required: false
-        content:
-          application/epp+xml:
-            schema:
-              type: string
-          application/epp+json:
-                schema:
-                  type: string
+        $ref: '#/components/requestBodies/defaultRequestBody'
       responses:
           '200':
-            description: OK
-            content:
-              application/epp+xml:
-                schema:
-                  type: string
-              application/epp+json:
-                schema:
-                  type: string
+            $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
     
     delete:
       summary: Contact transfer cancel
       tags:
         - contacts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
           '200':
             $ref: '#/components/responses/200okWithBody'
+          '224':
+            $ref: '#/components/responses/422ErrorBody'
             
     put:
       summary: Contact transfer approve
       tags:
         - contacts
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           $ref: '#/components/responses/200okWithBody'
+        '224':
+            $ref: '#/components/responses/422ErrorBody'
 
 
 #
@@ -836,7 +525,7 @@ components:
       in: header
       schema:
         type: string
-      required: false
+      required: true
     p_svcs:
       name: REPP-svcs
       description: Namespace used
@@ -866,8 +555,6 @@ components:
         type: string
       required: true
 
-      
-      
   headers:
     cltrid:
       description: Client transaction identifier
@@ -889,8 +576,53 @@ components:
       schema:
         type: integer
       required: false
+    check-avail:
+      description: Result of object check
+      schema:
+        type: integer
+      required: true
+    check-reason:
+      description: Explanation why object cannot be provisioned 
+      schema:
+        type: integer
+      required: false
       
   responses:
+    200okNoBody:
+      description: OK
+      headers:
+        REPP-cltrid:
+          $ref: '#/components/headers/cltrid'
+        REPP-svtrid:
+          $ref: '#/components/headers/svtrid'
+        REPP-eppcode:
+          $ref: '#/components/headers/eppcode'
+        REPP-Queue-Size:
+          $ref: '#/components/headers/queue-size'
+    422ErrorNoBody:
+      description:  Unprocessable Content
+      headers:
+        REPP-cltrid:
+          $ref: '#/components/headers/cltrid'
+        REPP-svtrid:
+          $ref: '#/components/headers/svtrid'
+        REPP-eppcode:
+          $ref: '#/components/headers/eppcode'
+    200okCheckNoBody:
+      description: OK
+      headers:
+        REPP-cltrid:
+          $ref: '#/components/headers/cltrid'
+        REPP-svtrid:
+          $ref: '#/components/headers/svtrid'
+        REPP-eppcode:
+          $ref: '#/components/headers/eppcode'
+        REPP-Queue-Size:
+          $ref: '#/components/headers/queue-size'
+        REPP-Check-Avail:
+          $ref: '#/components/headers/check-avail'
+        REPP-Check-Reason:
+          $ref: '#/components/headers/check-reason'
     200okWithBody:
       description: OK
       content:
@@ -909,4 +641,32 @@ components:
           $ref: '#/components/headers/eppcode'
         REPP-Queue-Size:
           $ref: '#/components/headers/queue-size'
+    422ErrorBody:
+      description: Unprocessable Content
+      content:
+        application/epp+xml:
+           schema:
+             type: string
+        application/epp+json:
+           schema:
+             type: string
+      headers:
+        REPP-cltrid:
+          $ref: '#/components/headers/cltrid'
+        REPP-svtrid:
+          $ref: '#/components/headers/svtrid'
+        REPP-eppcode:
+          $ref: '#/components/headers/eppcode'
       
+  requestBodies:
+    defaultRequestBody:
+      description: Default request body for XML of JSON message
+      required: true
+      content:
+        application/epp+xml:
+          schema:
+            type: string
+        application/epp+json:
+          schema:
+            type: string
+    
