@@ -217,7 +217,7 @@ HTTP request headers are used to transmit additional or optional request data to
 
 - `REPP-Svcs-Ext`: The extension namespace used by the client in the EPP request message, this is equivalent to the "svcExtension" element in the Login command defined in [@!RFC5730, section 2.9.1.1]
 
-- `REPP-AuthInfo`: The client MAY use this header for sending basic token-based authorization information, as described in [@!RFC5731, section 2.6] and [@!RFC5733, section 2.8]. If the authorization is linked to a contact object then the client MUST NOT use this header.
+- `REPP-AuthInfo`: The client MAY use this header for sending basic token-based authorization information, as described in [@!RFC5731, section 2.6] and [@!RFC5733, section 2.8]. If the authorization is linked to a contact object then the client MUST also include the REPP-Roid header.
 
 - `REPP-Roid`: If the authorization info, is linked to a database object, the client MAY use this header for the Repository Object IDentifier (ROID), as described in [@!RFC5730, section 4.2].
   <!-- TODO issue #33 : use header for simple auth token -->
@@ -290,14 +290,14 @@ Hello              | OPTIONS  | /                         | No          | Yes
 Login              | N/A      | N/A                       | N/A         | N/A
 Logout             | N/A      | N/A                       | N/A         | N/A
 Check              | HEAD     | /{c}/{i}                  | No          | No
-Info               | GET/POST | /{c}/{i}                  | No          | Yes
+Info               | GET      | /{c}/{i}                  | No          | Yes
 Poll Request       | GET      | /messages                 | No          | Yes
 Poll Ack           | DELETE   | /messages/{i}             | No          | Yes
 Create             | POST     | /{c}                      | Yes         | Yes
 Delete             | DELETE   | /{c}/{i}                  | No          | Yes
 Renew              | POST     | /{c}/{i}/renewals         | Yes         | Yes
 Transfer Request   | POST     | /{c}/{i}/transfers        | No          | Yes
-Transfer Query     | GET/POST | /{c}/{i}/transfers/latest | No          | Yes
+Transfer Query     | GET      | /{c}/{i}/transfers/latest | No          | Yes
 Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | No          | Yes
 Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | No          | Yes
 Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | No          | Yes
@@ -653,7 +653,7 @@ S:</epp>
 ### Transfer Query
 
 The Transfer Query request MUST use the special "latest" sub-resource to refer to the
-latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST use the HTTP GET method when no authorization information is attached to the object and MUST NOT add content to the HTTP message body.
+latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.
 
 - Request: GET {collection}/{id}/transfers/latest
 - Request message: None
@@ -672,11 +672,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
-If the requested object has associated authorization information that is not linked to a contact object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-AuthInfo header.
-
-- Request: GET {collection}/{id}/transfers/latest
-- Request message: None
-- Response message: Transfer Query response.
+If the requested object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-AuthInfo header.
 
 Example domain name Transfer Query request using REPP-AuthInfo header:
 
@@ -692,38 +688,20 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
-If the requested object has associated authorization information linked to a contact object, then the HTTP GET method MUST NOT be used and the HTTP POST method MUST be used and the authorization information MUST be included in the EPP request message inside the HTTP message body. 
+If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and both the REPP-AuthInfo and the REPP-Roid header MUST be included. 
 
-- Request: GET {collection}/{id}/transfers/latest
-- Request message: NoTransfer Query request
-- Response message: Transfer Query response.
+Example domain name Transfer Query request and authorization using REPP-AuthInfo and the REPP-Roid header:
 
-Example domain name Transfer Query request and authorization information in request message:
-
-```xml
-C: POST /repp/v1/domains/example.nl/transfers/latest HTTP/2
+```
+C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: Content-Length: 231
+C: REPP-AuthInfo: secret-token
+C: REPP-Roid: REG-XYZ-12345
+C: Content-Length: 0
 C:
-C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-C:  <command>
-C:    <transfer op="query">
-C:      <domain:transfer
-C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-C:        <domain:name>example.nl</domain:name>
-C:        <domain:authInfo>
-C:          <domain:pw roid="MW12345-REP">secret-token</domain:pw>
-C:        </domain:authInfo>
-C:      </domain:transfer>
-C:    </transfer>
-C:    <clTRID>ABC-12345</clTRID>
-C:  </command>
-C:</epp>
-
 ```
 
 Example Transfer Query response:

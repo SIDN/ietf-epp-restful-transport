@@ -94,8 +94,8 @@ Table of Contents
          9.4.3.1.  Poll Request  . . . . . . . . . . . . . . . . . .  19
          9.4.3.2.  Poll Ack  . . . . . . . . . . . . . . . . . . . .  20
        9.4.4.  Transfer Query  . . . . . . . . . . . . . . . . . . .  21
-     9.5.  Transform Resources . . . . . . . . . . . . . . . . . . .  24
-       9.5.1.  Create  . . . . . . . . . . . . . . . . . . . . . . .  24
+     9.5.  Transform Resources . . . . . . . . . . . . . . . . . . .  23
+       9.5.1.  Create  . . . . . . . . . . . . . . . . . . . . . . .  23
        9.5.2.  Delete  . . . . . . . . . . . . . . . . . . . . . . .  25
        9.5.3.  Renew . . . . . . . . . . . . . . . . . . . . . . . .  26
        9.5.4.  Transfer  . . . . . . . . . . . . . . . . . . . . . .  28
@@ -539,8 +539,8 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  REPP-AuthInfo: The client MAY use this header for sending basic
       token-based authorization information, as described in Section 2.6
       of [RFC5731] and Section 2.8 of [RFC5733].  If the authorization
-      is linked to a contact object then the client MUST NOT use this
-      header.
+      is linked to a contact object then the client MUST also include
+      the REPP-Roid header.
 
    -  REPP-Roid: If the authorization info, is linked to a database
       object, the client MAY use this header for the Repository Object
@@ -708,20 +708,20 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       with the value of a domain name, hostname, contact-id or a
       message-id or any other defined object.
 
-   +===========+==========+======================+=========+==========+
-   | Command   | Method   | Resource             | Request | Response |
-   +===========+==========+======================+=========+==========+
-   | Hello     | OPTIONS  | /                    | No      | Yes      |
-   +-----------+----------+----------------------+---------+----------+
-   | Login     | N/A      | N/A                  | N/A     | N/A      |
-   +-----------+----------+----------------------+---------+----------+
-   | Logout    | N/A      | N/A                  | N/A     | N/A      |
-   +-----------+----------+----------------------+---------+----------+
-   | Check     | HEAD     | /{c}/{i}             | No      | No       |
-   +-----------+----------+----------------------+---------+----------+
-   | Info      | GET/POST | /{c}/{i}             | No      | Yes      |
-   +-----------+----------+----------------------+---------+----------+
-   | Poll      | GET      | /messages            | No      | Yes      |
+    +===========+=========+======================+=========+==========+
+    | Command   | Method  | Resource             | Request | Response |
+    +===========+=========+======================+=========+==========+
+    | Hello     | OPTIONS | /                    | No      | Yes      |
+    +-----------+---------+----------------------+---------+----------+
+    | Login     | N/A     | N/A                  | N/A     | N/A      |
+    +-----------+---------+----------------------+---------+----------+
+    | Logout    | N/A     | N/A                  | N/A     | N/A      |
+    +-----------+---------+----------------------+---------+----------+
+    | Check     | HEAD    | /{c}/{i}             | No      | No       |
+    +-----------+---------+----------------------+---------+----------+
+    | Info      | GET     | /{c}/{i}             | No      | Yes      |
+    +-----------+---------+----------------------+---------+----------+
+    | Poll      | GET     | /messages            | No      | Yes      |
 
 
 
@@ -730,41 +730,41 @@ Wullink & Davids          Expires 14 July 2024                 [Page 13]
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
-   | Request   |          |                      |         |          |
-   +-----------+----------+----------------------+---------+----------+
-   | Poll Ack  | DELETE   | /messages/{i}        | No      | Yes      |
-   +-----------+----------+----------------------+---------+----------+
-   | Create    | POST     | /{c}                 | Yes     | Yes      |
-   +-----------+----------+----------------------+---------+----------+
-   | Delete    | DELETE   | /{c}/{i}             | No      | Yes      |
-   +-----------+----------+----------------------+---------+----------+
-   | Renew     | POST     | /{c}/{i}/renewals    | Yes     | Yes      |
-   +-----------+----------+----------------------+---------+----------+
-   | Transfer  | POST     | /{c}/{i}/transfers   | No      | Yes      |
-   | Request   |          |                      |         |          |
-   +-----------+----------+----------------------+---------+----------+
-   | Transfer  | GET/POST | /{c}/{i}/transfers/  | No      | Yes      |
-   | Query     |          | latest               |         |          |
-   +-----------+----------+----------------------+---------+----------+
-   | Transfer  | DELETE   | /{c}/{i}/transfers/  | No      | Yes      |
-   | Cancel    |          | latest               |         |          |
-   +-----------+----------+----------------------+---------+----------+
-   | Transfer  | PUT      | /{c}/{i}/transfers/  | No      | Yes      |
-   | Approve   |          | latest               |         |          |
-   +-----------+----------+----------------------+---------+----------+
-   | Transfer  | DELETE   | /{c}/{i}/transfers/  | No      | Yes      |
-   | Reject    |          | latest               |         |          |
-   +-----------+----------+----------------------+---------+----------+
-   | Update    | PATCH    | /{c}/{i}             | Yes     | Yes      |
-   +-----------+----------+----------------------+---------+----------+
-   | Extension | *        | /{c}/{i}/extension/* | *       | *        |
-   | [1]       |          |                      |         |          |
-   +-----------+----------+----------------------+---------+----------+
-   | Extension | *        | /extension/*         | *       | *        |
-   | [2]       |          |                      |         |          |
-   +-----------+----------+----------------------+---------+----------+
+    | Request   |         |                      |         |          |
+    +-----------+---------+----------------------+---------+----------+
+    | Poll Ack  | DELETE  | /messages/{i}        | No      | Yes      |
+    +-----------+---------+----------------------+---------+----------+
+    | Create    | POST    | /{c}                 | Yes     | Yes      |
+    +-----------+---------+----------------------+---------+----------+
+    | Delete    | DELETE  | /{c}/{i}             | No      | Yes      |
+    +-----------+---------+----------------------+---------+----------+
+    | Renew     | POST    | /{c}/{i}/renewals    | Yes     | Yes      |
+    +-----------+---------+----------------------+---------+----------+
+    | Transfer  | POST    | /{c}/{i}/transfers   | No      | Yes      |
+    | Request   |         |                      |         |          |
+    +-----------+---------+----------------------+---------+----------+
+    | Transfer  | GET     | /{c}/{i}/transfers/  | No      | Yes      |
+    | Query     |         | latest               |         |          |
+    +-----------+---------+----------------------+---------+----------+
+    | Transfer  | DELETE  | /{c}/{i}/transfers/  | No      | Yes      |
+    | Cancel    |         | latest               |         |          |
+    +-----------+---------+----------------------+---------+----------+
+    | Transfer  | PUT     | /{c}/{i}/transfers/  | No      | Yes      |
+    | Approve   |         | latest               |         |          |
+    +-----------+---------+----------------------+---------+----------+
+    | Transfer  | DELETE  | /{c}/{i}/transfers/  | No      | Yes      |
+    | Reject    |         | latest               |         |          |
+    +-----------+---------+----------------------+---------+----------+
+    | Update    | PATCH   | /{c}/{i}             | Yes     | Yes      |
+    +-----------+---------+----------------------+---------+----------+
+    | Extension | *       | /{c}/{i}/extension/* | *       | *        |
+    | [1]       |         |                      |         |          |
+    +-----------+---------+----------------------+---------+----------+
+    | Extension | *       | /extension/*         | *       | *        |
+    | [2]       |         |                      |         |          |
+    +-----------+---------+----------------------+---------+----------+
 
-             Table 1: Mapping of EPP Command to REPP Request
+              Table 1: Mapping of EPP Command to REPP Request
 
    [1] This mapping is used for Object extensions based on the extension
    mechanism as defined in [RFC5730, secion 2.7.2] [2] This mapping is
@@ -1160,8 +1160,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    The Transfer Query request MUST use the special "latest" sub-resource
    to refer to the latest object transfer.  A latest transfer object may
    not exist, when no transfer has been initiated for the specified
-   object.  The client MUST use the HTTP GET method when no
-   authorization information is attached to the object and MUST NOT add
+   object.  The client MUST use the HTTP GET method and MUST NOT add
    content to the HTTP message body.
 
    -  Request: GET {collection}/{id}/transfers/latest
@@ -1170,6 +1169,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    Example domain name Transfer Query request without authorization
    information required:
+
 
 
 
@@ -1187,13 +1187,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
    If the requested object has associated authorization information that
-   is not linked to a contact object, then the HTTP GET method MUST be
-   used and the authorization information MUST be included using the
-   REPP-AuthInfo header.
-
-   -  Request: GET {collection}/{id}/transfers/latest
-   -  Request message: None
-   -  Response message: Transfer Query response.
+   is not linked to another database object, then the HTTP GET method
+   MUST be used and the authorization information MUST be included using
+   the REPP-AuthInfo header.
 
    Example domain name Transfer Query request using REPP-AuthInfo
    header:
@@ -1208,20 +1204,24 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
    If the requested object has associated authorization information
-   linked to a contact object, then the HTTP GET method MUST NOT be used
-   and the HTTP POST method MUST be used and the authorization
-   information MUST be included in the EPP request message inside the
-   HTTP message body.
+   linked to another database object, then the HTTP GET method MUST be
+   used and both the REPP-AuthInfo and the REPP-Roid header MUST be
+   included.
 
-   -  Request: GET {collection}/{id}/transfers/latest
-   -  Request message: NoTransfer Query request
-   -  Response message: Transfer Query response.
+   Example domain name Transfer Query request and authorization using
+   REPP-AuthInfo and the REPP-Roid header:
 
-   Example domain name Transfer Query request and authorization
-   information in request message:
+   C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
+   C: Host: repp.example.nl
+   C: Authorization: Bearer <token>
+   C: Accept: application/epp+xml
+   C: Accept-Language: en
+   C: REPP-AuthInfo: secret-token
+   C: REPP-Roid: REG-XYZ-12345
+   C: Content-Length: 0
+   C:
 
-
-
+   Example Transfer Query response:
 
 
 
@@ -1233,31 +1233,6 @@ Wullink & Davids          Expires 14 July 2024                 [Page 22]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
-
-   C: POST /repp/v1/domains/example.nl/transfers/latest HTTP/2
-   C: Host: repp.example.nl
-   C: Authorization: Bearer <token>
-   C: Accept: application/epp+xml
-   C: Accept-Language: en
-   C: Content-Length: 231
-   C:
-   C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-   C:  <command>
-   C:    <transfer op="query">
-   C:      <domain:transfer
-   C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-   C:        <domain:name>example.nl</domain:name>
-   C:        <domain:authInfo>
-   C:          <domain:pw roid="MW12345-REP">secret-token</domain:pw>
-   C:        </domain:authInfo>
-   C:      </domain:transfer>
-   C:    </transfer>
-   C:    <clTRID>ABC-12345</clTRID>
-   C:  </command>
-   C:</epp>
-
-   Example Transfer Query response:
 
    S: HTTP/2 200 OK
    S: Date: Fri, 17 Nov 2023 12:00:00 UTC
@@ -1283,13 +1258,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S:  </response>
    S:</epp>
 
-
-
-Wullink & Davids          Expires 14 July 2024                 [Page 23]
-
-Internet-Draft          RESTful Transport for EPP           January 2024
-
-
 9.5.  Transform Resources
 
 9.5.1.  Create
@@ -1305,6 +1273,22 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    MUST be the URL for the newly created resource.
 
    Example Domain Create request:
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Davids          Expires 14 July 2024                 [Page 23]
+
+Internet-Draft          RESTful Transport for EPP           January 2024
+
 
    C: POST /repp/v1/domains HTTP/2
    C: Host: repp.example.nl
@@ -1330,6 +1314,22 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C:</epp>
 
    Example Domain Create response:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

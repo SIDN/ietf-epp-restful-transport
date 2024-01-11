@@ -173,7 +173,7 @@ HTTP request headers are used to transmit additional or optional request data to
 </li>
 <li><t><tt>REPP-Svcs-Ext</tt>: The extension namespace used by the client in the EPP request message, this is equivalent to the &quot;svcExtension&quot; element in the Login command defined in <xref target="RFC5730" sectionFormat="of" section="2.9.1.1"></xref></t>
 </li>
-<li><t><tt>REPP-AuthInfo</tt>: The client MAY use this header for sending basic token-based authorization information, as described in <xref target="RFC5731" sectionFormat="of" section="2.6"></xref> and <xref target="RFC5733" sectionFormat="of" section="2.8"></xref>. If the authorization is linked to a contact object then the client MUST NOT use this header.</t>
+<li><t><tt>REPP-AuthInfo</tt>: The client MAY use this header for sending basic token-based authorization information, as described in <xref target="RFC5731" sectionFormat="of" section="2.6"></xref> and <xref target="RFC5733" sectionFormat="of" section="2.8"></xref>. If the authorization is linked to a contact object then the client MUST also include the REPP-Roid header.</t>
 </li>
 <li><t><tt>REPP-Roid</tt>: If the authorization info, is linked to a database object, the client MAY use this header for the Repository Object IDentifier (ROID), as described in <xref target="RFC5730" sectionFormat="of" section="4.2"></xref>.
 </t>
@@ -289,7 +289,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 
 <tr>
 <td>Info</td>
-<td>GET/POST</td>
+<td>GET</td>
 <td>/{c}/{i}</td>
 <td>No</td>
 <td>Yes</td>
@@ -345,7 +345,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 
 <tr>
 <td>Transfer Query</td>
-<td>GET/POST</td>
+<td>GET</td>
 <td>/{c}/{i}/transfers/latest</td>
 <td>No</td>
 <td>Yes</td>
@@ -685,7 +685,7 @@ S:</epp>
 
 <section anchor="transfer-query"><name>Transfer Query</name>
 <t>The Transfer Query request MUST use the special &quot;latest&quot; sub-resource to refer to the
-latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST use the HTTP GET method when no authorization information is attached to the object and MUST NOT add content to the HTTP message body.</t>
+latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.</t>
 
 <ul spacing="compact">
 <li>Request: GET {collection}/{id}/transfers/latest</li>
@@ -704,13 +704,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ]]>
 </artwork>
-<t>If the requested object has associated authorization information that is not linked to a contact object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-AuthInfo header.</t>
-
-<ul spacing="compact">
-<li>Request: GET {collection}/{id}/transfers/latest</li>
-<li>Request message: None</li>
-<li>Response message: Transfer Query response.</li>
-</ul>
+<t>If the requested object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-AuthInfo header.</t>
 <t>Example domain name Transfer Query request using REPP-AuthInfo header:</t>
 
 <artwork><![CDATA[C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -724,40 +718,20 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ]]>
 </artwork>
-<t>If the requested object has associated authorization information linked to a contact object, then the HTTP GET method MUST NOT be used and the HTTP POST method MUST be used and the authorization information MUST be included in the EPP request message inside the HTTP message body.</t>
+<t>If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and both the REPP-AuthInfo and the REPP-Roid header MUST be included.</t>
+<t>Example domain name Transfer Query request and authorization using REPP-AuthInfo and the REPP-Roid header:</t>
 
-<ul spacing="compact">
-<li>Request: GET {collection}/{id}/transfers/latest</li>
-<li>Request message: NoTransfer Query request</li>
-<li>Response message: Transfer Query response.</li>
-</ul>
-<t>Example domain name Transfer Query request and authorization information in request message:</t>
-
-<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/transfers/latest HTTP/2
+<artwork><![CDATA[C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: Content-Length: 231
+C: REPP-AuthInfo: secret-token
+C: REPP-Roid: REG-XYZ-12345
+C: Content-Length: 0
 C:
-C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-C:  <command>
-C:    <transfer op="query">
-C:      <domain:transfer
-C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-C:        <domain:name>example.nl</domain:name>
-C:        <domain:authInfo>
-C:          <domain:pw roid="MW12345-REP">secret-token</domain:pw>
-C:        </domain:authInfo>
-C:      </domain:transfer>
-C:    </transfer>
-C:    <clTRID>ABC-12345</clTRID>
-C:  </command>
-C:</epp>
-
 ]]>
-</sourcecode>
+</artwork>
 <t>Example Transfer Query response:</t>
 
 <sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK

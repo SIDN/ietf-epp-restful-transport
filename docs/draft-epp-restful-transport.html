@@ -1680,7 +1680,7 @@ HTTP request headers are used to transmit additional or optional request data to
             <p id="section-8.3-2.3.1"><code>REPP-Svcs-Ext</code>: The extension namespace used by the client in the EPP request message, this is equivalent to the "svcExtension" element in the Login command defined in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.1.1" class="relref">Section 2.9.1.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span><a href="#section-8.3-2.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.3-2.4">
-            <p id="section-8.3-2.4.1"><code>REPP-AuthInfo</code>: The client MAY use this header for sending basic token-based authorization information, as described in <span><a href="https://rfc-editor.org/rfc/rfc5731#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC5731" class="cite xref">RFC5731</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc5733#section-2.8" class="relref">Section 2.8</a> of [<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>. If the authorization is linked to a contact object then the client MUST NOT use this header.<a href="#section-8.3-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-8.3-2.4.1"><code>REPP-AuthInfo</code>: The client MAY use this header for sending basic token-based authorization information, as described in <span><a href="https://rfc-editor.org/rfc/rfc5731#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC5731" class="cite xref">RFC5731</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc5733#section-2.8" class="relref">Section 2.8</a> of [<a href="#RFC5733" class="cite xref">RFC5733</a>]</span>. If the authorization is linked to a contact object then the client MUST also include the REPP-Roid header.<a href="#section-8.3-2.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-8.3-2.5">
             <p id="section-8.3-2.5.1"><code>REPP-Roid</code>: If the authorization info, is linked to a database object, the client MAY use this header for the Repository Object IDentifier (ROID), as described in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>.<a href="#section-8.3-2.5.1" class="pilcrow">¶</a></p>
@@ -1822,7 +1822,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Info</td>
-            <td class="text-left" rowspan="1" colspan="1">GET/POST</td>
+            <td class="text-left" rowspan="1" colspan="1">GET</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
             <td class="text-left" rowspan="1" colspan="1">No</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
@@ -1871,7 +1871,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer Query</td>
-            <td class="text-left" rowspan="1" colspan="1">GET/POST</td>
+            <td class="text-left" rowspan="1" colspan="1">GET</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfers/latest</td>
             <td class="text-left" rowspan="1" colspan="1">No</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
@@ -2290,7 +2290,7 @@ S:&lt;/epp&gt;
 <a href="#section-9.4.4" class="section-number selfRef">9.4.4. </a><a href="#name-transfer-query" class="section-name selfRef">Transfer Query</a>
           </h4>
 <p id="section-9.4.4-1">The Transfer Query request MUST use the special "latest" sub-resource to refer to the
-latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST use the HTTP GET method when no authorization information is attached to the object and MUST NOT add content to the HTTP message body.<a href="#section-9.4.4-1" class="pilcrow">¶</a></p>
+latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.<a href="#section-9.4.4-1" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-9.4.4-2.1">Request: GET {collection}/{id}/transfers/latest<a href="#section-9.4.4-2.1" class="pilcrow">¶</a>
 </li>
@@ -2312,17 +2312,9 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 </pre><a href="#section-9.4.4-4" class="pilcrow">¶</a>
 </div>
-<p id="section-9.4.4-5">If the requested object has associated authorization information that is not linked to a contact object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-AuthInfo header.<a href="#section-9.4.4-5" class="pilcrow">¶</a></p>
-<ul class="compact">
-<li class="compact" id="section-9.4.4-6.1">Request: GET {collection}/{id}/transfers/latest<a href="#section-9.4.4-6.1" class="pilcrow">¶</a>
-</li>
-            <li class="compact" id="section-9.4.4-6.2">Request message: None<a href="#section-9.4.4-6.2" class="pilcrow">¶</a>
-</li>
-            <li class="compact" id="section-9.4.4-6.3">Response message: Transfer Query response.<a href="#section-9.4.4-6.3" class="pilcrow">¶</a>
-</li>
-          </ul>
-<p id="section-9.4.4-7">Example domain name Transfer Query request using REPP-AuthInfo header:<a href="#section-9.4.4-7" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.4.4-8">
+<p id="section-9.4.4-5">If the requested object has associated authorization information that is not linked to another database object, then the HTTP GET method MUST be used and the authorization information MUST be included using the REPP-AuthInfo header.<a href="#section-9.4.4-5" class="pilcrow">¶</a></p>
+<p id="section-9.4.4-6">Example domain name Transfer Query request using REPP-AuthInfo header:<a href="#section-9.4.4-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.4.4-7">
 <pre>C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
@@ -2333,47 +2325,25 @@ C: REPP-AuthInfo: secret-token
 C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 
-</pre><a href="#section-9.4.4-8" class="pilcrow">¶</a>
+</pre><a href="#section-9.4.4-7" class="pilcrow">¶</a>
 </div>
-<p id="section-9.4.4-9">If the requested object has associated authorization information linked to a contact object, then the HTTP GET method MUST NOT be used and the HTTP POST method MUST be used and the authorization information MUST be included in the EPP request message inside the HTTP message body.<a href="#section-9.4.4-9" class="pilcrow">¶</a></p>
-<ul class="compact">
-<li class="compact" id="section-9.4.4-10.1">Request: GET {collection}/{id}/transfers/latest<a href="#section-9.4.4-10.1" class="pilcrow">¶</a>
-</li>
-            <li class="compact" id="section-9.4.4-10.2">Request message: NoTransfer Query request<a href="#section-9.4.4-10.2" class="pilcrow">¶</a>
-</li>
-            <li class="compact" id="section-9.4.4-10.3">Response message: Transfer Query response.<a href="#section-9.4.4-10.3" class="pilcrow">¶</a>
-</li>
-          </ul>
-<p id="section-9.4.4-11">Example domain name Transfer Query request and authorization information in request message:<a href="#section-9.4.4-11" class="pilcrow">¶</a></p>
-<div class="lang-xml sourcecode" id="section-9.4.4-12">
-<pre>C: POST /repp/v1/domains/example.nl/transfers/latest HTTP/2
+<p id="section-9.4.4-8">If the requested object has associated authorization information linked to another database object, then the HTTP GET method MUST be used and both the REPP-AuthInfo and the REPP-Roid header MUST be included.<a href="#section-9.4.4-8" class="pilcrow">¶</a></p>
+<p id="section-9.4.4-9">Example domain name Transfer Query request and authorization using REPP-AuthInfo and the REPP-Roid header:<a href="#section-9.4.4-9" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.4.4-10">
+<pre>C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: Content-Length: 231
+C: REPP-AuthInfo: secret-token
+C: REPP-Roid: REG-XYZ-12345
+C: Content-Length: 0
 C:
-C:&lt;?xml version="1.0" encoding="UTF-8" standalone="no"?&gt;
-C:&lt;epp xmlns="urn:ietf:params:xml:ns:epp-1.0"&gt;
-C:  &lt;command&gt;
-C:    &lt;transfer op="query"&gt;
-C:      &lt;domain:transfer
-C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0"&gt;
-C:        &lt;domain:name&gt;example.nl&lt;/domain:name&gt;
-C:        &lt;domain:authInfo&gt;
-C:          &lt;domain:pw roid="MW12345-REP"&gt;secret-token&lt;/domain:pw&gt;
-C:        &lt;/domain:authInfo&gt;
-C:      &lt;/domain:transfer&gt;
-C:    &lt;/transfer&gt;
-C:    &lt;clTRID&gt;ABC-12345&lt;/clTRID&gt;
-C:  &lt;/command&gt;
-C:&lt;/epp&gt;
 
-
-</pre><a href="#section-9.4.4-12" class="pilcrow">¶</a>
+</pre><a href="#section-9.4.4-10" class="pilcrow">¶</a>
 </div>
-<p id="section-9.4.4-13">Example Transfer Query response:<a href="#section-9.4.4-13" class="pilcrow">¶</a></p>
-<div class="lang-xml sourcecode" id="section-9.4.4-14">
+<p id="section-9.4.4-11">Example Transfer Query response:<a href="#section-9.4.4-11" class="pilcrow">¶</a></p>
+<div class="lang-xml sourcecode" id="section-9.4.4-12">
 <pre>S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
@@ -2398,7 +2368,7 @@ S:    &lt;/trID&gt;
 S:  &lt;/response&gt;
 S:&lt;/epp&gt;
 
-</pre><a href="#section-9.4.4-14" class="pilcrow">¶</a>
+</pre><a href="#section-9.4.4-12" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
