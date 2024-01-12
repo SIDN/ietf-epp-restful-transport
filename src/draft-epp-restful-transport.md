@@ -517,16 +517,14 @@ S:</epp>
 #### Object Filtering
 
   <!-- TODO: ISSIE #42: make filtering generic -->
-The client MAY choose to use filtering to limit the number of objects returned for a request. The server MUST support the use of query string parameters for the purpose of filtering objects before these are added to a response.
+The server MUST support the use of the `filter` and `val` query parameters for the purpose of limiting the number of objects in a response.
 
-Query string parameters used for filtering:
+- `filter`: The attribute or field name to apply the filter on
+- `val`: The value used for filtering
 
-- `filter`: The name of the object attribute or field to apply the filter on
-- `val`: The value used for filtering objects
+The Domain Name Mapping [@!RFC5731, Section 3.1.2] describes an optional "hosts" attribute for the Domain Info command. This attribute may be used for filtering hosts returned in the Info response, and is mapped to the `filter` and `val` query parameters. If the filtering query parameters are absent from the request URL, the server MUST use the default filter value described in the corresponding EPP RFCs.
 
-The domain name Info request is different from the Contact- and Host Info request, in the sense that EPP Domain Name Mapping [@!RFC5731, Section 3.1.2] describes an OPTIONAL "hosts" attribute. This attribute is used for filtering hosts returned in the response, the "hosts" attribute is mapped to the generic query string parameters used for filtering.
-
-The filtering value for the hosts attribute is "all". This default MUST be used by the server when the query string parameter is absent from the request URL.
+URLs used for filtering based on `hosts` attribute for Domain Info request:
 
 -  default: GET /domains/{id}
 -  all: GET /domains/{id}?filter=hosts&val=all

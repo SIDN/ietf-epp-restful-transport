@@ -1472,7 +1472,7 @@ li > p:last-of-type:only-child {
       </h2>
 <p id="section-1-1">This document describes an Application Programming Interface (API) for the Extensible Provisioning Protocol (EPP) protocol described in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>. The API leverages the HTTP protocol <span>[<a href="#RFC2616" class="cite xref">RFC2616</a>]</span> and the principles of <span>[<a href="#REST" class="cite xref">REST</a>]</span>. Conforming to the REST constraints is generally referred to as being "RESTful". Hence the API is dubbed: "'RESTful EPP" or "REPP" for short.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">REPP includes a mapping of <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> EPP commands to REST resources based on Uniform Resource Locators (URLs) defined in <span>[<a href="#RFC1738" class="cite xref">RFC1738</a>]</span>. REPP uses a stateless architecture. It aims to provide a solution that is more suitable for complex, high availability environments.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3"><a href="https://rfc-editor.org/rfc/rfc5730#appendix-Section%202.1" class="relref">Section 2.1</a> describes how EPP can be layered over multiple transport protocols. Currently, EPP transport over TCP <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span> is the only widely deployed transport mapping for EPP. <a href="https://rfc-editor.org/rfc/rfc5730#appendix-Section%202.1" class="relref">Section 2.1</a> requires that newly defined transport mappings preserve the stateful nature of EPP. This document updates this requirement to also allow stateless for EPP transport.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-3"><a href="https://rfc-editor.org/rfc/rfc5730#appendix-Section%202.1" class="relref">Section 2.1</a> of <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> describes how EPP can be layered over multiple transport protocols. Currently, EPP transport over TCP <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span> is the only widely deployed transport mapping for EPP. <a href="https://rfc-editor.org/rfc/rfc5730#appendix-Section%202.1" class="relref">Section 2.1</a> furthermore requires that newly defined transport mappings preserve the stateful nature of EPP. This document updates this requirement to also allow stateless for EPP transport.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">The stateless nature of REPP requires that no client or application state is maintained on the server. Each client request to the server must contain all the information necessary for the server to process the request.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">REPP is data format agnostic, the client uses agent-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as XML, JSON <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span> or <span>[<a href="#YAML" class="cite xref">YAML</a>]</span>.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span>.<a href="#section-1-6" class="pilcrow">¶</a></p>
@@ -1552,7 +1552,7 @@ This document only describes the use of <span>[<a href="#XML" class="cite xref">
       <h2 id="name-epp-extension-framework">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-epp-extension-framework" class="section-name selfRef">EPP Extension Framework</a>
       </h2>
-<p id="section-5-1"><a href="https://rfc-editor.org/rfc/rfc3735#appendix-Section%202" class="relref">Section 2</a> describes how the EPP extension framework can be used to extend EPP functionality by adding new features at the protocol, object and command-response level. This section describes the impact of REPP on each of the extension levels:<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1"><a href="https://rfc-editor.org/rfc/rfc3735#appendix-Section%202" class="relref">Section 2</a> of <span>[<a href="#RFC3735" class="cite xref">RFC3735</a>]</span> describes how the EPP extension framework can be used to extend EPP functionality by adding new features at the protocol, object and command-response level. This section describes the impact of REPP on each of the extension levels:<a href="#section-5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5-2.1">
           <p id="section-5-2.1.1">Protocol Extension: <a href="#command-mapping" class="auto internal xref">Section 9</a> describes an protocol extension resource for use with existing and future protocol extensions. REPP does not define a new Protocol extension. All existing and future Protocol extension level EPP extensions MAY be used.<a href="#section-5-2.1.1" class="pilcrow">¶</a></p>
@@ -1740,8 +1740,8 @@ HTTP request headers are used to transmit additional or optional request data to
         </h3>
 <p id="section-8.5-1">
 Restful EPP and HTTP protocol are both an application layer protocol, having their own status- and result codes. The endpoints described in <a href="#command-mapping" class="auto internal xref">Section 9</a> MUST return HTTP status code 200 (OK) for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.<a href="#section-8.5-1" class="pilcrow">¶</a></p>
-<p id="section-8.5-2">When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, but only when this is permitted for the used HTTP method. Errors related to the HTTP protocol MUST result in the use of an apropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.<a href="#section-8.5-2" class="pilcrow">¶</a></p>
-<p id="section-8.5-3">The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-Eppcode HTTP header for error handling logic, without having to parse the EPP result message.<a href="#section-8.5-3" class="pilcrow">¶</a></p>
+<p id="section-8.5-2">When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span>, but only when this is permitted for the used HTTP method. Errors related to the HTTP protocol MUST result in the use of an apropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result in the failure of other independent requests using the same connection.<a href="#section-8.5-2" class="pilcrow">¶</a></p>
+<p id="section-8.5-3">The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-Eppcode HTTP header for error handling logic, without having to parse the EPP result code in the message body.<a href="#section-8.5-3" class="pilcrow">¶</a></p>
 <p id="section-8.5-4">For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-Eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.<a href="#section-8.5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2119,32 +2119,31 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 <a href="#section-9.4.2.1" class="section-number selfRef">9.4.2.1. </a><a href="#name-object-filtering" class="section-name selfRef">Object Filtering</a>
             </h5>
 <p id="section-9.4.2.1-1">
-The client MAY choose to use filtering to limit the number of objects returned for a request. The server MUST support the use of query string parameters for the purpose of filtering objects before these are added to a response.<a href="#section-9.4.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-9.4.2.1-2">Query string parameters used for filtering:<a href="#section-9.4.2.1-2" class="pilcrow">¶</a></p>
+The server MUST support the use of the <code>filter</code> and <code>val</code> query parameters for the purpose of limiting the number of objects in a response.<a href="#section-9.4.2.1-1" class="pilcrow">¶</a></p>
 <ul class="compact">
-<li class="compact" id="section-9.4.2.1-3.1">
-                <code>filter</code>: The name of the object attribute or field to apply the filter on<a href="#section-9.4.2.1-3.1" class="pilcrow">¶</a>
+<li class="compact" id="section-9.4.2.1-2.1">
+                <code>filter</code>: The attribute or field name to apply the filter on<a href="#section-9.4.2.1-2.1" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.4.2.1-3.2">
-                <code>val</code>: The value used for filtering objects<a href="#section-9.4.2.1-3.2" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.4.2.1-2.2">
+                <code>val</code>: The value used for filtering<a href="#section-9.4.2.1-2.2" class="pilcrow">¶</a>
 </li>
             </ul>
-<p id="section-9.4.2.1-4">The domain name Info request is different from the Contact- and Host Info request, in the sense that EPP Domain Name Mapping <a href="https://rfc-editor.org/rfc/rfc5731#appendix-Section%203.1.2" class="relref">Section 3.1.2</a> describes an OPTIONAL "hosts" attribute. This attribute is used for filtering hosts returned in the response, the "hosts" attribute is mapped to the generic query string parameters used for filtering.<a href="#section-9.4.2.1-4" class="pilcrow">¶</a></p>
-<p id="section-9.4.2.1-5">The filtering value for the hosts attribute is "all". This default MUST be used by the server when the query string parameter is absent from the request URL.<a href="#section-9.4.2.1-5" class="pilcrow">¶</a></p>
+<p id="section-9.4.2.1-3">The Domain Name Mapping <a href="https://rfc-editor.org/rfc/rfc5731#appendix-Section%203.1.2" class="relref">Section 3.1.2</a> describes an optional "hosts" attribute for the Domain Info command. This attribute may be used for filtering hosts returned in the Info response, and is mapped to the <code>filter</code> and <code>val</code> query parameters. If the filtering query parameters are absent from the request URL, the server MUST use the default filter value described in the corresponding EPP RFCs.<a href="#section-9.4.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-9.4.2.1-4">URLs used for filtering based on <code>hosts</code> attribute for Domain Info request:<a href="#section-9.4.2.1-4" class="pilcrow">¶</a></p>
 <ul class="compact">
-<li class="compact" id="section-9.4.2.1-6.1">default: GET /domains/{id}<a href="#section-9.4.2.1-6.1" class="pilcrow">¶</a>
+<li class="compact" id="section-9.4.2.1-5.1">default: GET /domains/{id}<a href="#section-9.4.2.1-5.1" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.4.2.1-6.2">all: GET /domains/{id}?filter=hosts&amp;val=all<a href="#section-9.4.2.1-6.2" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.4.2.1-5.2">all: GET /domains/{id}?filter=hosts&amp;val=all<a href="#section-9.4.2.1-5.2" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.4.2.1-6.3">del: GET /domains/{id}?filter=hosts&amp;val=del<a href="#section-9.4.2.1-6.3" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.4.2.1-5.3">del: GET /domains/{id}?filter=hosts&amp;val=del<a href="#section-9.4.2.1-5.3" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.4.2.1-6.4">sub: GET /domains/{id}?filter=hosts&amp;val=sub<a href="#section-9.4.2.1-6.4" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.4.2.1-5.4">sub: GET /domains/{id}?filter=hosts&amp;val=sub<a href="#section-9.4.2.1-5.4" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.4.2.1-6.5">none: GET /domains/{id}?filter=hosts&amp;val=none<a href="#section-9.4.2.1-6.5" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.4.2.1-5.5">none: GET /domains/{id}?filter=hosts&amp;val=none<a href="#section-9.4.2.1-5.5" class="pilcrow">¶</a>
 </li>
             </ul>
-<p id="section-9.4.2.1-7">Example request including all hosts objects, without any required authorization data:<a href="#section-9.4.2.1-7" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.4.2.1-8">
+<p id="section-9.4.2.1-6">Example request including all hosts objects, without any required authorization data:<a href="#section-9.4.2.1-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.4.2.1-7">
 <pre>C: GET /repp/v1/domains/example.nl?filter=hosts&amp;val=all HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
@@ -2154,7 +2153,7 @@ C: REPP-Cltrid: ABC-12345
 C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 
-</pre><a href="#section-9.4.2.1-8" class="pilcrow">¶</a>
+</pre><a href="#section-9.4.2.1-7" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -3112,7 +3111,7 @@ every request must contain a single command, as described in section <a href="#r
       <h2 id="name-iana-considerations">
 <a href="#section-11" class="section-number selfRef">11. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-11-1">TODO: any? See <a href="https://datatracker.ietf.org/doc/html/draft-wullink-restful-epp-00#section-12">https://datatracker.ietf.org/doc/html/draft-wullink-restful-epp-00#section-12</a><a href="#section-11-1" class="pilcrow">¶</a></p>
+<p id="section-11-1">[TBD: at the moment we don't see any]<a href="#section-11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="internationalization-considerations">
@@ -3120,8 +3119,7 @@ every request must contain a single command, as described in section <a href="#r
       <h2 id="name-internationalization-consid">
 <a href="#section-12" class="section-number selfRef">12. </a><a href="#name-internationalization-consid" class="section-name selfRef">Internationalization Considerations</a>
       </h2>
-<p id="section-12-1">TODO: any?
-Accept-Language in HTTP Header<a href="#section-12-1" class="pilcrow">¶</a></p>
+<p id="section-12-1">[TBD: any? Accept-Language in HTTP Header]<a href="#section-12-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">

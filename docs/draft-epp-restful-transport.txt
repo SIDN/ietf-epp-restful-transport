@@ -85,7 +85,7 @@ Table of Contents
        9.4.1.  Check . . . . . . . . . . . . . . . . . . . . . . . .  16
        9.4.2.  Info  . . . . . . . . . . . . . . . . . . . . . . . .  17
          9.4.2.1.  Object Filtering  . . . . . . . . . . . . . . . .  18
-       9.4.3.  Poll  . . . . . . . . . . . . . . . . . . . . . . . .  19
+       9.4.3.  Poll  . . . . . . . . . . . . . . . . . . . . . . . .  18
          9.4.3.1.  Poll Request  . . . . . . . . . . . . . . . . . .  19
          9.4.3.2.  Poll Ack  . . . . . . . . . . . . . . . . . . . .  20
        9.4.4.  Transfer Query  . . . . . . . . . . . . . . . . . . .  21
@@ -136,12 +136,12 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    uses a stateless architecture.  It aims to provide a solution that is
    more suitable for complex, high availability environments.
 
-   Section 2.1 describes how EPP can be layered over multiple transport
-   protocols.  Currently, EPP transport over TCP [RFC5734] is the only
-   widely deployed transport mapping for EPP.  Section 2.1 requires that
-   newly defined transport mappings preserve the stateful nature of EPP.
-   This document updates this requirement to also allow stateless for
-   EPP transport.
+   Section 2.1 of [RFC5730] describes how EPP can be layered over
+   multiple transport protocols.  Currently, EPP transport over TCP
+   [RFC5734] is the only widely deployed transport mapping for EPP.
+   Section 2.1 furthermore requires that newly defined transport
+   mappings preserve the stateful nature of EPP.  This document updates
+   this requirement to also allow stateless for EPP transport.
 
    The stateless nature of REPP requires that no client or application
    state is maintained on the server.  Each client request to the server
@@ -293,10 +293,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 5.  EPP Extension Framework
 
-   Section 2 describes how the EPP extension framework can be used to
-   extend EPP functionality by adding new features at the protocol,
-   object and command-response level.  This section describes the impact
-   of REPP on each of the extension levels:
+   Section 2 of [RFC3735] describes how the EPP extension framework can
+   be used to extend EPP functionality by adding new features at the
+   protocol, object and command-response level.  This section describes
+   the impact of REPP on each of the extension levels:
 
    -  Protocol Extension: Section 9 describes an protocol extension
       resource for use with existing and future protocol extensions.
@@ -644,14 +644,15 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    described in [RFC9110], but only when this is permitted for the used
    HTTP method.  Errors related to the HTTP protocol MUST result in the
    use of an apropriate HTTP status code by the HTTP server.  An error
-   or problem while processing one request MUST NOT result int he
+   or problem while processing one request MUST NOT result in the
    failure of other independent requests using the same connection.
 
    The client MUST be able to use the best practices for RESTful
    applications and use the HTTP status code to determine if the EPP
    request was successfully processed.  The client MAY use the well
    defined HTTP status code and REPP-Eppcode HTTP header for error
-   handling logic, without having to parse the EPP result message.
+   handling logic, without having to parse the EPP result code in the
+   message body.
 
    For example, a client sending an Object Tranfer request for an Object
    already linked to an active transfer process, will result in an EPP
@@ -665,7 +666,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    EPP commands are mapped to RESTful EPP requests using four elements.
 
-   1.  Resource defined by a URL
 
 
 
@@ -674,6 +674,7 @@ Wullink & Davids          Expires 15 July 2024                 [Page 12]
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
+   1.  Resource defined by a URL
    2.  HTTP method to be used on the resource
    3.  EPP request message
    4.  EPP response message
@@ -721,7 +722,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
     +-----------+---------+----------------------+---------+----------+
     | Transfer  | GET     | /{c}/{i}/transfers/  | No      | Yes      |
     | Query     |         | latest               |         |          |
-    +-----------+---------+----------------------+---------+----------+
 
 
 
@@ -730,6 +730,7 @@ Wullink & Davids          Expires 15 July 2024                 [Page 13]
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
+    +-----------+---------+----------------------+---------+----------+
     | Transfer  | DELETE  | /{c}/{i}/transfers/  | No      | Yes      |
     | Cancel    |         | latest               |         |          |
     +-----------+---------+----------------------+---------+----------+
@@ -777,7 +778,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    value used for the {version} path segment in the URL used for the
    Hello request.
 
-   Example request:
 
 
 
@@ -785,6 +785,8 @@ Wullink & Davids          Expires 15 July 2024                 [Page 14]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
+
+   Example request:
 
    C: OPTIONS /repp/v1/ HTTP/2
    C: Host: repp.example.nl
@@ -832,8 +834,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  version: Replaced by the {version} path parameter in the request
       URL.
    -  lang: Replaced by the Accept-Language HTTP header.
-   -  svcs: Replaced by the REPP-Svcs HTTP header.
-   -  svcExtension: Replaced by the REPP-Svcs-Ext HTTP header.
 
 
 
@@ -841,6 +841,9 @@ Wullink & Davids          Expires 15 July 2024                 [Page 15]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
+
+   -  svcs: Replaced by the REPP-Svcs HTTP header.
+   -  svcExtension: Replaced by the REPP-Svcs-Ext HTTP header.
 
    The server MUST check the namespaces used in the REPP-Svcs HTTP
    header.  An unsupported namespace MUST result in the appropriate EPP
@@ -884,12 +887,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    Example request for a domain name:
 
-   C: HEAD /repp/v1/domains/example.nl HTTP/2
-   C: Host: repp.example.nl
-   C: Authorization: Bearer <token>
-   C: Accept-Language: en
-   C: REPP-Cltrid: ABC-12345
-   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+
+
+
 
 
 
@@ -897,6 +897,13 @@ Wullink & Davids          Expires 15 July 2024                 [Page 16]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
+
+   C: HEAD /repp/v1/domains/example.nl HTTP/2
+   C: Host: repp.example.nl
+   C: Authorization: Bearer <token>
+   C: Accept-Language: en
+   C: REPP-Cltrid: ABC-12345
+   C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
    Example response:
 
@@ -942,13 +949,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-
-
-
-
-
-
-
 Wullink & Davids          Expires 15 July 2024                 [Page 17]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
@@ -966,26 +966,22 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 9.4.2.1.  Object Filtering
 
-   The client MAY choose to use filtering to limit the number of objects
-   returned for a request.  The server MUST support the use of query
-   string parameters for the purpose of filtering objects before these
-   are added to a response.
+   The server MUST support the use of the filter and val query
+   parameters for the purpose of limiting the number of objects in a
+   response.
 
-   Query string parameters used for filtering:
+   -  filter: The attribute or field name to apply the filter on
+   -  val: The value used for filtering
 
-   -  filter: The name of the object attribute or field to apply the
-      filter on
-   -  val: The value used for filtering objects
+   The Domain Name Mapping Section 3.1.2 describes an optional "hosts"
+   attribute for the Domain Info command.  This attribute may be used
+   for filtering hosts returned in the Info response, and is mapped to
+   the filter and val query parameters.  If the filtering query
+   parameters are absent from the request URL, the server MUST use the
+   default filter value described in the corresponding EPP RFCs.
 
-   The domain name Info request is different from the Contact- and Host
-   Info request, in the sense that EPP Domain Name Mapping Section 3.1.2
-   describes an OPTIONAL "hosts" attribute.  This attribute is used for
-   filtering hosts returned in the response, the "hosts" attribute is
-   mapped to the generic query string parameters used for filtering.
-
-   The filtering value for the hosts attribute is "all".  This default
-   MUST be used by the server when the query string parameter is absent
-   from the request URL.
+   URLs used for filtering based on hosts attribute for Domain Info
+   request:
 
    -  default: GET /domains/{id}
    -  all: GET /domains/{id}?filter=hosts&val=all
@@ -996,20 +992,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example request including all hosts objects, without any required
    authorization data:
 
-
-
-
-
-
-
-
-
-
-Wullink & Davids          Expires 15 July 2024                 [Page 18]
-
-Internet-Draft          RESTful Transport for EPP           January 2024
-
-
    C: GET /repp/v1/domains/example.nl?filter=hosts&val=all HTTP/2
    C: Host: repp.example.nl
    C: Authorization: Bearer <token>
@@ -1019,6 +1001,14 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 9.4.3.  Poll
+
+
+
+
+Wullink & Davids          Expires 15 July 2024                 [Page 18]
+
+Internet-Draft          RESTful Transport for EPP           January 2024
+
 
 9.4.3.1.  Poll Request
 
@@ -1041,6 +1031,16 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    C: REPP-Cltrid: ABC-12345
 
    Example response:
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2114,13 +2114,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 11.  IANA Considerations
 
-   TODO: any?  See https://datatracker.ietf.org/doc/html/draft-wullink-
-   restful-epp-00#section-12 (https://datatracker.ietf.org/doc/html/
-   draft-wullink-restful-epp-00#section-12)
+   [TBD: at the moment we don't see any]
 
 12.  Internationalization Considerations
 
-   TODO: any?  Accept-Language in HTTP Header
+   [TBD: any?  Accept-Language in HTTP Header]
+
+
 
 
 
