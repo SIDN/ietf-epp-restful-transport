@@ -8,6 +8,8 @@ servers:
 paths:
 # common
   /:
+    parameters:
+      - $ref: "#/components/parameters/p_acceptLanguage"
     get:
       summary: Hello
       tags:
@@ -139,6 +141,9 @@ paths:
      - $ref: '#/components/parameters/p_svcs'
      - $ref: '#/components/parameters/p_svcs-ext'
      - $ref: '#/components/parameters/p_acceptLanguage'
+     - $ref: '#/components/parameters/p_renewal_unit'
+     - $ref: '#/components/parameters/p_renewal_value'
+     - $ref: '#/components/parameters/p_renewal_current_date'
     post:
       summary: Domain renew
       tags:
@@ -184,6 +189,9 @@ paths:
       summary: Domain transfer query
       tags:
         - domains
+      parameters:
+        - $ref: '#/components/parameters/p_authinfo'
+        - $ref: '#/components/parameters/p_roid'
       responses:
           '200':
             $ref: '#/components/responses/200okWithBody'
@@ -522,6 +530,15 @@ components:
         type: integer
       required: false
       example: 1
+    p_renewal_current_date:
+      in: query
+      name: current-date
+      description: Date on which the current validity period ends
+      schema:
+        type: string
+      required: false
+      example: '2023-12-01'
+    
 
   headers:
     cltrid:

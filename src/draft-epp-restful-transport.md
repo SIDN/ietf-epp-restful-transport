@@ -160,9 +160,9 @@ The server MUST return HTTP status code 412 when the object identifier, for exam
 
 # Session Management
 
-One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP server MUST use a stateless architecture and MUST NOT create and maintain client sessions. The Session concept is considered to be an anti pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.
+One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP uses a stateless architecture and does not create and maintain client sessions. The Session concept is considered to be an anti pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.
 
- Session management as described in [@!RFC5730] requires a stateful server architecture for maintaining client and application state over multiple client request and is therefore no longer supported.
+Session management as described in [@!RFC5730] requires a stateful server architecture for maintaining client and application state over multiple client request and is therefore no longer supported.
 
 A REPP request MUST contain all information required for the server to be able to successfully process the request. The client MUST include authentication credentials for each request. This MAY be done by using any of the available HTTP authentication mechanisms, such as those described in [@!RFC2617].
 
@@ -275,7 +275,7 @@ EPP commands are mapped to RESTful EPP requests using four elements.
 3. EPP request message
 4. EPP response message
 
-(#tbl-cmd-mapping) lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: "/{context-root}/{version}/". For some EPP requests the request and/or response message is no longer used or has become optional, this is indicated by the table columns "Request" and "response". A request may have an optional response message, in the case of a successful response no response message is required. In an error situation, the server may return a response message containing 1 or more errors.
+(#tbl-cmd-mapping) lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: "/{context-root}/{version}/". Some REPP endpoints do not require a request and/or response message, as is indicated by the table columns "Request" and "response". 
 
 - `{c}`:  An abbreviation for {collection}: this MUST be substituted with
   "domains", "hosts", "contacts" or any other collection of objects.
@@ -293,7 +293,7 @@ Poll Request       | GET      | /messages                 | No          | Yes
 Poll Ack           | DELETE   | /messages/{i}             | No          | Yes
 Create             | POST     | /{c}                      | Yes         | Yes
 Delete             | DELETE   | /{c}/{i}                  | No          | Yes
-Renew              | POST     | /{c}/{i}/renewals         | Yes         | Yes
+Renew              | POST     | /{c}/{i}/renewals         | No          | Yes
 Transfer Request   | POST     | /{c}/{i}/transfers        | No          | Yes
 Transfer Query     | GET      | /{c}/{i}/transfers/latest | No          | Yes
 Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | No          | Yes
@@ -329,11 +329,11 @@ C: Accept: application/epp+xml
 C: Accept-Language: en
 C: Connection: keep-alive
 
-
 ```
+
 Example response:
 
-```
+```xml
 S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
@@ -354,17 +354,18 @@ S: </epp>
 
 ##  Login
 
-The Login command defined in [@!RFC5730, section 2.9.1.1] is used to establish a session between the client and the server, this is part of the stateful nature of the EPP protocol. The REPP server is stateless and MUST not maintain any client state and MUST NOT support the Login command. The client MUST include all the information in a REPP request that is required for the server to be able to properly process the request. This includes the request attributes that are part of the Login command defined in [@!RFC5730, section 2.9.1.1].
+The Login command defined in [@!RFC5730, section 2.9.1.1] is used to establish a session between client and server, this is part of the stateful nature of the EPP protocol. REPP is stateless and MUST NOT maintain any client state and does not include a Login command. The client MUST include all information in a REPP request, required for the server to be able to properly process the request. This includes request attributes defined as for Login command in [@!RFC5730, section 2.9.1.1].
 
   <!--TODO ISSUE #16: do we support changing password using /password  -->
-The request attributes from the Login command that are used to configure the client session, are are moved to the HTTP layer.
+The request attributes from the Login command, used for configuring the client session, are are moved to the HTTP layer.
 
 - `clID`: Replaced by HTTP authentication
 - `pw:`: Replaced by HTTP authentication
 - `newPW`: Replaced by out of band process
-- `version`: Replaced by the `{version}` path segment in the request URL.
+- `version`: Replaced by the `{version}` path parameter in the request URL.
 - `lang`: Replaced by the `Accept-Language` HTTP header.
 - `svcs`: Replaced by the `REPP-Svcs` HTTP header.
+- `svcExtension`:  Replaced by the `REPP-Svcs-Ext` HTTP header.
 
 The server MUST check the namespaces used in the REPP-Svcs HTTP header. An unsupported namespace MUST result in the appropriate EPP result code.
 
@@ -850,35 +851,34 @@ S:</epp>
 - Request message: object Renew request
 - Response message: object Renew response
 
-The EPP Renew command is mapped to a nested collection resource, named "renewals".
-Not all EPP object types include support for the renew command. If the EPP request results in a renewal of the object, then the server MUST return HTTP status code 200 (OK) and include the Location header for the renewed object URL.
+The Renew command is mapped to a nested collection, named "renewals". Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The reponse MUST include the Location header for the renewed object.
 
 Example Domain Renew request:
 
-```xml
-C: POST /repp/v1/domains/example.nl/renewals HTTP/2
+```
+C: POST /repp/v1/domains/example.nl/renewals?current-date=2024-01-01 HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
 C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
-C: Content-Length: 325
+C: Content-Length: 0
 C: 
-C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-C:  <command>
-C:    <renew>
-C:      <domain:renew
-C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-C:        <domain:name>example.nl</domain:name>
-C:        <domain:curExpDate>2023-11-17</domain:curExpDate>
-C:        <domain:period unit="y">1</domain:period>
-C:      </domain:renew>
-C:    </renew>
-C:    <clTRID>ABC-12345</clTRID>
-C:  </command>
-C:</epp>
+```
+
+Example Domain Renew request, using 1 year period:
+
+```
+C: POST /repp/v1/domains/example.nl/renewals?current-date=2024-01-01?unit=y&value=1 HTTP/2
+C: Host: repp.example.nl
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Content-Type: application/epp+xml
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Accept-Language: en
+C: Content-Length: 0
+C: 
 ```
 
 Example Renew response:
@@ -922,7 +922,7 @@ Transferring an object from one sponsoring client to another client is specified
 
 To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource to create a new transfer resource object, not all EPP objects support the Transfer command as described in [@!RFC5730, section 3.2.4], [@!RFC5731, section 3.2.4] and [@!RFC5733, section 3.2.4].
 
-If the EPP request is successful, then the server MUST return HTTP status code 200 (OK) and include the Location header.
+If the transfer request is successful, then the reponse MUST include the Location header for the object being transferred.
 
 Example request not using object authorization:
 
@@ -1033,7 +1033,7 @@ S:</epp>
 - Request message: None
 - Response message: Status
 
-The new sponsoring client MUST use the HTTP DELETE method to cancel a requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request. The server MUST return HTTP status code 200 (OK) if the transfer resource was deleted successfully.
+The new sponsoring client MUST use the HTTP DELETE method to cancel a requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request.
 
 Example request:
 
@@ -1170,7 +1170,7 @@ S:</epp>
 - Request message: Object Update message
 - Response message: Status
 
-An object Update request MUST be performed with the HTTP PATCH method on a unique object resource. The request message body MUST contain an Update request as described in the EPP RFCs.
+An object Update request MUST be performed using the HTTP PATCH method. The request message body MUST contain an EPP Update request, and the object-id value in the request MUST match the value of the object-id path parameter in the URL.
 
 Example request:
 

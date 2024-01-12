@@ -30,7 +30,6 @@
 <t><xref target="RFC5730" sectionFormat="bare" section="Section 2.1"></xref> describes how EPP can be layered over multiple transport protocols. Currently, EPP transport over TCP <xref target="RFC5734"></xref> is the only widely deployed transport mapping for EPP. <xref target="RFC5730" sectionFormat="bare" section="Section 2.1"></xref> requires that newly defined transport mappings preserve the stateful nature of EPP. This document updates this requirement to also allow stateless for EPP transport.</t>
 <t>The stateless nature of REPP requires that no client or application state is maintained on the server. Each client request to the server must contain all the information necessary for the server to process the request.</t>
 <t>REPP is data format agnostic, the client uses agent-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as XML, JSON <xref target="RFC8259"></xref> or <xref target="YAML"></xref>.</t>
-<t>A good understanding of the EPP base protocol specification <xref target="RFC5730"></xref> is advised, to grasp the command mapping described in this document.</t>
 <t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <xref target="RFC2119"></xref>.</t>
 </section>
 
@@ -122,7 +121,7 @@ is the equivalent of the Version element in the EPP RFCs. The version used in th
 </section>
 
 <section anchor="session-management"><name>Session Management</name>
-<t>One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP server MUST use a stateless architecture and MUST NOT create and maintain client sessions. The Session concept is considered to be an anti pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.</t>
+<t>One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP uses a stateless architecture and does not create and maintain client sessions. The Session concept is considered to be an anti pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.</t>
 <t>Session management as described in <xref target="RFC5730"></xref> requires a stateful server architecture for maintaining client and application state over multiple client request and is therefore no longer supported.</t>
 <t>A REPP request MUST contain all information required for the server to be able to successfully process the request. The client MUST include authentication credentials for each request. This MAY be done by using any of the available HTTP authentication mechanisms, such as those described in <xref target="RFC2617"></xref>.</t>
 <t>A REPP server MUST listen for HTTP connection requests on the standard TCP port assigned in <xref target="RFC2616"></xref>. After a connection has been established, the server MUST NOT return a Greeting message. The server MAY close open TCP connections when these violate server policies, for instance connections having a long inactivity period or a long connection lifetime.</t>
@@ -220,7 +219,7 @@ HTTP request headers are used to transmit additional or optional request data to
 <section anchor="error-handling"><name>Error Handling</name>
 <t>
 Restful EPP and HTTP protocol are both an application layer protocol, having their own status- and result codes. The endpoints described in <xref target="command-mapping"></xref> MUST return HTTP status code 200 (OK) for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.</t>
-<t>When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in <xref target="RFC9110"></xref>, byut only when this is permitted for the used HTTP method. Errors related to the HTTP protocol MUST result in the use of an apropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.</t>
+<t>When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in <xref target="RFC9110"></xref>, but only when this is permitted for the used HTTP method. Errors related to the HTTP protocol MUST result in the use of an apropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.</t>
 <t>The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-Eppcode HTTP header for error handling logic, without having to parse the EPP result message.</t>
 <t>For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-Eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.</t>
 </section>
@@ -235,7 +234,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <li>EPP request message</li>
 <li>EPP response message</li>
 </ol>
-<t><xref target="tbl-cmd-mapping"></xref> lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: &quot;/{context-root}/{version}/&quot;. For some EPP requests the request and/or response message is no longer used or has become optional, this is indicated by the table columns &quot;Request&quot; and &quot;response&quot;. A request may have an optional response message, in the case of a successful response no response message is required. In an error situation, the server may return a response message containing 1 or more errors.</t>
+<t><xref target="tbl-cmd-mapping"></xref> lists a mapping for each EPP command to a REPP request, the subsequent sections provide details for each request. Resource URLs in the table are assumed to be using the prefix: &quot;/{context-root}/{version}/&quot;. Some REPP endpoints do not require a request and/or response message, as is indicated by the table columns &quot;Request&quot; and &quot;response&quot;.</t>
 
 <ul spacing="compact">
 <li><tt>{c}</tt>:  An abbreviation for {collection}: this MUST be substituted with
@@ -331,7 +330,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Renew</td>
 <td>POST</td>
 <td>/{c}/{i}/renewals</td>
-<td>Yes</td>
+<td>No</td>
 <td>Yes</td>
 </tr>
 
@@ -421,12 +420,11 @@ C: Accept: application/epp+xml
 C: Accept-Language: en
 C: Connection: keep-alive
 
-
 ]]>
 </artwork>
 <t>Example response:</t>
 
-<artwork><![CDATA[S: HTTP/2 200 OK
+<sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
 S: Date: Fri, 17 Nov 2023 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 799
@@ -443,21 +441,22 @@ S:      <svcMenu>
 S:   </greeting>
 S: </epp>
 ]]>
-</artwork>
+</sourcecode>
 </section>
 
 <section anchor="login"><name>Login</name>
-<t>The Login command defined in <xref target="RFC5730" sectionFormat="of" section="2.9.1.1"></xref> is used to establish a session between the client and the server, this is part of the stateful nature of the EPP protocol. The REPP server is stateless and MUST not maintain any client state and MUST NOT support the Login command. The client MUST include all the information in a REPP request that is required for the server to be able to properly process the request. This includes the request attributes that are part of the Login command defined in <xref target="RFC5730" sectionFormat="of" section="2.9.1.1"></xref>.</t>
+<t>The Login command defined in <xref target="RFC5730" sectionFormat="of" section="2.9.1.1"></xref> is used to establish a session between client and server, this is part of the stateful nature of the EPP protocol. REPP is stateless and MUST NOT maintain any client state and does not include a Login command. The client MUST include all information in a REPP request, required for the server to be able to properly process the request. This includes request attributes defined as for Login command in <xref target="RFC5730" sectionFormat="of" section="2.9.1.1"></xref>.</t>
 <t>
-The request attributes from the Login command that are used to configure the client session, are are moved to the HTTP layer.</t>
+The request attributes from the Login command, used for configuring the client session, are are moved to the HTTP layer.</t>
 
 <ul spacing="compact">
 <li><tt>clID</tt>: Replaced by HTTP authentication</li>
 <li><tt>pw:</tt>: Replaced by HTTP authentication</li>
 <li><tt>newPW</tt>: Replaced by out of band process</li>
-<li><tt>version</tt>: Replaced by the <tt>{version}</tt> path segment in the request URL.</li>
+<li><tt>version</tt>: Replaced by the <tt>{version}</tt> path parameter in the request URL.</li>
 <li><tt>lang</tt>: Replaced by the <tt>Accept-Language</tt> HTTP header.</li>
 <li><tt>svcs</tt>: Replaced by the <tt>REPP-Svcs</tt> HTTP header.</li>
+<li><tt>svcExtension</tt>:  Replaced by the <tt>REPP-Svcs-Ext</tt> HTTP header.</li>
 </ul>
 <t>The server MUST check the namespaces used in the REPP-Svcs HTTP header. An unsupported namespace MUST result in the appropriate EPP result code.</t>
 </section>
@@ -477,8 +476,8 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 <li>Request message: None</li>
 <li>Response message: None</li>
 </ul>
-<t>The server MUST support the HTTP HEAD method for the Check endpoint, both client and server MUST NOT put any content into the HTTP message body. The response MUST contain the REPP-Check-Avail and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be &quot;0&quot; or &quot;1&quot; as described in <xref target="RFC5730" sectionFormat="of" section="2.9.2.1"></xref>, depending on whether the object can be provisioned or not. If the EPP message cannot be processed correctly, the server MUST use the HTTP status code 422 for the response and include the REPP-Eppcode header.</t>
-<t>The REPP Check endpoint is limited to checking only a single resource {id} per request. This may seem a limitation compared to the Check command defined in the <xref target="RFC5730"></xref> where multiple object-ids may be added to a  Check message. The RESTful Check request can be load balanced more efficiently when only a single resource {id} needs to be checked.</t>
+<t>The HTTP HEAD method MUST be usewd for object existence check. Both client and server MUST NOT add content to the HTTP message body. The response MUST contain the REPP-Check-Avail header and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be &quot;0&quot; or &quot;1&quot; as described in <xref target="RFC5730" sectionFormat="of" section="2.9.2.1"></xref>, depending on whether the object can be provisioned or not.</t>
+<t>The Check endpoint MUST be limited to checking only a single object-id per request. This may seem a limitation compared to the Check command defined in <xref target="RFC5730"></xref> where a Check message may contain multiple object-ids. The REPP Check request can be load balanced more efficiently when only a single object-id has to be checked.</t>
 <t>Example request for a domain name:</t>
 
 <artwork><![CDATA[C: HEAD /repp/v1/domains/example.nl HTTP/2
@@ -883,35 +882,33 @@ S:</epp>
 <li>Request message: object Renew request</li>
 <li>Response message: object Renew response</li>
 </ul>
-<t>The EPP Renew command is mapped to a nested collection resource, named &quot;renewals&quot;.
-Not all EPP object types include support for the renew command. If the EPP request results in a renewal of the object, then the server MUST return HTTP status code 200 (OK) and include the Location header for the renewed object URL.</t>
+<t>The Renew command is mapped to a nested collection, named &quot;renewals&quot;. Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in <xref target="RFC5731" sectionFormat="of" section="3.2.3"></xref>. The new period MAY be added to the request using the unit and value request parameters. The reponse MUST include the Location header for the renewed object.</t>
 <t>Example Domain Renew request:</t>
 
-<sourcecode type="xml"><![CDATA[C: POST /repp/v1/domains/example.nl/renewals HTTP/2
+<artwork><![CDATA[C: POST /repp/v1/domains/example.nl/renewals?current-date=2024-01-01 HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
 C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
-C: Content-Length: 325
+C: Content-Length: 0
 C: 
-C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-C:  <command>
-C:    <renew>
-C:      <domain:renew
-C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-C:        <domain:name>example.nl</domain:name>
-C:        <domain:curExpDate>2023-11-17</domain:curExpDate>
-C:        <domain:period unit="y">1</domain:period>
-C:      </domain:renew>
-C:    </renew>
-C:    <clTRID>ABC-12345</clTRID>
-C:  </command>
-C:</epp>
 ]]>
-</sourcecode>
+</artwork>
+<t>Example Domain Renew request, using 1 year period:</t>
+
+<artwork><![CDATA[C: POST /repp/v1/domains/example.nl/renewals?current-date=2024-01-01?unit=y&value=1 HTTP/2
+C: Host: repp.example.nl
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: Content-Type: application/epp+xml
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Accept-Language: en
+C: Content-Length: 0
+C: 
+]]>
+</artwork>
 <t>Example Renew response:</t>
 
 <sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
@@ -953,7 +950,7 @@ S:</epp>
 <li>Response message: Status</li>
 </ul>
 <t>To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource to create a new transfer resource object, not all EPP objects support the Transfer command as described in <xref target="RFC5730" sectionFormat="of" section="3.2.4"></xref>, <xref target="RFC5731" sectionFormat="of" section="3.2.4"></xref> and <xref target="RFC5733" sectionFormat="of" section="3.2.4"></xref>.</t>
-<t>If the EPP request is successful, then the server MUST return HTTP status code 200 (OK) and include the Location header.</t>
+<t>If the transfer request is successful, then the reponse MUST include the Location header for the object being transferred.</t>
 <t>Example request not using object authorization:</t>
 
 <artwork><![CDATA[C: POST /repp/v1/domains/example.nl/transfers HTTP/2
@@ -981,6 +978,19 @@ C: Content-Length: 0
 
 ]]>
 </sourcecode>
+<t>Example request using 1 year renewal period, using the <tt>unit</tt> and <tt>value</tt> query parameters:</t>
+
+<artwork><![CDATA[C: POST /repp/v1/domains/example.nl/transfers?unit=y&value=1 HTTP/2
+C: Host: repp.example.nl
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Accept-Language: en
+C: REPP-Cltrid: ABC-12345
+C: Content-Length: 0
+
+]]>
+</artwork>
 <t>Example Transfer response:</t>
 
 <sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
@@ -1018,7 +1028,7 @@ S:</epp>
 <li>Request message: None</li>
 <li>Response message: Status</li>
 </ul>
-<t>The new sponsoring client MUST use the HTTP DELETE method to cancel a requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request. The server MUST return HTTP status code 200 (OK) if the transfer resource was deleted successfully.</t>
+<t>The new sponsoring client MUST use the HTTP DELETE method to cancel a requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request.</t>
 <t>Example request:</t>
 
 <artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -1156,7 +1166,7 @@ S:</epp>
 <li>Request message: Object Update message</li>
 <li>Response message: Status</li>
 </ul>
-<t>An object Update request MUST be performed with the HTTP PATCH method on a unique object resource. The request message body MUST contain an Update request as described in the EPP RFCs.</t>
+<t>An object Update request MUST be performed using the HTTP PATCH method. The request message body MUST contain an EPP Update request, and the object-id value in the request MUST match the value of the object-id path parameter in the URL.</t>
 <t>Example request:</t>
 
 <sourcecode type="xml"><![CDATA[C: PATCH /repp/v1/domains/example.nl HTTP/2
