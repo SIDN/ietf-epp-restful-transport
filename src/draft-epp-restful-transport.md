@@ -262,7 +262,7 @@ REPP does not always return an EPP response message in the HTTP message body. Th
   <!--TODO: ISSUE #35: Mapping EPP code to HTTP status codes -->
 Restful EPP and HTTP protocol are both an application layer protocol, having their own status- and result codes. The endpoints described in (#command-mapping) MUST return HTTP status code 200 (OK) for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.
 
-When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in [@!RFC9110], byut only when this is permitted for the used HTTP method. Errors related to the HTTP protocol MUST result in the use of an apropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.
+When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in [@!RFC9110], but only when this is permitted for the used HTTP method. Errors related to the HTTP protocol MUST result in the use of an apropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result int he failure of other independent requests using the same connection.
 
 The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-Eppcode HTTP header for error handling logic, without having to parse the EPP result message. 
 
@@ -385,9 +385,9 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 - Request message: None
 - Response message: None
 
-The server MUST support the HTTP HEAD method for the Check endpoint, both client and server MUST NOT put any content into the HTTP message body. The response MUST contain the REPP-Check-Avail and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not. If the EPP message cannot be processed correctly, the server MUST use the HTTP status code 422 for the response and include the REPP-Eppcode header.
+ The HTTP HEAD method MUST be usewd for object existence check. Both client and server MUST NOT add content to the HTTP message body. The response MUST contain the REPP-Check-Avail header and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not. 
 
-The REPP Check endpoint is limited to checking only a single resource {id} per request. This may seem a limitation compared to the Check command defined in the [@!RFC5730] where multiple object-ids may be added to a  Check message. The RESTful Check request can be load balanced more efficiently when only a single resource {id} needs to be checked. 
+The Check endpoint MUST be limited to checking only a single object-id per request. This may seem a limitation compared to the Check command defined in [@!RFC5730] where a Check message may contain multiple object-ids. The REPP Check request can be load balanced more efficiently when only a single object-id has to be checked. 
 
 Example request for a domain name:
 
@@ -951,6 +951,20 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: REPP-Cltrid: ABC-12345
 C: REPP-AuthInfo: secret-token
 C: Accept-Language: en
+C: Content-Length: 0
+
+```
+
+Example request using 1 year renewal period, using the `unit` and `value` query parameters:
+
+```
+C: POST /repp/v1/domains/example.nl/transfers?unit=y&value=1 HTTP/2
+C: Host: repp.example.nl
+C: Authorization: Bearer <token>
+C: Accept: application/epp+xml
+C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
+C: Accept-Language: en
+C: REPP-Cltrid: ABC-12345
 C: Content-Length: 0
 
 ```

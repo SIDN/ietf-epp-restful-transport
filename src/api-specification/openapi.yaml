@@ -161,6 +161,8 @@ paths:
      - $ref: '#/components/parameters/p_acceptLanguage'
      - $ref: '#/components/parameters/p_authinfo'
      - $ref: '#/components/parameters/p_roid'
+     - $ref: '#/components/parameters/p_renewal_unit'
+     - $ref: '#/components/parameters/p_renewal_value'
     post:
       summary: Domain transfer request
       tags:
@@ -504,6 +506,22 @@ components:
       schema:
         type: string
       required: false
+    p_renewal_unit:
+      in: query
+      name: unit
+      description: Unit used for renewal value (e.g. y for year)
+      schema:
+        type: string
+      required: false
+      example: 'y'
+    p_renewal_value:
+      in: query
+      name: value
+      description: Value for renewal 
+      schema:
+        type: integer
+      required: false
+      example: 1
 
   headers:
     cltrid:
