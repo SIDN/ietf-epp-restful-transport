@@ -119,7 +119,7 @@ This section lists the main design criteria.
 
 # EPP Extension Framework
 
-[@!RFC3735, Section 2] describes how the EPP extension framework can be used to extend EPP functionality by adding new features at the protocol, object and command-response level. This section describes the impact of REPP on each of the extension levels:
+[@!RFC3735, Section 2] of [@!RFC3735] describes how the EPP extension framework can be used to extend EPP functionality by adding new features at the protocol, object and command-response level. This section describes the impact of REPP on each of the extension levels:
 
 - Protocol Extension: (#command-mapping) describes an protocol extension resource for use with existing and future protocol extensions. REPP does not define a new Protocol extension. All existing and future Protocol extension level EPP extensions MAY be used.
 
