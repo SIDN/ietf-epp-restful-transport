@@ -1382,13 +1382,11 @@ These considerations are satisfied by a combination of REPP features and feature
 
 # IANA Considerations
 
-TODO: any? See https://datatracker.ietf.org/doc/html/draft-wullink-restful-epp-00#section-12
-
+[TBD: at the moment we don't see anu] 
 
 # Internationalization Considerations
 
-TODO: any?
-Accept-Language in HTTP Header
+[TBD: any? Accept-Language in HTTP Header]
 
 # Security Considerations
 
