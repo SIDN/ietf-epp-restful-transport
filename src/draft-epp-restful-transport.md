@@ -1382,7 +1382,7 @@ These considerations are satisfied by a combination of REPP features and feature
 
 # IANA Considerations
 
-[TBD: at the moment we don't see anu] 
+[TBD: at the moment we don't see any] 
 
 # Internationalization Considerations
 
