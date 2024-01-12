@@ -2142,9 +2142,9 @@ The server MUST support the use of the <code>filter</code> and <code>val</code> 
               <li class="compact" id="section-9.4.2.1-5.5">none: GET /domains/{id}?filter=hosts&amp;val=none<a href="#section-9.4.2.1-5.5" class="pilcrow">¶</a>
 </li>
             </ul>
-<p id="section-9.4.2.1-6">Example request including all hosts objects, without any required authorization data:<a href="#section-9.4.2.1-6" class="pilcrow">¶</a></p>
+<p id="section-9.4.2.1-6">Example Domain Info request, the response should only include delegated hosts:<a href="#section-9.4.2.1-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-9.4.2.1-7">
-<pre>C: GET /repp/v1/domains/example.nl?filter=hosts&amp;val=all HTTP/2
+<pre>C: GET /repp/v1/domains/example.nl?filter=hosts&amp;val=del HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer &lt;token&gt;
 C: Accept: application/epp+xml
