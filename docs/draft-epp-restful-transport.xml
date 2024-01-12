@@ -16,8 +16,7 @@
 
 <abstract>
 <t>This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol <xref target="RFC5730"></xref>. REPP enables the development of a stateless and scaleable EPP service.</t>
-<t>This document includes a mapping of <xref target="RFC5730"></xref> <xref target="XML"></xref> EPP commands to a RESTful HTTP based interface. Existing semantics and mappings as defined in <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are retained and reused in RESTful EPP.</t>
-<t>The stateless REPP server does not maintain any client or application state, allowing for scalable EPP services and enabling load balancing at the request level instead of the session level as described in <xref target="RFC5734"></xref>.</t>
+<t>This document includes a mapping of <xref target="RFC5730"></xref> <xref target="XML"></xref> EPP commands to a RESTful HTTP based interface. Existing semantics as defined in <xref target="RFC5731"></xref>, <xref target="RFC5732"></xref> and <xref target="RFC5733"></xref> are retained and reused in RESTful EPP.</t>
 </abstract>
 
 </front>

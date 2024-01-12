@@ -19,14 +19,9 @@ Abstract
    stateless and scaleable EPP service.
 
    This document includes a mapping of [RFC5730] [XML] EPP commands to a
-   RESTful HTTP based interface.  Existing semantics and mappings as
-   defined in [RFC5731], [RFC5732] and [RFC5733] are retained and reused
-   in RESTful EPP.
-
-   The stateless REPP server does not maintain any client or application
-   state, allowing for scalable EPP services and enabling load balancing
-   at the request level instead of the session level as described in
-   [RFC5734].
+   RESTful HTTP based interface.  Existing semantics as defined in
+   [RFC5731], [RFC5732] and [RFC5733] are retained and reused in RESTful
+   EPP.
 
 Status of This Memo
 
@@ -50,6 +45,11 @@ Copyright Notice
    Copyright (c) 2024 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
 
 
 
@@ -58,11 +58,6 @@ Wullink & Davids          Expires 15 July 2024                  [Page 1]
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
-   This document is subject to BCP 78 and the IETF Trust's Legal
-   Provisions Relating to IETF Documents (https://trustee.ietf.org/
-   license-info) in effect on the date of publication of this document.
-   Please review these documents carefully, as they describe your rights
-   and restrictions with respect to this document.  Code Components
    extracted from this document must include Revised BSD License text as
    described in Section 4.e of the Trust Legal Provisions and are
    provided without warranty as described in the Revised BSD License.
@@ -70,7 +65,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
-   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   3
    3.  Conventions Used in This Document . . . . . . . . . . . . . .   4
    4.  Design Considerations . . . . . . . . . . . . . . . . . . . .   5
    5.  EPP Extension Framework . . . . . . . . . . . . . . . . . . .   6
@@ -106,6 +101,11 @@ Table of Contents
        9.5.5.  Update  . . . . . . . . . . . . . . . . . . . . . . .  32
      9.6.  Extension Framework . . . . . . . . . . . . . . . . . . .  34
        9.6.1.  Protocol Extension  . . . . . . . . . . . . . . . . .  34
+       9.6.2.  Object Extension  . . . . . . . . . . . . . . . . . .  35
+       9.6.3.  Command-Response Extension  . . . . . . . . . . . . .  37
+   10. Transport Mapping Considerations  . . . . . . . . . . . . . .  37
+   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38
+   12. Internationalization Considerations . . . . . . . . . . . . .  38
 
 
 
@@ -114,11 +114,6 @@ Wullink & Davids          Expires 15 July 2024                  [Page 2]
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
-       9.6.2.  Object Extension  . . . . . . . . . . . . . . . . . .  35
-       9.6.3.  Command-Response Extension  . . . . . . . . . . . . .  37
-   10. Transport Mapping Considerations  . . . . . . . . . . . . . .  37
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38
-   12. Internationalization Considerations . . . . . . . . . . . . .  38
    13. Security Considerations . . . . . . . . . . . . . . . . . . .  39
    14. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  39
    15. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  40
@@ -162,6 +157,11 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in
    this document are to be interpreted as described in [RFC2119].
 
+2.  Terminology
+
+   In this document the following terminology is used.
+
+
 
 
 
@@ -169,10 +169,6 @@ Wullink & Davids          Expires 15 July 2024                  [Page 3]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
-
-2.  Terminology
-
-   In this document the following terminology is used.
 
    REST - Representational State Transfer ([REST]).  An architectural
    style.
@@ -216,6 +212,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    illustrate element relationships and are not REQUIRED features of the
    protocol.
 
+   All example requests assume a REPP server using HTTP version 2 is
+   listening on the standard HTTPS port on host reppp.example.nl.  An
+   authorization token has been provided by an out of band process and
+   MUST be used by the client to authenticate each request.
 
 
 
@@ -225,11 +225,6 @@ Wullink & Davids          Expires 15 July 2024                  [Page 4]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
-
-   All example requests assume a REPP server using HTTP version 2 is
-   listening on the standard HTTPS port on host reppp.example.nl.  An
-   authorization token has been provided by an out of band process and
-   MUST be used by the client to authenticate each request.
 
 4.  Design Considerations
 
@@ -274,6 +269,11 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       describes the use of [XML] but the use of other media types such
       as JSON [RFC7159] should also be possible.
 
+   -  Compatibility with existing EPP commands and corresponding request
+      and response messages.
+
+
+
 
 
 
@@ -281,9 +281,6 @@ Wullink & Davids          Expires 15 July 2024                  [Page 5]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
-
-   -  Compatibility with existing EPP commands and corresponding request
-      and response messages.
 
    -  Simplicity, when the semantics of a resource URL and HTTP method
       match an EPP command and request message, the use of an request
@@ -330,6 +327,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       REPP implementation.  This is the equivalent of the Version
       element in the EPP RFCs.  The version used in the REPP URL MUST
       match the version used in EPP Greeting message.
+
+
+
 
 
 
