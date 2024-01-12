@@ -57,8 +57,6 @@ The stateless nature of REPP requires that no client or application state is mai
 
 REPP is data format agnostic, the client uses agent-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as XML, JSON [@!RFC8259] or [@!YAML].
 
-A good understanding of the EPP base protocol specification [@!RFC5730] is advised, to grasp the command mapping described in this document.
-
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT","SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [@!RFC2119].
 
 # Terminology
