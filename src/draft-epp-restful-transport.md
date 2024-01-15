@@ -812,8 +812,8 @@ S:</epp>
 ### Renew
 
 - Request: POST /{collection}/{id}/renewals
-- Request message: object Renew request
-- Response message: object Renew response
+- Request message: None
+- Response message: Renew response
 
 The Renew command is mapped to a nested collection, named "renewals". Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The reponse MUST include the Location header for the renewed object.
 
