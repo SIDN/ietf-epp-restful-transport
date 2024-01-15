@@ -451,38 +451,6 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
-<!--
-Example request using POST method for an object that has attached authorization information.  
-
-- Request: POST /{collection}/{id}
-- Request message: Info request
-- Response message: Info response
-
-```xml
-C: POST /repp/v1/domains/example.nl HTTP/2
-C: Host: repp.example.nl
-C: Authorization: Bearer <token>
-C: Accept: application/epp+xml
-C: Accept-Language: en
-C: Content-Length: 183
-C:
-C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-C:  <command>
-C:    <info>
-C:      <domain:info
-C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-C:        <domain:name hosts="all">example.nl</domain:name>
-C:        <domain:authInfo>
-C:          <domain:pw>secret</domain:pw>
-C:        </domain:authInfo>
-C:      </domain:info>
-C:    </info>
-C:    <clTRID>ABC-12345</clTRID>
-C:  </command>
-C:</epp>
-```
-
 Example Info response:
 
 ```xml
@@ -512,7 +480,7 @@ S:    </trID>
 S:  </response>
 S:</epp>
 ```
--->
+
 
 #### Object Filtering
 
