@@ -382,7 +382,7 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 - Request message: None
 - Response message: None
 
- The HTTP HEAD method MUST be usewd for object existence check. Both client and server MUST NOT add content to the HTTP message body. The response MUST contain the REPP-Check-Avail header and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not. 
+ The HTTP HEAD method MUST be used for object existence check. Both client and server MUST NOT add content to the HTTP message body. The response MUST contain the `REPP-Check-Avail` header and MAY contain the `REPP-Check-Reason` header. The value of the `REPP-Check-Avail` header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not. 
 
 The Check endpoint MUST be limited to checking only a single object-id per request. This may seem a limitation compared to the Check command defined in [@!RFC5730] where a Check message may contain multiple object-ids. The REPP Check request can be load balanced more efficiently when only a single object-id has to be checked. 
 
@@ -1419,9 +1419,7 @@ apply to REPP.
 
 # Obsolete EPP Result Codes
 
-TODO: check list of RFC5730 codes and see which ones are not used anymore.
-
-The following result codes specified in [@!RFC5730] are no longer
+The following EPP result codes specified in [@!RFC5730] are no longer
 meaningful in the context of RESTful EPP and MUST NOT be used.
 
 | Code | Reason                                                     
@@ -1431,7 +1429,6 @@ meaningful in the context of RESTful EPP and MUST NOT be used.
 | 2200 | Authentication functionality is delegated to the HTTP protocol layer           
 | 2501 | Authentication functionality is delegated to the HTTP protocol layer 
 | 2502 | Rate limiting functionality is delegated to the HTTP protocol layer    
-          
 Table: Obsolete EPP result codes
 
 # Acknowledgments

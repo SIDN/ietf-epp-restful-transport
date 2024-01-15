@@ -5,7 +5,7 @@
 Network Working Group                                         M. Wullink
 Internet-Draft                                                 M. Davids
 Intended status: Standards Track                               SIDN Labs
-Expires: 15 July 2024                                    12 January 2024
+Expires: 18 July 2024                                    15 January 2024
 
 
         Extensible Provisioning Protocol (EPP) RESTful Transport
@@ -38,7 +38,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 July 2024.
+   This Internet-Draft will expire on 18 July 2024.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Wullink & Davids          Expires 15 July 2024                  [Page 1]
+Wullink & Davids          Expires 18 July 2024                  [Page 1]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Wullink & Davids          Expires 15 July 2024                  [Page 2]
+Wullink & Davids          Expires 18 July 2024                  [Page 2]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -165,7 +165,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                  [Page 3]
+Wullink & Davids          Expires 18 July 2024                  [Page 3]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -221,7 +221,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                  [Page 4]
+Wullink & Davids          Expires 18 July 2024                  [Page 4]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -277,7 +277,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                  [Page 5]
+Wullink & Davids          Expires 18 July 2024                  [Page 5]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -333,7 +333,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                  [Page 6]
+Wullink & Davids          Expires 18 July 2024                  [Page 6]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -389,7 +389,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                  [Page 7]
+Wullink & Davids          Expires 18 July 2024                  [Page 7]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -445,7 +445,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                  [Page 8]
+Wullink & Davids          Expires 18 July 2024                  [Page 8]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -501,7 +501,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                  [Page 9]
+Wullink & Davids          Expires 18 July 2024                  [Page 9]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -557,7 +557,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 10]
+Wullink & Davids          Expires 18 July 2024                 [Page 10]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -613,7 +613,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 11]
+Wullink & Davids          Expires 18 July 2024                 [Page 11]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -669,7 +669,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 12]
+Wullink & Davids          Expires 18 July 2024                 [Page 12]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -725,7 +725,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 13]
+Wullink & Davids          Expires 18 July 2024                 [Page 13]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -781,7 +781,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 14]
+Wullink & Davids          Expires 18 July 2024                 [Page 14]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -837,7 +837,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 15]
+Wullink & Davids          Expires 18 July 2024                 [Page 15]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -872,7 +872,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  Request message: None
    -  Response message: None
 
-   The HTTP HEAD method MUST be usewd for object existence check.  Both
+   The HTTP HEAD method MUST be used for object existence check.  Both
    client and server MUST NOT add content to the HTTP message body.  The
    response MUST contain the REPP-Check-Avail header and MAY contain the
    REPP-Check-Reason header.  The value of the REPP-Check-Avail header
@@ -893,7 +893,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 16]
+Wullink & Davids          Expires 18 July 2024                 [Page 16]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -949,7 +949,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 17]
+Wullink & Davids          Expires 18 July 2024                 [Page 17]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1005,7 +1005,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 18]
+Wullink & Davids          Expires 18 July 2024                 [Page 18]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1061,7 +1061,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 19]
+Wullink & Davids          Expires 18 July 2024                 [Page 19]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1117,7 +1117,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 20]
+Wullink & Davids          Expires 18 July 2024                 [Page 20]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1173,7 +1173,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 21]
+Wullink & Davids          Expires 18 July 2024                 [Page 21]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1229,7 +1229,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 22]
+Wullink & Davids          Expires 18 July 2024                 [Page 22]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1285,7 +1285,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 23]
+Wullink & Davids          Expires 18 July 2024                 [Page 23]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1341,7 +1341,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 24]
+Wullink & Davids          Expires 18 July 2024                 [Page 24]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1397,7 +1397,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 25]
+Wullink & Davids          Expires 18 July 2024                 [Page 25]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1453,7 +1453,7 @@ C:
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 26]
+Wullink & Davids          Expires 18 July 2024                 [Page 26]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1509,7 +1509,7 @@ C:
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 27]
+Wullink & Davids          Expires 18 July 2024                 [Page 27]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1565,7 +1565,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 28]
+Wullink & Davids          Expires 18 July 2024                 [Page 28]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1621,7 +1621,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 29]
+Wullink & Davids          Expires 18 July 2024                 [Page 29]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1677,7 +1677,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 30]
+Wullink & Davids          Expires 18 July 2024                 [Page 30]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1733,7 +1733,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 31]
+Wullink & Davids          Expires 18 July 2024                 [Page 31]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1789,7 +1789,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 32]
+Wullink & Davids          Expires 18 July 2024                 [Page 32]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1845,7 +1845,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 33]
+Wullink & Davids          Expires 18 July 2024                 [Page 33]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1901,7 +1901,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 34]
+Wullink & Davids          Expires 18 July 2024                 [Page 34]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1957,7 +1957,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 35]
+Wullink & Davids          Expires 18 July 2024                 [Page 35]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2013,7 +2013,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 36]
+Wullink & Davids          Expires 18 July 2024                 [Page 36]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2069,7 +2069,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 37]
+Wullink & Davids          Expires 18 July 2024                 [Page 37]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2125,7 +2125,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 38]
+Wullink & Davids          Expires 18 July 2024                 [Page 38]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2163,10 +2163,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 14.  Obsolete EPP Result Codes
 
-   TODO: check list of RFC5730 codes and see which ones are not used
-   anymore.
-
-   The following result codes specified in [RFC5730] are no longer
+   The following EPP result codes specified in [RFC5730] are no longer
    meaningful in the context of RESTful EPP and MUST NOT be used.
 
 
@@ -2181,7 +2178,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 39]
+
+
+
+Wullink & Davids          Expires 18 July 2024                 [Page 39]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2205,9 +2205,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
               |      | delegated to the HTTP protocol layer |
               +------+--------------------------------------+
 
-                                  Table 2
-
-   Table: Obsolete EPP result codes
+                     Table 2: Obsolete EPP result codes
 
 15.  Acknowledgments
 
@@ -2232,19 +2230,17 @@ Internet-Draft          RESTful Transport for EPP           January 2024
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-
-
-
-
-
-Wullink & Davids          Expires 15 July 2024                 [Page 40]
-
-Internet-Draft          RESTful Transport for EPP           January 2024
-
-
    [RFC2581]  Allman, M., Paxson, V., and W. Stevens, "TCP Congestion
               Control", RFC 2581, DOI 10.17487/RFC2581, April 1999,
               <https://www.rfc-editor.org/info/rfc2581>.
+
+
+
+
+Wullink & Davids          Expires 18 July 2024                 [Page 40]
+
+Internet-Draft          RESTful Transport for EPP           January 2024
+
 
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
               Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
@@ -2290,17 +2286,17 @@ Internet-Draft          RESTful Transport for EPP           January 2024
               Host Mapping", STD 69, RFC 5732, DOI 10.17487/RFC5732,
               August 2009, <https://www.rfc-editor.org/info/rfc5732>.
 
-
-
-
-Wullink & Davids          Expires 15 July 2024                 [Page 41]
-
-Internet-Draft          RESTful Transport for EPP           January 2024
-
-
    [RFC5733]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Contact Mapping", STD 69, RFC 5733, DOI 10.17487/RFC5733,
               August 2009, <https://www.rfc-editor.org/info/rfc5733>.
+
+
+
+
+Wullink & Davids          Expires 18 July 2024                 [Page 41]
+
+Internet-Draft          RESTful Transport for EPP           January 2024
+
 
    [RFC5734]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Transport over TCP", STD 69, RFC 5734,
@@ -2345,18 +2341,18 @@ Internet-Draft          RESTful Transport for EPP           January 2024
               DOI 10.17487/RFC9110, June 2022,
               <https://www.rfc-editor.org/info/rfc9110>.
 
-
-
-
-
-Wullink & Davids          Expires 15 July 2024                 [Page 42]
-
-Internet-Draft          RESTful Transport for EPP           January 2024
-
-
    [RFC9113]  Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
               DOI 10.17487/RFC9113, June 2022,
               <https://www.rfc-editor.org/info/rfc9113>.
+
+
+
+
+
+Wullink & Davids          Expires 18 July 2024                 [Page 42]
+
+Internet-Draft          RESTful Transport for EPP           January 2024
+
 
    [RFC9114]  Bishop, M., Ed., "HTTP/3", RFC 9114, DOI 10.17487/RFC9114,
               June 2022, <https://www.rfc-editor.org/info/rfc9114>.
@@ -2405,4 +2401,8 @@ Authors' Addresses
 
 
 
-Wullink & Davids          Expires 15 July 2024                 [Page 43]
+
+
+
+
+Wullink & Davids          Expires 18 July 2024                 [Page 43]

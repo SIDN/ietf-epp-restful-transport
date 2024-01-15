@@ -475,7 +475,7 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 <li>Request message: None</li>
 <li>Response message: None</li>
 </ul>
-<t>The HTTP HEAD method MUST be usewd for object existence check. Both client and server MUST NOT add content to the HTTP message body. The response MUST contain the REPP-Check-Avail header and MAY contain the REPP-Check-Reason header. The value of the REPP-Check-Avail header MUST be &quot;0&quot; or &quot;1&quot; as described in <xref target="RFC5730" sectionFormat="of" section="2.9.2.1"></xref>, depending on whether the object can be provisioned or not.</t>
+<t>The HTTP HEAD method MUST be used for object existence check. Both client and server MUST NOT add content to the HTTP message body. The response MUST contain the <tt>REPP-Check-Avail</tt> header and MAY contain the <tt>REPP-Check-Reason</tt> header. The value of the <tt>REPP-Check-Avail</tt> header MUST be &quot;0&quot; or &quot;1&quot; as described in <xref target="RFC5730" sectionFormat="of" section="2.9.2.1"></xref>, depending on whether the object can be provisioned or not.</t>
 <t>The Check endpoint MUST be limited to checking only a single object-id per request. This may seem a limitation compared to the Check command defined in <xref target="RFC5730"></xref> where a Check message may contain multiple object-ids. The REPP Check request can be load balanced more efficiently when only a single object-id has to be checked.</t>
 <t>Example request for a domain name:</t>
 
@@ -1414,10 +1414,10 @@ apply to REPP.</t>
 </section>
 
 <section anchor="obsolete-epp-result-codes"><name>Obsolete EPP Result Codes</name>
-<t>TODO: check list of RFC5730 codes and see which ones are not used anymore.</t>
-<t>The following result codes specified in <xref target="RFC5730"></xref> are no longer
+<t>The following EPP result codes specified in <xref target="RFC5730"></xref> are no longer
 meaningful in the context of RESTful EPP and MUST NOT be used.</t>
-<table>
+<table><name>Obsolete EPP result codes
+</name>
 <thead>
 <tr>
 <th>Code</th>
@@ -1451,8 +1451,7 @@ meaningful in the context of RESTful EPP and MUST NOT be used.</t>
 <td>Rate limiting functionality is delegated to the HTTP protocol layer</td>
 </tr>
 </tbody>
-</table><t>Table: Obsolete EPP result codes</t>
-</section>
+</table></section>
 
 <section anchor="acknowledgments"><name>Acknowledgments</name>
 <t>The authors would like to thank Miek Gieben who worked with us on an earlier, similar draft.</t>
