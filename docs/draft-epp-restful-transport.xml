@@ -29,7 +29,6 @@
 <t><xref target="RFC5730" sectionFormat="bare" section="Section 2.1"></xref> of <xref target="RFC5730"></xref> describes how EPP can be layered over multiple transport protocols. Currently, EPP transport over TCP <xref target="RFC5734"></xref> is the only widely deployed transport mapping for EPP. <xref target="RFC5730" sectionFormat="bare" section="Section 2.1"></xref> furthermore requires that newly defined transport mappings preserve the stateful nature of EPP. This document updates this requirement to also allow stateless for EPP transport.</t>
 <t>The stateless nature of REPP requires that no client or application state is maintained on the server. Each client request to the server must contain all the information necessary for the server to process the request.</t>
 <t>REPP is data format agnostic, the client uses agent-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as XML, JSON <xref target="RFC8259"></xref> or <xref target="YAML"></xref>.</t>
-<t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <xref target="RFC2119"></xref>.</t>
 </section>
 
 <section anchor="terminology"><name>Terminology</name>
@@ -47,6 +46,7 @@
 </section>
 
 <section anchor="conventions-used-in-this-document"><name>Conventions Used in This Document</name>
+<t>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;,&quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <xref target="RFC2119"></xref>.</t>
 <t>XML is case sensitive. Unless stated otherwise, XML specifications and examples provided in this document MUST be interpreted in the character case presented to develop a conforming implementation.</t>
 <t>The examples in this document assume that request and response messages are properly formatted XML documents.</t>
 <t>In examples, lines starting with &quot;C:&quot; represent data sent by a REPP client and lines starting with &quot;S:&quot; represent data returned by a REPP server. Indentation and white space in examples are provided only to illustrate element relationships and are not REQUIRED features of the protocol.</t>
@@ -543,6 +543,35 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ]]>
 </artwork>
+<t>Example Info response:</t>
+
+<sourcecode type="xml"><![CDATA[S: HTTP/2 200 OK
+S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Server: Example REPP server v1.0
+S: Content-Length: 424
+S: Content-Type: application/epp+xml
+S: Content-Language: en
+S: REPP-Eppcode: 1000
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <resData>
+S:      <domain:infData xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
+S:         < !-- The rest of the response is omitted here -- >
+S:      </domain:infData>
+S:    </resData>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+]]>
+</sourcecode>
 
 <section anchor="object-filtering"><name>Object Filtering</name>
 <t>
@@ -877,8 +906,8 @@ S:</epp>
 
 <ul spacing="compact">
 <li>Request: POST /{collection}/{id}/renewals</li>
-<li>Request message: object Renew request</li>
-<li>Response message: object Renew response</li>
+<li>Request message: None</li>
+<li>Response message: Renew response</li>
 </ul>
 <t>The Renew command is mapped to a nested collection, named &quot;renewals&quot;. Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in <xref target="RFC5731" sectionFormat="of" section="3.2.3"></xref>. The new period MAY be added to the request using the unit and value request parameters. The reponse MUST include the Location header for the renewed object.</t>
 <t>Example Domain Renew request:</t>
@@ -1390,25 +1419,15 @@ every request must contain a single command, as described in section <xref targe
 </section>
 
 <section anchor="security-considerations"><name>Security Considerations</name>
-<t>All REPP endpoints MUST be secure, even Hello.</t>
+<t>Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS <xref target="RFC5246"></xref>. <xref target="RFC5734" sectionFormat="bare" section="Section 9"></xref> describes the level of security that is REQUIRED.</t>
 <t>HTTP Authentication with an API Key is used by many APIs, this is a simple and effective authentication mechanism.
 schemes: Bearer, JWT, Basic?
 short lived tokens?
 see: <eref target="https://datatracker.ietf.org/doc/html/rfc6750">https://datatracker.ietf.org/doc/html/rfc6750</eref>
 see: <eref target="https://apidog.com/blog/api-authorization/">https://apidog.com/blog/api-authorization/</eref></t>
 <t></t>
-<t><xref target="RFC5730"></xref> describes a Login command for transmitting client
-credentials. This command MUST NOT be used for REPP. Due to
-the stateless nature of REPP, the client MUST include the authentication credentials
-in each HTTP request. The validation of the user credentials must be
-performed by an out-of-band mechanism. Examples of authentication mechanisms are Basic
-and Digest access authentication <xref target="RFC2617"></xref> or OAuth <xref target="RFC5849"></xref>.</t>
-<t>To protect data confidentiality and integrity, all data transport between the client
-and server MUST use TLS <xref target="RFC5246"></xref>. <xref target="RFC5734" sectionFormat="bare" section="Section 9"></xref> describes the level of security
-that is REQUIRED.</t>
-<t>EPP does not use XML encryption for protecting messages. Furthermore,
-REPP (HTTP) servers are vulnerable to common denial-of-service
-attacks. Therefore, the security considerations of <xref target="RFC5734"></xref> also
+<t><xref target="RFC5730"></xref> describes a Login command for creating a client session. This command MUST NOT be used for REPP. Due to the stateless nature of REPP, the client MUST include the authentication credentials in each HTTP request. The validation of user credentials must be performed by an out-of-band mechanism, such as the application- or web server used for deployment of a REPP implementation. Examples of authentication mechanisms are Basic authentication <xref target="RFC7617"></xref> or OAuth <xref target="RFC5849"></xref>.</t>
+<t>REPP (HTTP) servers are vulnerable to common denial-of-service attacks. Therefore, the security considerations of <xref target="RFC5734"></xref> also
 apply to REPP.</t>
 <t></t>
 </section>
@@ -1490,6 +1509,7 @@ meaningful in the context of RESTful EPP and MUST NOT be used.</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7159.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7234.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7540.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7617.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.793.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9110.xml"/>

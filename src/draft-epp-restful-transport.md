@@ -1356,7 +1356,7 @@ These considerations are satisfied by a combination of REPP features and feature
 
 # Security Considerations
 
-All REPP endpoints MUST be secure, even Hello.
+Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS [@!RFC5246]. [@!RFC5734, Section 9] describes the level of security that is REQUIRED.
 
 HTTP Authentication with an API Key is used by many APIs, this is a simple and effective authentication mechanism.
 schemes: Bearer, JWT, Basic?
@@ -1366,20 +1366,9 @@ see: https://apidog.com/blog/api-authorization/
 
   <!--TODO ISSUE 12: expand security section -->    
 
-[@!RFC5730] describes a Login command for transmitting client
-credentials. This command MUST NOT be used for REPP. Due to
-the stateless nature of REPP, the client MUST include the authentication credentials
-in each HTTP request. The validation of the user credentials must be
-performed by an out-of-band mechanism. Examples of authentication mechanisms are Basic
-and Digest access authentication [@!RFC2617] or OAuth [@!RFC5849].
+[@!RFC5730] describes a Login command for creating a client session. This command MUST NOT be used for REPP. Due to the stateless nature of REPP, the client MUST include the authentication credentials in each HTTP request. The validation of user credentials must be performed by an out-of-band mechanism, such as the application- or web server used for deployment of a REPP implementation. Examples of authentication mechanisms are Basic authentication [@!RFC7617] or OAuth [@!RFC5849].
 
-To protect data confidentiality and integrity, all data transport between the client
-and server MUST use TLS [@!RFC5246]. [@!RFC5734, Section 9] describes the level of security
-that is REQUIRED.
-
-EPP does not use XML encryption for protecting messages. Furthermore,
-REPP (HTTP) servers are vulnerable to common denial-of-service
-attacks. Therefore, the security considerations of [@!RFC5734] also
+REPP (HTTP) servers are vulnerable to common denial-of-service attacks. Therefore, the security considerations of [@!RFC5734] also
 apply to REPP.
 
   <!--TODO ISSUE #16: do we support changing password using /password  -->
