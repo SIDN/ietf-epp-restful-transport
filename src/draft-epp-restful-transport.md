@@ -168,10 +168,10 @@ A REPP server MUST listen for HTTP connection requests on the standard TCP port 
 
 # REST {#rest}
 
-REPP uses the REST semantics, each HTTP method is assigned a distinct behaviour, (#http-method) provides a overview of the behaviour assinged to each method. REPP requests are expressed by using a URL refering to a resource, a HTTP method, HTTP headers and an optional message body containing the EPP request message. 
+REPP uses the REST architectural style, each HTTP method is assigned a distinct behaviour, (#http-method) provides a overview of the behaviour assigned to each method. REPP requests are expressed by a URL refering to a resource, a HTTP method, HTTP headers and an optional message body containing the EPP request message. 
 
 <!--TODO ISSUE 10: allow for out of order processing -->
-An REPP HTTP message body MUST contain at most a single EPP request or response. HTTP requests MUST be processed independently of each other and in the same order as received by the server. A client MAY choose to send a new request, using a existing connection, before the response for the previous request has been received (pipelining). A server using HTTP/2 [@!RFC7540] or HTTP/3 [@!RFC9114] contains builtin support for stream multiplexing and MAY choose to support pipelining using this mechanism. Requests MUST be processed by the server in the order they have been received. The response MAY be returned out of order back to the client, due to the fact that some request may be processed faster than others.
+A REPP HTTP message body MUST contain at most a single EPP request or response. HTTP requests MUST be processed independently of each other and in the same order as received by the server. A client MAY choose to send a new request, using an existing connection, before the response for the previous request has been received (pipelining). A server using HTTP/2 [@!RFC7540] or HTTP/3 [@!RFC9114] contains builtin support for stream multiplexing and MAY choose to support pipelining using this mechanism. The response MAY be returned out of order back to the client, due to the fact that some requests require more processing time by the server.
 
 HTTP/1 does not use persistent connections by default, the client MAY use the "Connection" header to request for the server not to close the existing connection, so it can be re-used for future requests. The server MAY choose not to honor this request.
 
