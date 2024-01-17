@@ -1419,17 +1419,9 @@ every request must contain a single command, as described in section <xref targe
 </section>
 
 <section anchor="security-considerations"><name>Security Considerations</name>
-<t>Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS <xref target="RFC5246"></xref>. <xref target="RFC5734" sectionFormat="bare" section="Section 9"></xref> describes the level of security that is REQUIRED.</t>
-<t>HTTP Authentication with an API Key is used by many APIs, this is a simple and effective authentication mechanism.
-schemes: Bearer, JWT, Basic?
-short lived tokens?
-see: <eref target="https://datatracker.ietf.org/doc/html/rfc6750">https://datatracker.ietf.org/doc/html/rfc6750</eref>
-see: <eref target="https://apidog.com/blog/api-authorization/">https://apidog.com/blog/api-authorization/</eref></t>
-<t></t>
-<t><xref target="RFC5730"></xref> describes a Login command for creating a client session. This command MUST NOT be used for REPP. Due to the stateless nature of REPP, the client MUST include the authentication credentials in each HTTP request. The validation of user credentials must be performed by an out-of-band mechanism, such as the application- or web server used for deployment of a REPP implementation. Examples of authentication mechanisms are Basic authentication <xref target="RFC7617"></xref> or OAuth <xref target="RFC5849"></xref>.</t>
-<t>REPP (HTTP) servers are vulnerable to common denial-of-service attacks. Therefore, the security considerations of <xref target="RFC5734"></xref> also
-apply to REPP.</t>
-<t></t>
+<t>Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS <xref target="RFC5246"></xref>. <xref target="RFC5734" sectionFormat="bare" section="Section 9"></xref> describes the level of security that is REQUIRED for all REPP endpoints.</t>
+<t>The EPP Login command, described by <xref target="RFC5730"></xref>, for creating a client session MUST NOT be used anymore. Due to the stateless nature of REPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) <xref target="RFC7519"></xref> or Basic authentication <xref target="RFC7617"></xref>.</t>
+<t>The management of authentication credentials, such as the &quot;Change password&quot; functionality of the EPP Login command, MUST be performed by an out-of-band process. REPP (HTTP) servers are vulnerable to common denial-of-service attacks. Therefore, the security considerations of <xref target="RFC5734"></xref> also apply to REPP.</t>
 </section>
 
 <section anchor="obsolete-epp-result-codes"><name>Obsolete EPP Result Codes</name>
@@ -1504,10 +1496,10 @@ meaningful in the context of RESTful EPP and MUST NOT be used.</t>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5732.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5733.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5734.xml"/>
-<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5849.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6648.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7159.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7234.xml"/>
+<xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7540.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7617.xml"/>
 <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.793.xml"/>
