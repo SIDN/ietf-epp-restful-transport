@@ -103,7 +103,7 @@ Table of Contents
        9.6.1.  Protocol Extension  . . . . . . . . . . . . . . . . .  34
        9.6.2.  Object Extension  . . . . . . . . . . . . . . . . . .  35
        9.6.3.  Command-Response Extension  . . . . . . . . . . . . .  37
-   10. Transport Mapping Considerations  . . . . . . . . . . . . . .  37
+   10. Protocol Considerations . . . . . . . . . . . . . . . . . . .  37
    11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38
    12. Internationalization Considerations . . . . . . . . . . . . .  38
 
@@ -116,11 +116,12 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    13. Security Considerations . . . . . . . . . . . . . . . . . . .  39
    14. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  39
-   15. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  40
-   16. References  . . . . . . . . . . . . . . . . . . . . . . . . .  40
-     16.1.  Normative References . . . . . . . . . . . . . . . . . .  40
-     16.2.  Informative References . . . . . . . . . . . . . . . . .  42
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  42
+   15. Overview of EPP modifications . . . . . . . . . . . . . . . .  40
+   16. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  40
+   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  40
+     17.1.  Normative References . . . . . . . . . . . . . . . . . .  40
+     17.2.  Informative References . . . . . . . . . . . . . . . . .  43
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  43
 
 1.  Introduction
 
@@ -160,8 +161,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    REST - Representational State Transfer ([REST]).  An architectural
    style.
 
-   RESTful - A RESTful web service is a web service or API implemented
-   using HTTP and the principles of [REST].
+
 
 
 
@@ -169,6 +169,9 @@ Wullink & Davids          Expires 20 July 2024                  [Page 3]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
+
+   RESTful - A RESTful web service is a web service or API implemented
+   using HTTP and the principles of [REST].
 
    EPP RFCs - This is a reference to the EPP version 1.0 specifications
    [RFC5730], [RFC5731], [RFC5732] and [RFC5733].
@@ -214,9 +217,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    listening on the standard HTTPS port on host reppp.example.nl.  An
    authorization token has been provided by an out of band process and
    MUST be used by the client to authenticate each request.
-
-
-
 
 
 
@@ -2053,19 +2053,19 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    existing resources can be used for existing and future extensions of
    this type.
 
-10.  Transport Mapping Considerations
+10.  Protocol Considerations
 
 
    Section 2.1 of [RFC5730] of the EPP protocol specification describes
-   considerations to be addressed by a protocol transport mapping.
-   These considerations are satisfied by a combination of REPP features
-   and features provided by HTTP and underlying transport protocols.
+   considerations to be addressed by a transport or protocol mapping.
+   These are satisfied by a combination of REPP features and features
+   provided by HTTP protocol and underlying transport protocols, as
+   described below.
 
-
-
-
-
-
+   -  The consideration: "The transport mapping MUST preserve the
+      stateful nature of the protocol", is updated to: "The transport
+      mapping MUST preserve the stateful nature of the protocol, when
+      using a stateful transport protocol".  REPP uses the REST
 
 
 
@@ -2074,10 +2074,6 @@ Wullink & Davids          Expires 20 July 2024                 [Page 37]
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
-   -  The consideration: "The transport mapping MUST preserve the
-      stateful nature of the protocol", is updated to: "The transport
-      mapping MUST preserve the stateful nature of the protocol, when
-      using a stateful transport protocol".  REPP uses the REST
       architectural style for defining a stateless API based on the
       stateless HTTP protocol, and therefore satisfies the updated
       consideration.
@@ -2089,19 +2085,20 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  REPP is based on the HTTP protocol, which uses the client-server
       model.
 
-   -  REPP requests are transmitted using HTTP, this document refrers to
-      the HTTP protocol specification for how data units are framed.
+   -  REPP messages are transmitted using HTTP, this document refers to
+      the HTTP [RFC2616] protocol specification for how data units are
+      framed.
 
    -  HTTP/1 and HTTP/2 use TCP as a transport protocol and this
       includes features to provide reliability, flow control, ordered
       delivery, and congestion control Section 1.5 of [RFC793] describes
       these features in detail; congestion control principles are
-      described further in [RFC2581] and [RFC2914].  HTTP/3 is uses QUIC
+      described further in [RFC2581] and [RFC2914].  HTTP/3 uses QUIC
       (UDP) as a transport protocol, which has builtin congestion
       control over UDP.
 
-   -  Section Section 8 describes how requests are processed
-      independently of each other.
+   -  Section 8 describes how requests are processed independently of
+      each other.
 
    -  Errors while processing a REPP request are isolated to this
       request and do not effect other requests sent by the client or
@@ -2119,6 +2116,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 12.  Internationalization Considerations
 
    [TBD: any?  Accept-Language in HTTP Header]
+
+
+
 
 
 
@@ -2186,14 +2186,36 @@ Wullink & Davids          Expires 20 July 2024                 [Page 39]
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
-15.  Acknowledgments
+15.  Overview of EPP modifications
+
+   This section lists an non-exhaustive overview of the most important
+   modifications made in RESTful EPP, compared to the EPP RFCs.
+
+   -  The use of HTTP as an additional application layer protocol.
+   -  HTTP adds additional status codes.
+   -  Some Commands are no longer used, such as the Login and Logout
+      command.
+   -  No client sessions, every request needs to include authentication
+      credentials.
+   -  A command MUST only contain a single object to operate on, the
+      check command.  For example, the Check command only supports 1
+      object per request.
+   -  Except for the Create and Update commands, no request messages are
+      no longer used.
+   -  Authentication and authorizations has become an out-of-band
+      process.
+   -  When using XML messages, the client The client MUST use the HTTP
+      headers to idicate what name space(s) are used.
+   -  Support for additional Media Types such as JSON.
+
+16.  Acknowledgments
 
    The authors would like to thank Miek Gieben who worked with us on an
    earlier, similar draft.
 
-16.  References
+17.  References
 
-16.1.  Normative References
+17.1.  Normative References
 
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,
@@ -2212,6 +2234,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    [RFC2581]  Allman, M., Paxson, V., and W. Stevens, "TCP Congestion
               Control", RFC 2581, DOI 10.17487/RFC2581, April 1999,
               <https://www.rfc-editor.org/info/rfc2581>.
+
+
+
+Wullink & Davids          Expires 20 July 2024                 [Page 40]
+
+Internet-Draft          RESTful Transport for EPP           January 2024
+
 
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
               Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
@@ -2233,14 +2262,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
               Provisioning Protocol (EPP)", RFC 3735,
               DOI 10.17487/RFC3735, March 2004,
               <https://www.rfc-editor.org/info/rfc3735>.
-
-
-
-
-Wullink & Davids          Expires 20 July 2024                 [Page 40]
-
-Internet-Draft          RESTful Transport for EPP           January 2024
-
 
    [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
               Resource Identifier (URI): Generic Syntax", STD 66,
@@ -2269,6 +2290,14 @@ Internet-Draft          RESTful Transport for EPP           January 2024
               Contact Mapping", STD 69, RFC 5733, DOI 10.17487/RFC5733,
               August 2009, <https://www.rfc-editor.org/info/rfc5733>.
 
+
+
+
+Wullink & Davids          Expires 20 July 2024                 [Page 41]
+
+Internet-Draft          RESTful Transport for EPP           January 2024
+
+
    [RFC5734]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Transport over TCP", STD 69, RFC 5734,
               DOI 10.17487/RFC5734, August 2009,
@@ -2288,15 +2317,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
               Ed., "Hypertext Transfer Protocol (HTTP/1.1): Caching",
               RFC 7234, DOI 10.17487/RFC7234, June 2014,
               <https://www.rfc-editor.org/info/rfc7234>.
-
-
-
-
-
-Wullink & Davids          Expires 20 July 2024                 [Page 41]
-
-Internet-Draft          RESTful Transport for EPP           January 2024
-
 
    [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
               (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
@@ -2325,6 +2345,15 @@ Internet-Draft          RESTful Transport for EPP           January 2024
               DOI 10.17487/RFC9110, June 2022,
               <https://www.rfc-editor.org/info/rfc9110>.
 
+
+
+
+
+Wullink & Davids          Expires 20 July 2024                 [Page 42]
+
+Internet-Draft          RESTful Transport for EPP           January 2024
+
+
    [RFC9113]  Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
               DOI 10.17487/RFC9113, June 2022,
               <https://www.rfc-editor.org/info/rfc9113>.
@@ -2338,21 +2367,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    [YAML]     YAML Language Development Team, "YAML: YAML Ain't Markup
               Language", 2000, <https://yaml.org/spec/1.2.2/>.
 
-16.2.  Informative References
+17.2.  Informative References
 
    [SIDN-EXT] SIDN, "Extensible Provisioning Protocol v1.0 schema .NL
               extensions", 2019,
               <http://rxsd.domain-registry.nl/sidn-ext-epp-1.0.xsd>.
 
 Authors' Addresses
-
-
-
-
-Wullink & Davids          Expires 20 July 2024                 [Page 42]
-
-Internet-Draft          RESTful Transport for EPP           January 2024
-
 
    Maarten Wullink
    SIDN Labs
@@ -2364,27 +2385,6 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    SIDN Labs
    Email: marco.davids@sidn.nl
    URI:   https://sidn.nl/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

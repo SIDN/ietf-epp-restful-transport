@@ -1430,7 +1430,7 @@ li > p:last-of-type:only-child {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-transport-mapping-considera" class="internal xref">Transport Mapping Considerations</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-protocol-considerations" class="internal xref">Protocol Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
             <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
@@ -1445,21 +1445,24 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.14.1"><a href="#section-14" class="auto internal xref">14</a>. <a href="#name-obsolete-epp-result-codes" class="internal xref">Obsolete EPP Result Codes</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
-            <p id="section-toc.1-1.15.1"><a href="#section-15" class="auto internal xref">15</a>. <a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.15.1"><a href="#section-15" class="auto internal xref">15</a>. <a href="#name-overview-of-epp-modificatio" class="internal xref">Overview of EPP modifications</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
-            <p id="section-toc.1-1.16.1"><a href="#section-16" class="auto internal xref">16</a>. <a href="#name-references" class="internal xref">References</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.1">
-                <p id="section-toc.1-1.16.2.1.1"><a href="#section-16.1" class="auto internal xref">16.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.16.1"><a href="#section-16" class="auto internal xref">16</a>. <a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16.2.2">
-                <p id="section-toc.1-1.16.2.2.1"><a href="#section-16.2" class="auto internal xref">16.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17">
+            <p id="section-toc.1-1.17.1"><a href="#section-17" class="auto internal xref">17</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.1">
+                <p id="section-toc.1-1.17.2.1.1"><a href="#section-17.1" class="auto internal xref">17.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.2">
+                <p id="section-toc.1-1.17.2.2.1"><a href="#section-17.2" class="auto internal xref">17.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17">
-            <p id="section-toc.1-1.17.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.18">
+            <p id="section-toc.1-1.18.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -3099,14 +3102,13 @@ S:&lt;/epp&gt;
 </div>
 </section>
 </div>
-<div id="transport-mapping-considerations">
+<div id="protocol-considerations">
 <section id="section-10">
-      <h2 id="name-transport-mapping-considera">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-transport-mapping-considera" class="section-name selfRef">Transport Mapping Considerations</a>
+      <h2 id="name-protocol-considerations">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-protocol-considerations" class="section-name selfRef">Protocol Considerations</a>
       </h2>
 <p id="section-10-1"></p>
-<p id="section-10-2"><span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.1" class="relref">Section 2.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> of the EPP protocol specification describes considerations to be addressed by a protocol transport mapping.
-These considerations are satisfied by a combination of REPP features and features provided by HTTP and underlying transport protocols.<a href="#section-10-2" class="pilcrow">¶</a></p>
+<p id="section-10-2"><span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.1" class="relref">Section 2.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> of the EPP protocol specification describes considerations to be addressed by a transport or protocol mapping. These are satisfied by a combination of REPP features and features provided by HTTP protocol and underlying transport protocols, as described below.<a href="#section-10-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10-3.1">
           <p id="section-10-3.1.1">The consideration: "The transport mapping MUST preserve the stateful nature of the protocol", is updated to: "The transport mapping MUST preserve the stateful nature of the protocol, when using a stateful transport protocol". REPP uses the REST architectural style for defining a stateless API based on the stateless HTTP protocol, and therefore satisfies the updated consideration.<a href="#section-10-3.1.1" class="pilcrow">¶</a></p>
@@ -3118,13 +3120,13 @@ These considerations are satisfied by a combination of REPP features and feature
           <p id="section-10-3.3.1">REPP is based on the HTTP protocol, which uses the client-server model.<a href="#section-10-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-3.4">
-          <p id="section-10-3.4.1">REPP requests are transmitted using HTTP, this document refrers to the HTTP protocol specification for how data units are framed.<a href="#section-10-3.4.1" class="pilcrow">¶</a></p>
+          <p id="section-10-3.4.1">REPP messages are transmitted using HTTP, this document refers to the HTTP <span>[<a href="#RFC2616" class="cite xref">RFC2616</a>]</span> protocol specification for how data units are framed.<a href="#section-10-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-3.5">
-          <p id="section-10-3.5.1">HTTP/1 and HTTP/2 use TCP as a transport protocol and this includes features to provide reliability, flow control, ordered delivery, and congestion control <span><a href="https://rfc-editor.org/rfc/rfc793#section-1.5" class="relref">Section 1.5</a> of [<a href="#RFC793" class="cite xref">RFC793</a>]</span> describes these features in detail; congestion control principles are described further in <span>[<a href="#RFC2581" class="cite xref">RFC2581</a>]</span> and <span>[<a href="#RFC2914" class="cite xref">RFC2914</a>]</span>. HTTP/3 is uses QUIC (UDP) as a transport protocol, which has builtin congestion control over UDP.<a href="#section-10-3.5.1" class="pilcrow">¶</a></p>
+          <p id="section-10-3.5.1">HTTP/1 and HTTP/2 use TCP as a transport protocol and this includes features to provide reliability, flow control, ordered delivery, and congestion control <span><a href="https://rfc-editor.org/rfc/rfc793#section-1.5" class="relref">Section 1.5</a> of [<a href="#RFC793" class="cite xref">RFC793</a>]</span> describes these features in detail; congestion control principles are described further in <span>[<a href="#RFC2581" class="cite xref">RFC2581</a>]</span> and <span>[<a href="#RFC2914" class="cite xref">RFC2914</a>]</span>. HTTP/3 uses QUIC (UDP) as a transport protocol, which has builtin congestion control over UDP.<a href="#section-10-3.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-3.6">
-          <p id="section-10-3.6.1">Section <a href="#rest" class="auto internal xref">Section 8</a> describes how requests are processed independently of each other.<a href="#section-10-3.6.1" class="pilcrow">¶</a></p>
+          <p id="section-10-3.6.1"><a href="#rest" class="auto internal xref">Section 8</a> describes how requests are processed independently of each other.<a href="#section-10-3.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-3.7">
           <p id="section-10-3.7.1">Errors while processing a REPP request are isolated to this request and do not effect other requests sent by the client or other clients, this is described in section <a href="#error-handling" class="auto internal xref">Section 8.5</a>.<a href="#section-10-3.7.1" class="pilcrow">¶</a></p>
@@ -3205,21 +3207,49 @@ meaningful in the context of RESTful EPP and MUST NOT be used.<a href="#section-
       </table>
 </section>
 </div>
-<div id="acknowledgments">
+<div id="overview-of-epp-modifications">
 <section id="section-15">
-      <h2 id="name-acknowledgments">
-<a href="#section-15" class="section-number selfRef">15. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      <h2 id="name-overview-of-epp-modificatio">
+<a href="#section-15" class="section-number selfRef">15. </a><a href="#name-overview-of-epp-modificatio" class="section-name selfRef">Overview of EPP modifications</a>
       </h2>
-<p id="section-15-1">The authors would like to thank Miek Gieben who worked with us on an earlier, similar draft.<a href="#section-15-1" class="pilcrow">¶</a></p>
+<p id="section-15-1">This section lists an non-exhaustive overview of the most important modifications made in RESTful EPP, compared to the EPP RFCs.<a href="#section-15-1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-15-2.1">The use of HTTP as an additional application layer protocol.<a href="#section-15-2.1" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-15-2.2">HTTP adds additional status codes.<a href="#section-15-2.2" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-15-2.3">Some Commands are no longer used, such as the Login and Logout command.<a href="#section-15-2.3" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-15-2.4">No client sessions, every request needs to include authentication credentials.<a href="#section-15-2.4" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-15-2.5">A command MUST only contain a single object to operate on, the check command. For example, the Check command only supports 1 object per request.<a href="#section-15-2.5" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-15-2.6">Except for the Create and Update commands, no request messages are no longer used.<a href="#section-15-2.6" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-15-2.7">Authentication and authorizations has become an out-of-band process.<a href="#section-15-2.7" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-15-2.8">When using XML messages, the client The client MUST use the HTTP headers to idicate what name space(s) are used.<a href="#section-15-2.8" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-15-2.9">Support for additional Media Types such as JSON.<a href="#section-15-2.9" class="pilcrow">¶</a>
+</li>
+      </ul>
 </section>
 </div>
+<div id="acknowledgments">
 <section id="section-16">
-      <h2 id="name-references">
-<a href="#section-16" class="section-number selfRef">16. </a><a href="#name-references" class="section-name selfRef">References</a>
+      <h2 id="name-acknowledgments">
+<a href="#section-16" class="section-number selfRef">16. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<section id="section-16.1">
+<p id="section-16-1">The authors would like to thank Miek Gieben who worked with us on an earlier, similar draft.<a href="#section-16-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-17">
+      <h2 id="name-references">
+<a href="#section-17" class="section-number selfRef">17. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<section id="section-17.1">
         <h3 id="name-normative-references">
-<a href="#section-16.1" class="section-number selfRef">16.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-17.1" class="section-number selfRef">17.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="REST">[REST]</dt>
@@ -3336,9 +3366,9 @@ meaningful in the context of RESTful EPP and MUST NOT be used.<a href="#section-
 <dd class="break"></dd>
 </dl>
 </section>
-<section id="section-16.2">
+<section id="section-17.2">
         <h3 id="name-informative-references">
-<a href="#section-16.2" class="section-number selfRef">16.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-17.2" class="section-number selfRef">17.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="SIDN-EXT">[SIDN-EXT]</dt>

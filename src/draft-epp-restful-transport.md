@@ -1323,23 +1323,22 @@ S:</epp>
 
 Command-Response Extensions allow for adding elements to an existing object mapping, therefore no new extension reource is required, the existing resources can be used for existing and future extensions of this type.  
 
-# Transport Mapping Considerations
+# Protocol Considerations
 
   <!--TODO ISSUE #2: not all considerations are met by repp? -->
   <!--TODO ISSUE #36: create update for this section in rfc5730 -->
 
-[@!RFC5730, section 2.1] of the EPP protocol specification describes considerations to be addressed by a protocol transport mapping.
-These considerations are satisfied by a combination of REPP features and features provided by HTTP and underlying transport protocols.
+[@!RFC5730, section 2.1] of the EPP protocol specification describes considerations to be addressed by a transport or protocol mapping. These are satisfied by a combination of REPP features and features provided by HTTP protocol and underlying transport protocols, as described below.
 
 - The consideration: "The transport mapping MUST preserve the stateful nature of the protocol", is updated to: "The transport mapping MUST preserve the stateful nature of the protocol, when using a stateful transport protocol". REPP uses the REST architectural style for defining a stateless API based on the stateless HTTP protocol, and therefore satisfies the updated consideration. 
 
 - (#rest) describes how HTTP multiplexing may be used for pipelining multiple requests. A server may allow pipelining, requests are to be processed in the order they have been received.
 
 - REPP is based on the HTTP protocol, which uses the client-server model.
-- REPP requests are transmitted using HTTP, this document refrers to the HTTP protocol specification for how data units are framed.
-- HTTP/1 and HTTP/2 use TCP as a transport protocol and this includes features to provide reliability, flow control, ordered delivery, and congestion control [@!RFC793, section 1.5] describes these features in detail; congestion control principles are described further in [@!RFC2581] and [@!RFC2914]. HTTP/3 is uses QUIC (UDP) as a transport protocol, which has builtin congestion control over UDP.
+- REPP messages are transmitted using HTTP, this document refers to the HTTP [@!RFC2616] protocol specification for how data units are framed.
+- HTTP/1 and HTTP/2 use TCP as a transport protocol and this includes features to provide reliability, flow control, ordered delivery, and congestion control [@!RFC793, section 1.5] describes these features in detail; congestion control principles are described further in [@!RFC2581] and [@!RFC2914]. HTTP/3 uses QUIC (UDP) as a transport protocol, which has builtin congestion control over UDP.
 
-- Section (#rest) describes how requests are processed independently of each other.
+- (#rest) describes how requests are processed independently of each other.
 - Errors while processing a REPP request are isolated to this request and do not effect other requests sent by the client or other clients, this is described in section (#error-handling).
 
 -  Batch-oriented processing (combining multiple EPP commands in a single HTTP request) is not permitted. To maximize scalability
@@ -1376,6 +1375,21 @@ meaningful in the context of RESTful EPP and MUST NOT be used.
 | 2501 | Authentication functionality is delegated to the HTTP protocol layer 
 | 2502 | Rate limiting functionality is delegated to the HTTP protocol layer    
 Table: Obsolete EPP result codes
+
+# Overview of EPP modifications
+
+This section lists an non-exhaustive overview of the most important modifications made in RESTful EPP, compared to the EPP RFCs.
+
+- The use of HTTP as an additional application layer protocol.
+- HTTP adds additional status codes.
+- Some Commands are no longer used, such as the Login and Logout command.
+- No client sessions, every request needs to include authentication credentials.
+- A command MUST only contain a single object to operate on, the check command. For example, the Check command only supports 1 object per request.
+- Except for the Create and Update commands, no request messages are no longer used.
+- Authentication and authorizations has become an out-of-band process.
+- When using XML messages, the client The client MUST use the HTTP headers to idicate what name space(s) are used.
+- Support for additional Media Types such as JSON.
+
 
 # Acknowledgments
 
