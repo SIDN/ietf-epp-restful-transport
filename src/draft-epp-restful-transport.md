@@ -1385,10 +1385,10 @@ This section lists an non-exhaustive overview of the most important modification
 - Some Commands are no longer used, such as the Login and Logout command.
 - No client sessions, every request needs to include authentication credentials.
 - A command MUST only contain a single object to operate on, the check command. For example, the Check command only supports 1 object per request.
-- Except for the Create and Update commands, no request messages are no longer used.
+- Request messages are no longer used, except for the Create and Update commands
 - Authentication and authorizations has become an out-of-band process.
 - When using XML messages, the client The client MUST use the HTTP headers to idicate what name space(s) are used.
-- Support for additional Media Types such as JSON.
+- Support for additional data formats such as JSON.
 
 
 # Acknowledgments
