@@ -160,8 +160,8 @@ The client and server MUST support agent-driven content negotiation and related 
 </section>
 
 <section anchor="request"><name>Request</name>
-<t>In contrast to EPP over TCP <xref target="RFC5734"></xref>, a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers is, for some use cases, sufficient for the server to be able to successfully proceses the request. The <tt>Object Info</tt> request for example, does not require an EPP message.
-HTTP request headers are used to transmit additional or optional request data to the server. All REPP HTTP headers MUST have the &quot;REPP-&quot; prefix, following the recommendations in <xref target="RFC6648"></xref>.</t>
+<t>In contrast to EPP over TCP <xref target="RFC5734"></xref>, a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers may be sufficient for the server to be able to successfully proceses a request for most commands. However, the client MUST include the request message in the HTTP request body when the server uses an EPP extension that requires additional XML elements or attributes to be present in the request message.
+All REPP HTTP headers listed below use the &quot;REPP-&quot; prefix, following the recommendations in <xref target="RFC6648"></xref>.</t>
 
 <ul>
 <li><t><tt>REPP-Cltrid</tt>:  The client transaction identifier is the equivalent of the <tt>clTRID</tt> element defined in <xref target="RFC5730"></xref> and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.</t>
@@ -281,7 +281,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Check</td>
 <td>HEAD</td>
 <td>/{c}/{i}</td>
-<td>No</td>
+<td>Optional</td>
 <td>No</td>
 </tr>
 
@@ -289,7 +289,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Info</td>
 <td>GET</td>
 <td>/{c}/{i}</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -297,7 +297,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Poll Request</td>
 <td>GET</td>
 <td>/messages</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -305,7 +305,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Poll Ack</td>
 <td>DELETE</td>
 <td>/messages/{i}</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -321,7 +321,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Delete</td>
 <td>DELETE</td>
 <td>/{c}/{i}</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -329,7 +329,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Renew</td>
 <td>POST</td>
 <td>/{c}/{i}/renewals</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -337,7 +337,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Transfer Request</td>
 <td>POST</td>
 <td>/{c}/{i}/transfers</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -345,7 +345,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Transfer Query</td>
 <td>GET</td>
 <td>/{c}/{i}/transfers/latest</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -353,7 +353,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Transfer Cancel</td>
 <td>DELETE</td>
 <td>/{c}/{i}/transfers/latest</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -361,7 +361,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Transfer Approve</td>
 <td>PUT</td>
 <td>/{c}/{i}/transfers/latest</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -369,7 +369,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Transfer Reject</td>
 <td>DELETE</td>
 <td>/{c}/{i}/transfers/latest</td>
-<td>No</td>
+<td>Optional</td>
 <td>Yes</td>
 </tr>
 
@@ -399,7 +399,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 </tbody>
 </table><t>[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2]
 [2] This mapping is used for Protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1]</t>
-<t>When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request).</t>
+<t>When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request). The examples, in the sections below, assume the server does not use any EPP extensions and therefore the client does not add any request message to the HTTP message body.</t>
 
 <section anchor="hello"><name>Hello</name>
 
@@ -472,10 +472,10 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 
 <ul spacing="compact">
 <li>Request: HEAD /{collection}/{id}</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: None</li>
 </ul>
-<t>The HTTP HEAD method MUST be used for object existence check. Both client and server MUST NOT add content to the HTTP message body. The response MUST contain the <tt>REPP-Check-Avail</tt> header and MAY contain the <tt>REPP-Check-Reason</tt> header. The value of the <tt>REPP-Check-Avail</tt> header MUST be &quot;0&quot; or &quot;1&quot; as described in <xref target="RFC5730" sectionFormat="of" section="2.9.2.1"></xref>, depending on whether the object can be provisioned or not.</t>
+<t>The HTTP HEAD method MUST be used for object existence check. The response MUST contain the <tt>REPP-Check-Avail</tt> header and MAY contain the <tt>REPP-Check-Reason</tt> header. The value of the <tt>REPP-Check-Avail</tt> header MUST be &quot;0&quot; or &quot;1&quot; as described in <xref target="RFC5730" sectionFormat="of" section="2.9.2.1"></xref>, depending on whether the object can be provisioned or not.</t>
 <t>The Check endpoint MUST be limited to checking only a single object-id per request. This may seem a limitation compared to the Check command defined in <xref target="RFC5730"></xref> where a Check message may contain multiple object-ids. The REPP Check request can be load balanced more efficiently when only a single object-id has to be checked.</t>
 <t>Example request for a domain name:</t>
 
@@ -509,7 +509,7 @@ S: REPP-result-code: 1000
 
 <ul spacing="compact">
 <li>Request: GET /{collection}/{id}</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Info response</li>
 </ul>
 
@@ -527,7 +527,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 <ul spacing="compact">
 <li>Request: GET /{collection}/{id}</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Info response</li>
 </ul>
 
@@ -612,7 +612,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 <ul spacing="compact">
 <li>Request: GET /messages</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Poll response</li>
 </ul>
 <t>The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue. The &quot;op=req&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.2.3"></xref> are assigned to the HTTP GET method.</t>
@@ -664,7 +664,7 @@ S:</epp>
 
 <ul spacing="compact">
 <li>Request: DELETE /messages/{id}</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Poll Ack response</li>
 </ul>
 <t>The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The &quot;op=ack&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.2.3"></xref> are assigned to the HTTP DELETE method. The &quot;msgID&quot; attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successfull response, the server may add content to the message body of an error response.</t>
@@ -715,7 +715,7 @@ latest object transfer. A latest transfer object may not exist, when no transfer
 
 <ul spacing="compact">
 <li>Request: GET {collection}/{id}/transfers/latest</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Transfer Query response</li>
 </ul>
 <t>Example domain name Transfer Query request without authorization information required:</t>
@@ -861,7 +861,7 @@ S:</epp>
 
 <ul spacing="compact">
 <li>Request: DELETE /{collection}/{id}</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Status</li>
 </ul>
 <t>The client MUST the HTTP DELETE method and a resource identifying a unique object instance. The server MUST return HTTP status code 200 (OK) if the resource was deleted successfully.</t>
@@ -906,7 +906,7 @@ S:</epp>
 
 <ul spacing="compact">
 <li>Request: POST /{collection}/{id}/renewals</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Renew response</li>
 </ul>
 <t>The Renew command is mapped to a nested collection, named &quot;renewals&quot;. Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in <xref target="RFC5731" sectionFormat="of" section="3.2.3"></xref>. The new period MAY be added to the request using the unit and value request parameters. The reponse MUST include the Location header for the renewed object.</t>
@@ -973,7 +973,7 @@ S:</epp>
 
 <ul spacing="compact">
 <li>Request: POST /{collection}/{id}/transfers</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Status</li>
 </ul>
 <t>To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource to create a new transfer resource object, not all EPP objects support the Transfer command as described in <xref target="RFC5730" sectionFormat="of" section="3.2.4"></xref>, <xref target="RFC5731" sectionFormat="of" section="3.2.4"></xref> and <xref target="RFC5733" sectionFormat="of" section="3.2.4"></xref>.</t>
@@ -1052,7 +1052,7 @@ S:</epp>
 
 <ul spacing="compact">
 <li>Request: DELETE /{collection}/{id}/transfers/latest</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Status</li>
 </ul>
 <t>The new sponsoring client MUST use the HTTP DELETE method to cancel a requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request.</t>
@@ -1143,7 +1143,7 @@ S:</epp>
 
 <ul spacing="compact">
 <li>Request: PUT /{collection}/{id}/transfers/latest</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Status</li>
 </ul>
 <t>The current sponsoring client MUST use the HTTP PUT method to approve a transfer requested by the new sponsoring client.</t>
@@ -1264,7 +1264,7 @@ The HTTP method used for a new Protocol extension is not defined but must follow
 
 <ul spacing="compact">
 <li>Request: DELETE /extensions/{collection}/{id}/deletion</li>
-<li>Request message: None</li>
+<li>Request message: Optional</li>
 <li>Response message: Optional error response</li>
 </ul>
 
@@ -1472,10 +1472,9 @@ meaningful in the context of RESTful EPP and MUST NOT be used.</t>
 <li>Some Commands are no longer used, such as the Login and Logout command.</li>
 <li>No client sessions, every request needs to include authentication credentials.</li>
 <li>A command MUST only contain a single object to operate on, the check command. For example, the Check command only supports 1 object per request.</li>
-<li>Except for the Create and Update commands, no request messages are no longer used.</li>
+<li>Request messages may no longer be required for most commands</li>
 <li>Authentication and authorizations has become an out-of-band process.</li>
-<li>When using XML messages, the client The client MUST use the HTTP headers to idicate what name space(s) are used.</li>
-<li>Support for additional Media Types such as JSON.</li>
+<li>Support for additional data formats such as JSON.</li>
 </ul>
 </section>
 

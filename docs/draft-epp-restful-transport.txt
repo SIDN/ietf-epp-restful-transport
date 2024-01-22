@@ -5,7 +5,7 @@
 Network Working Group                                         M. Wullink
 Internet-Draft                                                 M. Davids
 Intended status: Standards Track                               SIDN Labs
-Expires: 20 July 2024                                    17 January 2024
+Expires: 25 July 2024                                    22 January 2024
 
 
         Extensible Provisioning Protocol (EPP) RESTful Transport
@@ -38,7 +38,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 July 2024.
+   This Internet-Draft will expire on 25 July 2024.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Wullink & Davids          Expires 20 July 2024                  [Page 1]
+Wullink & Davids          Expires 25 July 2024                  [Page 1]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Wullink & Davids          Expires 20 July 2024                  [Page 2]
+Wullink & Davids          Expires 25 July 2024                  [Page 2]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -165,7 +165,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                  [Page 3]
+Wullink & Davids          Expires 25 July 2024                  [Page 3]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -221,7 +221,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                  [Page 4]
+Wullink & Davids          Expires 25 July 2024                  [Page 4]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -277,7 +277,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                  [Page 5]
+Wullink & Davids          Expires 25 July 2024                  [Page 5]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -333,7 +333,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                  [Page 6]
+Wullink & Davids          Expires 25 July 2024                  [Page 6]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -389,7 +389,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                  [Page 7]
+Wullink & Davids          Expires 25 July 2024                  [Page 7]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -445,7 +445,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                  [Page 8]
+Wullink & Davids          Expires 25 July 2024                  [Page 8]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -482,12 +482,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    In contrast to EPP over TCP [RFC5734], a REPP request does not always
    require a EPP request message.  The information conveyed by the HTTP
-   method, URL and request headers is, for some use cases, sufficient
-   for the server to be able to successfully proceses the request.  The
-   Object Info request for example, does not require an EPP message.
-   HTTP request headers are used to transmit additional or optional
-   request data to the server.  All REPP HTTP headers MUST have the
-   "REPP-" prefix, following the recommendations in [RFC6648].
+   method, URL and request headers may be sufficient for the server to
+   be able to successfully proceses a request for most commands.
+   However, the client MUST include the request message in the HTTP
+   request body when the server uses an EPP extension that requires
+   additional XML elements or attributes to be present in the request
+   message.  All REPP HTTP headers listed below use the "REPP-" prefix,
+   following the recommendations in [RFC6648].
 
    -  REPP-Cltrid: The client transaction identifier is the equivalent
       of the clTRID element defined in [RFC5730] and MUST be used
@@ -497,15 +498,15 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  REPP-Svcs: The namespace used by the client in the EPP request
       message, this is equivalent to the "svcs" element in the Login
       command defined in Section 2.9.1.1 of [RFC5730].  The client MUST
-      use this header if the media type of the request or response
 
 
 
-Wullink & Davids          Expires 20 July 2024                  [Page 9]
+Wullink & Davids          Expires 25 July 2024                  [Page 9]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
+      use this header if the media type of the request or response
       message body content requires the server to know what namespaces
       to use.  Such as is the case for XML-based request and response
       messages.  The header value MAY contain multiple comma separated
@@ -556,8 +557,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-
-Wullink & Davids          Expires 20 July 2024                 [Page 10]
+Wullink & Davids          Expires 25 July 2024                 [Page 10]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -613,7 +613,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 11]
+Wullink & Davids          Expires 25 July 2024                 [Page 11]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -669,7 +669,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 12]
+Wullink & Davids          Expires 25 July 2024                 [Page 12]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -693,63 +693,63 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       with the value of a domain name, hostname, contact-id or a
       message-id or any other defined object.
 
-    +===========+=========+======================+=========+==========+
-    | Command   | Method  | Resource             | Request | Response |
-    +===========+=========+======================+=========+==========+
-    | Hello     | OPTIONS | /                    | No      | Yes      |
-    +-----------+---------+----------------------+---------+----------+
-    | Login     | N/A     | N/A                  | N/A     | N/A      |
-    +-----------+---------+----------------------+---------+----------+
-    | Logout    | N/A     | N/A                  | N/A     | N/A      |
-    +-----------+---------+----------------------+---------+----------+
-    | Check     | HEAD    | /{c}/{i}             | No      | No       |
-    +-----------+---------+----------------------+---------+----------+
-    | Info      | GET     | /{c}/{i}             | No      | Yes      |
-    +-----------+---------+----------------------+---------+----------+
-    | Poll      | GET     | /messages            | No      | Yes      |
-    | Request   |         |                      |         |          |
-    +-----------+---------+----------------------+---------+----------+
-    | Poll Ack  | DELETE  | /messages/{i}        | No      | Yes      |
-    +-----------+---------+----------------------+---------+----------+
-    | Create    | POST    | /{c}                 | Yes     | Yes      |
-    +-----------+---------+----------------------+---------+----------+
-    | Delete    | DELETE  | /{c}/{i}             | No      | Yes      |
-    +-----------+---------+----------------------+---------+----------+
-    | Renew     | POST    | /{c}/{i}/renewals    | No      | Yes      |
-    +-----------+---------+----------------------+---------+----------+
-    | Transfer  | POST    | /{c}/{i}/transfers   | No      | Yes      |
-    | Request   |         |                      |         |          |
-    +-----------+---------+----------------------+---------+----------+
-    | Transfer  | GET     | /{c}/{i}/transfers/  | No      | Yes      |
-    | Query     |         | latest               |         |          |
+   +===========+=========+======================+==========+==========+
+   | Command   | Method  | Resource             | Request  | Response |
+   +===========+=========+======================+==========+==========+
+   | Hello     | OPTIONS | /                    | No       | Yes      |
+   +-----------+---------+----------------------+----------+----------+
+   | Login     | N/A     | N/A                  | N/A      | N/A      |
+   +-----------+---------+----------------------+----------+----------+
+   | Logout    | N/A     | N/A                  | N/A      | N/A      |
+   +-----------+---------+----------------------+----------+----------+
+   | Check     | HEAD    | /{c}/{i}             | Optional | No       |
+   +-----------+---------+----------------------+----------+----------+
+   | Info      | GET     | /{c}/{i}             | Optional | Yes      |
+   +-----------+---------+----------------------+----------+----------+
+   | Poll      | GET     | /messages            | Optional | Yes      |
+   | Request   |         |                      |          |          |
+   +-----------+---------+----------------------+----------+----------+
+   | Poll Ack  | DELETE  | /messages/{i}        | Optional | Yes      |
+   +-----------+---------+----------------------+----------+----------+
+   | Create    | POST    | /{c}                 | Yes      | Yes      |
+   +-----------+---------+----------------------+----------+----------+
+   | Delete    | DELETE  | /{c}/{i}             | Optional | Yes      |
+   +-----------+---------+----------------------+----------+----------+
+   | Renew     | POST    | /{c}/{i}/renewals    | Optional | Yes      |
+   +-----------+---------+----------------------+----------+----------+
+   | Transfer  | POST    | /{c}/{i}/transfers   | Optional | Yes      |
+   | Request   |         |                      |          |          |
+   +-----------+---------+----------------------+----------+----------+
+   | Transfer  | GET     | /{c}/{i}/transfers/  | Optional | Yes      |
+   | Query     |         | latest               |          |          |
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 13]
+Wullink & Davids          Expires 25 July 2024                 [Page 13]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
-    +-----------+---------+----------------------+---------+----------+
-    | Transfer  | DELETE  | /{c}/{i}/transfers/  | No      | Yes      |
-    | Cancel    |         | latest               |         |          |
-    +-----------+---------+----------------------+---------+----------+
-    | Transfer  | PUT     | /{c}/{i}/transfers/  | No      | Yes      |
-    | Approve   |         | latest               |         |          |
-    +-----------+---------+----------------------+---------+----------+
-    | Transfer  | DELETE  | /{c}/{i}/transfers/  | No      | Yes      |
-    | Reject    |         | latest               |         |          |
-    +-----------+---------+----------------------+---------+----------+
-    | Update    | PATCH   | /{c}/{i}             | Yes     | Yes      |
-    +-----------+---------+----------------------+---------+----------+
-    | Extension | *       | /{c}/{i}/extension/* | *       | *        |
-    | [1]       |         |                      |         |          |
-    +-----------+---------+----------------------+---------+----------+
-    | Extension | *       | /extension/*         | *       | *        |
-    | [2]       |         |                      |         |          |
-    +-----------+---------+----------------------+---------+----------+
+   +-----------+---------+----------------------+----------+----------+
+   | Transfer  | DELETE  | /{c}/{i}/transfers/  | Optional | Yes      |
+   | Cancel    |         | latest               |          |          |
+   +-----------+---------+----------------------+----------+----------+
+   | Transfer  | PUT     | /{c}/{i}/transfers/  | Optional | Yes      |
+   | Approve   |         | latest               |          |          |
+   +-----------+---------+----------------------+----------+----------+
+   | Transfer  | DELETE  | /{c}/{i}/transfers/  | Optional | Yes      |
+   | Reject    |         | latest               |          |          |
+   +-----------+---------+----------------------+----------+----------+
+   | Update    | PATCH   | /{c}/{i}             | Yes      | Yes      |
+   +-----------+---------+----------------------+----------+----------+
+   | Extension | *       | /{c}/{i}/extension/* | *        | *        |
+   | [1]       |         |                      |          |          |
+   +-----------+---------+----------------------+----------+----------+
+   | Extension | *       | /extension/*         | *        | *        |
+   | [2]       |         |                      |          |          |
+   +-----------+---------+----------------------+----------+----------+
 
-              Table 1: Mapping of EPP Command to REPP Request
+             Table 1: Mapping of EPP Command to REPP Request
 
    [1] This mapping is used for Object extensions based on the extension
    mechanism as defined in [RFC5730, secion 2.7.2] [2] This mapping is
@@ -759,7 +759,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    When there is a mismatch between a resource identifier in the HTTP
    message body and the resource identifier in the URL used for a
    request, then the server MUST return HTTP status code 400 (Bad
-   Request).
+   Request).  The examples, in the sections below, assume the server
+   does not use any EPP extensions and therefore the client does not add
+   any request message to the HTTP message body.
 
 9.1.  Hello
 
@@ -774,17 +776,19 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    The server MUST respond by returning a Greeting response, as defined
    in Section 2.4 of [RFC5730].
 
-   The version value used in the Hello response MUST match the version
-   value used for the {version} path segment in the URL used for the
-   Hello request.
 
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 14]
+
+Wullink & Davids          Expires 25 July 2024                 [Page 14]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
+
+   The version value used in the Hello response MUST match the version
+   value used for the {version} path segment in the URL used for the
+   Hello request.
 
    Example request:
 
@@ -830,18 +834,18 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    -  clID: Replaced by HTTP authentication
    -  pw:: Replaced by HTTP authentication
-   -  newPW: Replaced by out of band process
-   -  version: Replaced by the {version} path parameter in the request
-      URL.
-   -  lang: Replaced by the Accept-Language HTTP header.
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 15]
+Wullink & Davids          Expires 25 July 2024                 [Page 15]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
 
+   -  newPW: Replaced by out of band process
+   -  version: Replaced by the {version} path parameter in the request
+      URL.
+   -  lang: Replaced by the Accept-Language HTTP header.
    -  svcs: Replaced by the REPP-Svcs HTTP header.
    -  svcExtension: Replaced by the REPP-Svcs-Ext HTTP header.
 
@@ -869,11 +873,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 9.4.1.  Check
 
    -  Request: HEAD /{collection}/{id}
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: None
 
-   The HTTP HEAD method MUST be used for object existence check.  Both
-   client and server MUST NOT add content to the HTTP message body.  The
+   The HTTP HEAD method MUST be used for object existence check.  The
    response MUST contain the REPP-Check-Avail header and MAY contain the
    REPP-Check-Reason header.  The value of the REPP-Check-Avail header
    MUST be "0" or "1" as described in Section 2.9.2.1 of [RFC5730],
@@ -890,10 +893,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-
-
-
-Wullink & Davids          Expires 20 July 2024                 [Page 16]
+Wullink & Davids          Expires 25 July 2024                 [Page 16]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -928,7 +928,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example request for an object not using authorization information.
 
    -  Request: GET /{collection}/{id}
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Info response
 
    C: GET /repp/v1/domains/example.nl HTTP/2
@@ -943,13 +943,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    attached authorization information.
 
    -  Request: GET /{collection}/{id}
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Info response
 
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 17]
+Wullink & Davids          Expires 25 July 2024                 [Page 17]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1005,7 +1005,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 18]
+Wullink & Davids          Expires 25 July 2024                 [Page 18]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1042,7 +1042,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 9.4.3.1.  Poll Request
 
    -  Request: GET /messages
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Poll response
 
    The client MUST use the HTTP GET method on the messages resource
@@ -1061,7 +1061,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 19]
+Wullink & Davids          Expires 25 July 2024                 [Page 19]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1099,7 +1099,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 9.4.3.2.  Poll Ack
 
    -  Request: DELETE /messages/{id}
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Poll Ack response
 
    The client MUST use the HTTP DELETE method to acknowledge receipt of
@@ -1117,7 +1117,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 20]
+Wullink & Davids          Expires 25 July 2024                 [Page 20]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1164,7 +1164,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    content to the HTTP message body.
 
    -  Request: GET {collection}/{id}/transfers/latest
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Transfer Query response
 
    Example domain name Transfer Query request without authorization
@@ -1173,7 +1173,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 21]
+Wullink & Davids          Expires 25 July 2024                 [Page 21]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1229,7 +1229,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 22]
+Wullink & Davids          Expires 25 July 2024                 [Page 22]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1285,7 +1285,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 23]
+Wullink & Davids          Expires 25 July 2024                 [Page 23]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1341,7 +1341,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 24]
+Wullink & Davids          Expires 25 July 2024                 [Page 24]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1377,7 +1377,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 9.5.2.  Delete
 
    -  Request: DELETE /{collection}/{id}
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Status
 
    The client MUST the HTTP DELETE method and a resource identifying a
@@ -1397,7 +1397,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 25]
+Wullink & Davids          Expires 25 July 2024                 [Page 25]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1426,7 +1426,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 9.5.3.  Renew
 
    -  Request: POST /{collection}/{id}/renewals
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Renew response
 
    The Renew command is mapped to a nested collection, named "renewals".
@@ -1453,7 +1453,7 @@ C:
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 26]
+Wullink & Davids          Expires 25 July 2024                 [Page 26]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1509,7 +1509,7 @@ C:
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 27]
+Wullink & Davids          Expires 25 July 2024                 [Page 27]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1517,7 +1517,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 9.5.4.1.  Request
 
    -  Request: POST /{collection}/{id}/transfers
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Status
 
    To start a new object transfer process, the client MUST use the HTTP
@@ -1565,7 +1565,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 28]
+Wullink & Davids          Expires 25 July 2024                 [Page 28]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1609,7 +1609,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 9.5.4.2.  Cancel
 
    -  Request: DELETE /{collection}/{id}/transfers/latest
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Status
 
    The new sponsoring client MUST use the HTTP DELETE method to cancel a
@@ -1621,7 +1621,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 29]
+Wullink & Davids          Expires 25 July 2024                 [Page 29]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1677,7 +1677,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 30]
+Wullink & Davids          Expires 25 July 2024                 [Page 30]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1708,7 +1708,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 9.5.4.4.  Approve
 
    -  Request: PUT /{collection}/{id}/transfers/latest
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Status
 
    The current sponsoring client MUST use the HTTP PUT method to approve
@@ -1733,7 +1733,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 31]
+Wullink & Davids          Expires 25 July 2024                 [Page 31]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1789,7 +1789,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 32]
+Wullink & Davids          Expires 25 July 2024                 [Page 32]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1845,7 +1845,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 33]
+Wullink & Davids          Expires 25 July 2024                 [Page 33]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1879,7 +1879,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example Protocol Extension request:
 
    -  Request: DELETE /extensions/{collection}/{id}/deletion
-   -  Request message: None
+   -  Request message: Optional
    -  Response message: Optional error response
 
    C: DELETE /repp/v1/extensions/domains/example.nl/deletion HTTP/2
@@ -1901,7 +1901,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 34]
+Wullink & Davids          Expires 25 July 2024                 [Page 34]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -1957,7 +1957,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 35]
+Wullink & Davids          Expires 25 July 2024                 [Page 35]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2013,7 +2013,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 36]
+Wullink & Davids          Expires 25 July 2024                 [Page 36]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2069,7 +2069,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 37]
+Wullink & Davids          Expires 25 July 2024                 [Page 37]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2125,7 +2125,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 38]
+Wullink & Davids          Expires 25 July 2024                 [Page 38]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2181,7 +2181,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 39]
+Wullink & Davids          Expires 25 July 2024                 [Page 39]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2200,13 +2200,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  A command MUST only contain a single object to operate on, the
       check command.  For example, the Check command only supports 1
       object per request.
-   -  Except for the Create and Update commands, no request messages are
-      no longer used.
+   -  Request messages may no longer be required for most commands
    -  Authentication and authorizations has become an out-of-band
       process.
-   -  When using XML messages, the client The client MUST use the HTTP
-      headers to idicate what name space(s) are used.
-   -  Support for additional Media Types such as JSON.
+   -  Support for additional data formats such as JSON.
 
 16.  Acknowledgments
 
@@ -2237,7 +2234,10 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 40]
+
+
+
+Wullink & Davids          Expires 25 July 2024                 [Page 40]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2293,7 +2293,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 41]
+Wullink & Davids          Expires 25 July 2024                 [Page 41]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2349,7 +2349,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 42]
+Wullink & Davids          Expires 25 July 2024                 [Page 42]
 
 Internet-Draft          RESTful Transport for EPP           January 2024
 
@@ -2405,4 +2405,4 @@ Authors' Addresses
 
 
 
-Wullink & Davids          Expires 20 July 2024                 [Page 43]
+Wullink & Davids          Expires 25 July 2024                 [Page 43]

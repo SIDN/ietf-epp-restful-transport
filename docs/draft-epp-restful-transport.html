@@ -1210,7 +1210,7 @@ li > p:last-of-type:only-child {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Wullink &amp; Davids</td>
-<td class="center">Expires 20 July 2024</td>
+<td class="center">Expires 25 July 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1223,12 +1223,12 @@ li > p:last-of-type:only-child {
 <dd class="internet-draft">draft-wullink-restful-epp-01</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-01-17" class="published">17 January 2024</time>
+<time datetime="2024-01-22" class="published">22 January 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-07-20">20 July 2024</time></dd>
+<dd class="expires"><time datetime="2024-07-25">25 July 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1267,7 +1267,7 @@ li > p:last-of-type:only-child {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 20 July 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 July 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1667,8 +1667,8 @@ The client and server MUST support agent-driven content negotiation and related 
         <h3 id="name-request">
 <a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-request" class="section-name selfRef">Request</a>
         </h3>
-<p id="section-8.3-1">In contrast to EPP over TCP <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span>, a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers is, for some use cases, sufficient for the server to be able to successfully proceses the request. The <code>Object Info</code> request for example, does not require an EPP message.
-HTTP request headers are used to transmit additional or optional request data to the server. All REPP HTTP headers MUST have the "REPP-" prefix, following the recommendations in <span>[<a href="#RFC6648" class="cite xref">RFC6648</a>]</span>.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-1">In contrast to EPP over TCP <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span>, a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers may be sufficient for the server to be able to successfully proceses a request for most commands. However, the client MUST include the request message in the HTTP request body when the server uses an EPP extension that requires additional XML elements or attributes to be present in the request message.
+All REPP HTTP headers listed below use the "REPP-" prefix, following the recommendations in <span>[<a href="#RFC6648" class="cite xref">RFC6648</a>]</span>.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-8.3-2.1">
             <p id="section-8.3-2.1.1"><code>REPP-Cltrid</code>:  The client transaction identifier is the equivalent of the <code>clTRID</code> element defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.<a href="#section-8.3-2.1.1" class="pilcrow">¶</a></p>
@@ -1817,28 +1817,28 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
             <td class="text-left" rowspan="1" colspan="1">Check</td>
             <td class="text-left" rowspan="1" colspan="1">HEAD</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">No</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Info</td>
             <td class="text-left" rowspan="1" colspan="1">GET</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Poll Request</td>
             <td class="text-left" rowspan="1" colspan="1">GET</td>
             <td class="text-left" rowspan="1" colspan="1">/messages</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Poll Ack</td>
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
             <td class="text-left" rowspan="1" colspan="1">/messages/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
@@ -1852,49 +1852,49 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
             <td class="text-left" rowspan="1" colspan="1">Delete</td>
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Renew</td>
             <td class="text-left" rowspan="1" colspan="1">POST</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/renewals</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer Request</td>
             <td class="text-left" rowspan="1" colspan="1">POST</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfers</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer Query</td>
             <td class="text-left" rowspan="1" colspan="1">GET</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfers/latest</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer Cancel</td>
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfers/latest</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer Approve</td>
             <td class="text-left" rowspan="1" colspan="1">PUT</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfers/latest</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Transfer Reject</td>
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
             <td class="text-left" rowspan="1" colspan="1">/{c}/{i}/transfers/latest</td>
-            <td class="text-left" rowspan="1" colspan="1">No</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
@@ -1923,7 +1923,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 </div>
 <p id="section-9-6">[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2]
 [2] This mapping is used for Protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1]<a href="#section-9-6" class="pilcrow">¶</a></p>
-<p id="section-9-7">When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request).<a href="#section-9-7" class="pilcrow">¶</a></p>
+<p id="section-9-7">When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request). The examples, in the sections below, assume the server does not use any EPP extensions and therefore the client does not add any request message to the HTTP message body.<a href="#section-9-7" class="pilcrow">¶</a></p>
 <div id="hello">
 <section id="section-9.1">
         <h3 id="name-hello">
@@ -2031,12 +2031,12 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 <ul class="compact">
 <li class="compact" id="section-9.4.1-1.1">Request: HEAD /{collection}/{id}<a href="#section-9.4.1-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-9.4.1-1.2">Request message: None<a href="#section-9.4.1-1.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.4.1-1.2">Request message: Optional<a href="#section-9.4.1-1.2" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.4.1-1.3">Response message: None<a href="#section-9.4.1-1.3" class="pilcrow">¶</a>
 </li>
           </ul>
-<p id="section-9.4.1-2">The HTTP HEAD method MUST be used for object existence check. Both client and server MUST NOT add content to the HTTP message body. The response MUST contain the <code>REPP-Check-Avail</code> header and MAY contain the <code>REPP-Check-Reason</code> header. The value of the <code>REPP-Check-Avail</code> header MUST be "0" or "1" as described in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.2.1" class="relref">Section 2.9.2.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>, depending on whether the object can be provisioned or not.<a href="#section-9.4.1-2" class="pilcrow">¶</a></p>
+<p id="section-9.4.1-2">The HTTP HEAD method MUST be used for object existence check. The response MUST contain the <code>REPP-Check-Avail</code> header and MAY contain the <code>REPP-Check-Reason</code> header. The value of the <code>REPP-Check-Avail</code> header MUST be "0" or "1" as described in <span><a href="https://rfc-editor.org/rfc/rfc5730#section-2.9.2.1" class="relref">Section 2.9.2.1</a> of [<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>, depending on whether the object can be provisioned or not.<a href="#section-9.4.1-2" class="pilcrow">¶</a></p>
 <p id="section-9.4.1-3">The Check endpoint MUST be limited to checking only a single object-id per request. This may seem a limitation compared to the Check command defined in <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span> where a Check message may contain multiple object-ids. The REPP Check request can be load balanced more efficiently when only a single object-id has to be checked.<a href="#section-9.4.1-3" class="pilcrow">¶</a></p>
 <p id="section-9.4.1-4">Example request for a domain name:<a href="#section-9.4.1-4" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-9.4.1-5">
@@ -2076,7 +2076,7 @@ S: REPP-result-code: 1000
 <ul class="compact">
 <li class="compact" id="section-9.4.2-3.1">Request: GET /{collection}/{id}<a href="#section-9.4.2-3.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-9.4.2-3.2">Request message: None<a href="#section-9.4.2-3.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.4.2-3.2">Request message: Optional<a href="#section-9.4.2-3.2" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.4.2-3.3">Response message: Info response<a href="#section-9.4.2-3.3" class="pilcrow">¶</a>
 </li>
@@ -2097,7 +2097,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 <ul class="compact">
 <li class="compact" id="section-9.4.2-6.1">Request: GET /{collection}/{id}<a href="#section-9.4.2-6.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-9.4.2-6.2">Request message: None<a href="#section-9.4.2-6.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.4.2-6.2">Request message: Optional<a href="#section-9.4.2-6.2" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.4.2-6.3">Response message: Info response<a href="#section-9.4.2-6.3" class="pilcrow">¶</a>
 </li>
@@ -2205,7 +2205,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 <ul class="compact">
 <li class="compact" id="section-9.4.3.1-1.1">Request: GET /messages<a href="#section-9.4.3.1-1.1" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.4.3.1-1.2">Request message: None<a href="#section-9.4.3.1-1.2" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.4.3.1-1.2">Request message: Optional<a href="#section-9.4.3.1-1.2" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.4.3.1-1.3">Response message: Poll response<a href="#section-9.4.3.1-1.3" class="pilcrow">¶</a>
 </li>
@@ -2265,7 +2265,7 @@ S:&lt;/epp&gt;
 <ul class="compact">
 <li class="compact" id="section-9.4.3.2-1.1">Request: DELETE /messages/{id}<a href="#section-9.4.3.2-1.1" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.4.3.2-1.2">Request message: None<a href="#section-9.4.3.2-1.2" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.4.3.2-1.2">Request message: Optional<a href="#section-9.4.3.2-1.2" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.4.3.2-1.3">Response message: Poll Ack response<a href="#section-9.4.3.2-1.3" class="pilcrow">¶</a>
 </li>
@@ -2325,7 +2325,7 @@ latest object transfer. A latest transfer object may not exist, when no transfer
 <ul class="compact">
 <li class="compact" id="section-9.4.4-2.1">Request: GET {collection}/{id}/transfers/latest<a href="#section-9.4.4-2.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-9.4.4-2.2">Request message: None<a href="#section-9.4.4-2.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.4.4-2.2">Request message: Optional<a href="#section-9.4.4-2.2" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.4.4-2.3">Response message: Transfer Query response<a href="#section-9.4.4-2.3" class="pilcrow">¶</a>
 </li>
@@ -2493,7 +2493,7 @@ S:&lt;/epp&gt;
 <ul class="compact">
 <li class="compact" id="section-9.5.2-1.1">Request: DELETE /{collection}/{id}<a href="#section-9.5.2-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-9.5.2-1.2">Request message: None<a href="#section-9.5.2-1.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.5.2-1.2">Request message: Optional<a href="#section-9.5.2-1.2" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.5.2-1.3">Response message: Status<a href="#section-9.5.2-1.3" class="pilcrow">¶</a>
 </li>
@@ -2546,7 +2546,7 @@ S:&lt;/epp&gt;
 <ul class="compact">
 <li class="compact" id="section-9.5.3-1.1">Request: POST /{collection}/{id}/renewals<a href="#section-9.5.3-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-9.5.3-1.2">Request message: None<a href="#section-9.5.3-1.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.5.3-1.2">Request message: Optional<a href="#section-9.5.3-1.2" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.5.3-1.3">Response message: Renew response<a href="#section-9.5.3-1.3" class="pilcrow">¶</a>
 </li>
@@ -2625,7 +2625,7 @@ S:&lt;/epp&gt;
 <ul class="compact">
 <li class="compact" id="section-9.5.4.1-1.1">Request: POST /{collection}/{id}/transfers<a href="#section-9.5.4.1-1.1" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.5.4.1-1.2">Request message: None<a href="#section-9.5.4.1-1.2" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.5.4.1-1.2">Request message: Optional<a href="#section-9.5.4.1-1.2" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.5.4.1-1.3">Response message: Status<a href="#section-9.5.4.1-1.3" class="pilcrow">¶</a>
 </li>
@@ -2714,7 +2714,7 @@ S:&lt;/epp&gt;
 <ul class="compact">
 <li class="compact" id="section-9.5.4.2-1.1">Request: DELETE /{collection}/{id}/transfers/latest<a href="#section-9.5.4.2-1.1" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.5.4.2-1.2">Request message: None<a href="#section-9.5.4.2-1.2" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.5.4.2-1.2">Request message: Optional<a href="#section-9.5.4.2-1.2" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.5.4.2-1.3">Response message: Status<a href="#section-9.5.4.2-1.3" class="pilcrow">¶</a>
 </li>
@@ -2821,7 +2821,7 @@ S:&lt;/epp&gt;
 <ul class="compact">
 <li class="compact" id="section-9.5.4.4-1.1">Request: PUT /{collection}/{id}/transfers/latest<a href="#section-9.5.4.4-1.1" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.5.4.4-1.2">Request message: None<a href="#section-9.5.4.4-1.2" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.5.4.4-1.2">Request message: Optional<a href="#section-9.5.4.4-1.2" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.5.4.4-1.3">Response message: Status<a href="#section-9.5.4.4-1.3" class="pilcrow">¶</a>
 </li>
@@ -2965,7 +2965,7 @@ The HTTP method used for a new Protocol extension is not defined but must follow
 <ul class="compact">
 <li class="compact" id="section-9.6.1-5.1">Request: DELETE /extensions/{collection}/{id}/deletion<a href="#section-9.6.1-5.1" class="pilcrow">¶</a>
 </li>
-            <li class="compact" id="section-9.6.1-5.2">Request message: None<a href="#section-9.6.1-5.2" class="pilcrow">¶</a>
+            <li class="compact" id="section-9.6.1-5.2">Request message: Optional<a href="#section-9.6.1-5.2" class="pilcrow">¶</a>
 </li>
             <li class="compact" id="section-9.6.1-5.3">Response message: Optional error response<a href="#section-9.6.1-5.3" class="pilcrow">¶</a>
 </li>
@@ -3224,13 +3224,11 @@ meaningful in the context of RESTful EPP and MUST NOT be used.<a href="#section-
 </li>
         <li class="compact" id="section-15-2.5">A command MUST only contain a single object to operate on, the check command. For example, the Check command only supports 1 object per request.<a href="#section-15-2.5" class="pilcrow">¶</a>
 </li>
-        <li class="compact" id="section-15-2.6">Except for the Create and Update commands, no request messages are no longer used.<a href="#section-15-2.6" class="pilcrow">¶</a>
+        <li class="compact" id="section-15-2.6">Request messages may no longer be required for most commands<a href="#section-15-2.6" class="pilcrow">¶</a>
 </li>
         <li class="compact" id="section-15-2.7">Authentication and authorizations has become an out-of-band process.<a href="#section-15-2.7" class="pilcrow">¶</a>
 </li>
-        <li class="compact" id="section-15-2.8">When using XML messages, the client The client MUST use the HTTP headers to idicate what name space(s) are used.<a href="#section-15-2.8" class="pilcrow">¶</a>
-</li>
-        <li class="compact" id="section-15-2.9">Support for additional Media Types such as JSON.<a href="#section-15-2.9" class="pilcrow">¶</a>
+        <li class="compact" id="section-15-2.8">Support for additional data formats such as JSON.<a href="#section-15-2.8" class="pilcrow">¶</a>
 </li>
       </ul>
 </section>
