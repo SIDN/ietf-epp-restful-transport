@@ -203,8 +203,8 @@ The client MUST synchronize the value for the Content-Type and Accept headers, f
 
 ## Request
 
-In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers is, for some use cases, sufficient for the server to be able to successfully proceses the request. The `Object Info` request for example, does not require an EPP message.
-HTTP request headers are used to transmit additional or optional request data to the server. All REPP HTTP headers MUST have the "REPP-" prefix, following the recommendations in [@!RFC6648].
+In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers may be sufficient for the server to be able to successfully proceses a request for most commands. However, the client MUST include the request message in the HTTP request body when the server uses an EPP extension that requires additional XML elements or attributes to be present in the request message. 
+All REPP HTTP headers listed below use the "REPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `REPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.
 
@@ -285,18 +285,18 @@ Command            | Method   | Resource                  | Request     | Respon
 Hello              | OPTIONS  | /                         | No          | Yes
 Login              | N/A      | N/A                       | N/A         | N/A
 Logout             | N/A      | N/A                       | N/A         | N/A
-Check              | HEAD     | /{c}/{i}                  | No          | No
-Info               | GET      | /{c}/{i}                  | No          | Yes
-Poll Request       | GET      | /messages                 | No          | Yes
-Poll Ack           | DELETE   | /messages/{i}             | No          | Yes
+Check              | HEAD     | /{c}/{i}                  | Optional    | No
+Info               | GET      | /{c}/{i}                  | Optional    | Yes
+Poll Request       | GET      | /messages                 | Optional    | Yes
+Poll Ack           | DELETE   | /messages/{i}             | Optional    | Yes
 Create             | POST     | /{c}                      | Yes         | Yes
-Delete             | DELETE   | /{c}/{i}                  | No          | Yes
-Renew              | POST     | /{c}/{i}/renewals         | No          | Yes
-Transfer Request   | POST     | /{c}/{i}/transfers        | No          | Yes
-Transfer Query     | GET      | /{c}/{i}/transfers/latest | No          | Yes
-Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | No          | Yes
-Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | No          | Yes
-Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | No          | Yes
+Delete             | DELETE   | /{c}/{i}                  | Optional    | Yes
+Renew              | POST     | /{c}/{i}/renewals         | Optional    | Yes
+Transfer Request   | POST     | /{c}/{i}/transfers        | Optional    | Yes
+Transfer Query     | GET      | /{c}/{i}/transfers/latest | Optional    | Yes
+Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Yes
+Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | Optional    | Yes
+Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Yes
 Update             | PATCH    | /{c}/{i}                  | Yes         | Yes
 Extension [1]      | *        | /{c}/{i}/extension/*      | *           | *
 Extension [2]      | *        | /extension/*              | *           | *
@@ -305,7 +305,7 @@ Table: Mapping of EPP Command to REPP Request
 [1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2] 
 [2] This mapping is used for Protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1] 
 
-When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request).
+When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request). The examples, in the sections below, assume the server does not use any EPP extensions and therefore the client does not add any request message to the HTTP message body.  
 
 ## Hello
 
@@ -379,10 +379,10 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 ### Check
 
 - Request: HEAD /{collection}/{id}
-- Request message: None
+- Request message: Optional
 - Response message: None
 
- The HTTP HEAD method MUST be used for object existence check. Both client and server MUST NOT add content to the HTTP message body. The response MUST contain the `REPP-Check-Avail` header and MAY contain the `REPP-Check-Reason` header. The value of the `REPP-Check-Avail` header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not. 
+ The HTTP HEAD method MUST be used for object existence check. The response MUST contain the `REPP-Check-Avail` header and MAY contain the `REPP-Check-Reason` header. The value of the `REPP-Check-Avail` header MUST be "0" or "1" as described in [@!RFC5730, section 2.9.2.1], depending on whether the object can be provisioned or not. 
 
 The Check endpoint MUST be limited to checking only a single object-id per request. This may seem a limitation compared to the Check command defined in [@!RFC5730] where a Check message may contain multiple object-ids. The REPP Check request can be load balanced more efficiently when only a single object-id has to be checked. 
 
@@ -418,7 +418,7 @@ The Object Info request MUST use the HTTP GET method on a resource identifying a
 Example request for an object not using authorization information.  
 
 - Request: GET /{collection}/{id}
-- Request message: None
+- Request message: Optional
 - Response message: Info response
 
 ```
@@ -435,7 +435,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 Example request using REPP-AuthInfo header for an object that has attached authorization information.  
 
 - Request: GET /{collection}/{id}
-- Request message: None
+- Request message: Optional
 - Response message: Info response
 
 ```
@@ -518,7 +518,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 #### Poll Request
 
 - Request: GET /messages
-- Request message: None
+- Request message: Optional
 - Response message: Poll response
 
 The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue. The "op=req" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP GET method.
@@ -569,7 +569,7 @@ S:</epp>
 #### Poll Ack
 
 - Request: DELETE /messages/{id}
-- Request message: None
+- Request message: Optional
 - Response message: Poll Ack response
 
 The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "op=ack" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP DELETE method. The "msgID" attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successfull response, the server may add content to the message body of an error response. 
@@ -619,7 +619,7 @@ The Transfer Query request MUST use the special "latest" sub-resource to refer t
 latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.
 
 - Request: GET {collection}/{id}/transfers/latest
-- Request message: None
+- Request message: Optional
 - Response message: Transfer Query response
 
 Example domain name Transfer Query request without authorization information required:
@@ -767,7 +767,7 @@ S:</epp>
 ### Delete
 
 - Request: DELETE /{collection}/{id} 
-- Request message: None
+- Request message: Optional
 - Response message: Status
 
 The client MUST the HTTP DELETE method and a resource identifying a unique object instance. The server MUST return HTTP status code 200 (OK) if the resource was deleted successfully.
@@ -812,7 +812,7 @@ S:</epp>
 ### Renew
 
 - Request: POST /{collection}/{id}/renewals
-- Request message: None
+- Request message: Optional
 - Response message: Renew response
 
 The Renew command is mapped to a nested collection, named "renewals". Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The reponse MUST include the Location header for the renewed object.
@@ -881,7 +881,7 @@ Transferring an object from one sponsoring client to another client is specified
 #### Request
 
 - Request: POST /{collection}/{id}/transfers
-- Request message: None
+- Request message: Optional
 - Response message: Status
 
 To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource to create a new transfer resource object, not all EPP objects support the Transfer command as described in [@!RFC5730, section 3.2.4], [@!RFC5731, section 3.2.4] and [@!RFC5733, section 3.2.4].
@@ -994,7 +994,7 @@ S:</epp>
 #### Cancel
 
 - Request: DELETE /{collection}/{id}/transfers/latest
-- Request message: None
+- Request message: Optional
 - Response message: Status
 
 The new sponsoring client MUST use the HTTP DELETE method to cancel a requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request.
@@ -1085,7 +1085,7 @@ S:</epp>
 #### Approve
 
 - Request: PUT /{collection}/{id}/transfers/latest
-- Request message: None
+- Request message: Optional
 - Response message: Status
 
 The current sponsoring client MUST use the HTTP PUT method to approve a transfer requested by the new sponsoring client.
@@ -1206,7 +1206,7 @@ The example below, illustrates the use of the "Domain Cancel Delete" command as 
 Example Protocol Extension request:
 
 - Request: DELETE /extensions/{collection}/{id}/deletion
-- Request message: None
+- Request message: Optional
 - Response message: Optional error response
 
 ```
@@ -1385,9 +1385,8 @@ This section lists an non-exhaustive overview of the most important modification
 - Some Commands are no longer used, such as the Login and Logout command.
 - No client sessions, every request needs to include authentication credentials.
 - A command MUST only contain a single object to operate on, the check command. For example, the Check command only supports 1 object per request.
-- Request messages are no longer used, except for the Create and Update commands
+- Request messages may no longer be required for most commands
 - Authentication and authorizations has become an out-of-band process.
-- When using XML messages, the client The client MUST use the HTTP headers to idicate what name space(s) are used.
 - Support for additional data formats such as JSON.
 
 
