@@ -1,6 +1,6 @@
-# EPP over RESTful Transport
+# RESTful EPP
 
-This repository contains the IETF draft for adding support for RESTful transport to EPP.  
+This repository contains the IETF draft for a RESTful protocol mapping for EPP.  
 
 The [draft](https://github.com/SIDN/ietf-epp-restful-transport/blob/main/src/draft-epp-restful-transport.md) is authored using [mmark](https://mmark.miek.nl/) Markdown.
 
