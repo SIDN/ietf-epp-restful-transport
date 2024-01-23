@@ -1339,7 +1339,7 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 - HTTP/1 and HTTP/2 use TCP as a transport protocol and this includes features to provide reliability, flow control, ordered delivery, and congestion control [@!RFC793, section 1.5] describes these features in detail; congestion control principles are described further in [@!RFC2581] and [@!RFC2914]. HTTP/3 uses QUIC (UDP) as a transport protocol, which has builtin congestion control over UDP.
 
 - (#rest) describes how requests are processed independently of each other.
-- Errors while processing a REPP request are isolated to this request and do not effect other requests sent by the client or other clients, this is described in section (#error-handling).
+- Errors while processing a REPP request are isolated to this request and do not effect other requests sent by the client or other clients, this is described in (#error-handling).
 
 -  Batch-oriented processing (combining multiple EPP commands in a single HTTP request) is not permitted. To maximize scalability
    every request must contain a single command, as described in section (#rest).
