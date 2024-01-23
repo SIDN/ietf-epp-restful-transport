@@ -37,7 +37,7 @@ organization = "SIDN Labs"
 
 .# Abstract
 
-This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol [@!RFC5730]. REPP enables the development of a stateless and scaleable EPP service.
+This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol [@!RFC5730]. REPP enables the development of a stateless and scalable EPP service.
 
 This document includes a mapping of [@!RFC5730] [@!XML] EPP commands to a RESTful HTTP based interface. Existing semantics as defined in [@!RFC5731], [@!RFC5732] and [@!RFC5733] are retained and reused in RESTful EPP. 
 
@@ -77,7 +77,7 @@ Command Mapping - A mapping of [@!RFC5730] EPP commands to RESTful EPP URL resou
 
 REPP client - An HTTP user agent performing an REPP request 
 
-REPP server - An HTTP server resposible for processing requests and returning results in any supported media type.
+REPP server - An HTTP server responsible for processing requests and returning results in any supported media type.
 
 
 # Conventions Used in This Document
@@ -101,7 +101,7 @@ This section lists the main design criteria.
 - Ease of use, provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. On the basis of these principles a [@!REST] architectural style was chosen, where a client  interacts with a REPP server via HTTP.
 
 - Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
-  load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. During normal registry operations, the bulk of EPP requests canb be expected to be of the informational type, load balancing and possibly seperating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.   
+  load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. During normal registry operations, the bulk of EPP requests can be expected to be of the informational type, load balancing and possibly separating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.   
 
 - Stateless, [@!RFC5730] REQUIRES a stateful session between a client and server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Each client request needs to provide all of the information necessary for the server to successfully process the request.
 
@@ -109,7 +109,7 @@ This section lists the main design criteria.
   for HTTP based applications. HTTP provides an Authorization header [@!RFC2616, section 14.8].
 
 - Content negotiation, A server may choose to include support for multiple media types.
-  The client must be able to signal to the server what media type the server should expect for the request content en to use for the response content.
+  The client must be able to signal to the server what media type the server should expect for the request content and to use for the response content.
   This document only describes the use of [@!XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
 - Compatibility with existing EPP commands and corresponding request and response messages.
@@ -168,10 +168,10 @@ A REPP server MUST listen for HTTP connection requests on the standard TCP port 
 
 # REST {#rest}
 
-REPP uses the REST architectural style, each HTTP method is assigned a distinct behaviour, (#http-method) provides a overview of the behaviour assigned to each method. REPP requests are expressed by a URL refering to a resource, a HTTP method, HTTP headers and an optional message body containing the EPP request message. 
+REPP uses the REST architectural style, each HTTP method is assigned a distinct behaviour, (#http-method) provides a overview of the behaviour assigned to each method. REPP requests are expressed by a URL referring to a resource, a HTTP method, HTTP headers and an optional message body containing the EPP request message. 
 
 <!--TODO ISSUE 10: allow for out of order processing -->
-A REPP HTTP message body MUST contain at most a single EPP request or response. HTTP requests MUST be processed independently of each other and in the same order as received by the server. A client MAY choose to send a new request, using an existing connection, before the response for the previous request has been received (pipelining). A server using HTTP/2 [@!RFC7540] or HTTP/3 [@!RFC9114] contains builtin support for stream multiplexing and MAY choose to support pipelining using this mechanism. The response MAY be returned out of order back to the client, due to the fact that some requests require more processing time by the server.
+A REPP HTTP message body MUST contain at most a single EPP request or response. HTTP requests MUST be processed independently of each other and in the same order as received by the server. A client MAY choose to send a new request, using an existing connection, before the response for the previous request has been received (pipelining). A server using HTTP/2 [@!RFC7540] or HTTP/3 [@!RFC9114] contains built-in support for stream multiplexing and MAY choose to support pipelining using this mechanism. The response MAY be returned out of order back to the client, due to the fact that some requests require more processing time by the server.
 
 HTTP/1 does not use persistent connections by default, the client MAY use the "Connection" header to request for the server not to close the existing connection, so it can be re-used for future requests. The server MAY choose not to honor this request.
 
@@ -203,7 +203,7 @@ The client MUST synchronize the value for the Content-Type and Accept headers, f
 
 ## Request
 
-In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers may be sufficient for the server to be able to successfully proceses a request for most commands. However, the client MUST include the request message in the HTTP request body when the server uses an EPP extension that requires additional XML elements or attributes to be present in the request message. 
+In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers may be sufficient for the server to be able to successfully processes a request for most commands. However, the client MUST include the request message in the HTTP request body when the server uses an EPP extension that requires additional XML elements or attributes to be present in the request message. 
 All REPP HTTP headers listed below use the "REPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `REPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.
@@ -218,7 +218,7 @@ All REPP HTTP headers listed below use the "REPP-" prefix, following the recomme
 - `REPP-Roid`: If the authorization info, is linked to a database object, the client MAY use this header for the Repository Object IDentifier (ROID), as described in [@!RFC5730, section 4.2].
   <!-- TODO issue #33 : use header for simple auth token -->
 
-- `Accept-Language`:  This header is equivalent to the "lang" element of the EPP Login command. The server MUST support the use of HTTP Accept-Language header by clients. The client MAY issue a Hello request to discover the languages supported by the server. Multiple servers in a load-balanced environment SHOULD reply with consistent "lang" elements in the Greeting response. The value of the Accept-Language header MUST match 1 of the languages from the Greeting. When the server receives a request using an unsupported langauge, the server MUST respond using the default language configured for the server, as required in [@!RFC5730, section 2.9.1.1] 
+- `Accept-Language`:  This header is equivalent to the "lang" element of the EPP Login command. The server MUST support the use of HTTP Accept-Language header by clients. The client MAY issue a Hello request to discover the languages supported by the server. Multiple servers in a load-balanced environment SHOULD reply with consistent "lang" elements in the Greeting response. The value of the Accept-Language header MUST match 1 of the languages from the Greeting. When the server receives a request using an unsupported language, the server MUST respond using the default language configured for the server, as required in [@!RFC5730, section 2.9.1.1] 
  
 - `Connection`: If the server uses HTTP/1.1 or lower, the CLIENT MAY choose to use this header to request the server to keep op the TCT-connection. The client MUST not use this header when the server uses HTTP/2 [@!RFC9113, section 8.2.2] or HTTP/3 [@!RFC9113, section 4.2]
   <!--TODO ISSUE 11: How to handle connections -->   
@@ -241,7 +241,7 @@ The server HTTP response contains a status code, headers and MAY contain an EPP 
 
 - `REPP-Check-Reason`: An optional alternative for the "object:reason" element in an Object Check response and MUST be used accordingly.
 
-- `REPP-Queue-Size`: Return the number of unackknowledged messages in the client message queue. The server MAY include this header in all REPP responses.
+- `REPP-Queue-Size`: Return the number of unacknowledged messages in the client message queue. The server MAY include this header in all REPP responses.
     <!--TODO ISSUE 40: return queue size for all results-->   
 
 - `Cache-Control`:  The client MUST never cache results, the server MUST always return the value "No-Store" for this header, as described in [@!RFC7234, section 5.2.1.5].
@@ -258,7 +258,7 @@ REPP does not always return an EPP response message in the HTTP message body. Th
   <!--TODO: ISSUE #35: Mapping EPP code to HTTP status codes -->
 Restful EPP and HTTP protocol are both an application layer protocol, having their own status- and result codes. The endpoints described in (#command-mapping) MUST return HTTP status code 200 (OK) for successful requests when the EPP result code indicates a positive completion (1xxx) of the EPP command.
 
-When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in [@!RFC9110], but only when this is permitted for the used HTTP method. Errors related to the HTTP protocol MUST result in the use of an apropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result in the failure of other independent requests using the same connection.
+When an EPP command results in a negative completion result code (2xxx), the server MUST return the HTTP status code 422 (Unprocessable Content). A more detailed explanation of the EPP error MUST be included in the message body of the HTTP response, as described in [@!RFC9110], but only when this is permitted for the used HTTP method. Errors related to the HTTP protocol MUST result in the use of an appropriate HTTP status code by the HTTP server. An error or problem while processing one request MUST NOT result in the failure of other independent requests using the same connection.
 
 The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-Eppcode HTTP header for error handling logic, without having to parse the EPP result code in the message body. 
 
