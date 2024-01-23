@@ -249,9 +249,9 @@ The server HTTP response contains a status code, headers, and MAY contain an EPP
 
 - `Content-Language`: The server MUST include this header in every response that contains an EPP message in the message body.
 
-- `Content-Encoding`: The server MAY choose to compresses the responses message body, using a algorithm selected from the list of algorithms provided by the client using the Accept-Encoding request header.
+- `Content-Encoding`: The server MAY choose to compress the responses message body, using an   algorithm selected from the list of algorithms provided by the client using the Accept-Encoding request header.
 
-REPP does not always return an EPP response message in the HTTP message body. The `Object Check` request for example may return an empty HTTP response body. When the server does not return a EPP message, it MUST return at least the REPP-Svtrid, REPP-Cltrid and REPP-Eppcode headers.
+REPP does not always return an EPP response message in the HTTP message body. The `Object Check` request for example may return an empty HTTP response body. When the server does not return an EPP message, it MUST return at least the REPP-Svtrid, REPP-Cltrid and REPP-Eppcode headers.
 
 ## Error Handling {#error-handling}
 
