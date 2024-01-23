@@ -815,7 +815,7 @@ S:</epp>
 - Request message: Optional
 - Response message: Renew response
 
-The Renew command is mapped to a nested collection, named "renewals". Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The reponse MUST include the Location header for the renewed object.
+The Renew command is mapped to a nested collection, named "renewals". Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The response MUST include the Location header for the renewed object.
 
 Example Domain Renew request:
 
@@ -886,7 +886,7 @@ Transferring an object from one sponsoring client to another client is specified
 
 To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource to create a new transfer resource object, not all EPP objects support the Transfer command as described in [@!RFC5730, section 3.2.4], [@!RFC5731, section 3.2.4] and [@!RFC5733, section 3.2.4].
 
-If the transfer request is successful, then the reponse MUST include the Location header for the object being transferred.
+If the transfer request is successful, then the response MUST include the Location header for the object being transferred.
 
 Example request not using object authorization:
 
@@ -1336,7 +1336,7 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 
 - REPP is based on the HTTP protocol, which uses the client-server model.
 - REPP messages are transmitted using HTTP, this document refers to the HTTP [@!RFC2616] protocol specification for how data units are framed.
-- HTTP/1 and HTTP/2 use TCP as a transport protocol and this includes features to provide reliability, flow control, ordered delivery, and congestion control [@!RFC793, section 1.5] describes these features in detail; congestion control principles are described further in [@!RFC2581] and [@!RFC2914]. HTTP/3 uses QUIC (UDP) as a transport protocol, which has builtin congestion control over UDP.
+- HTTP/1 and HTTP/2 use TCP as a transport protocol and this includes features to provide reliability, flow control, ordered delivery, and congestion control [@!RFC793, section 1.5] describes these features in detail; congestion control principles are described further in [@!RFC2581] and [@!RFC2914]. HTTP/3 uses QUIC (UDP) as a transport protocol, which has built-in congestion control over UDP.
 
 - (#rest) describes how requests are processed independently of each other.
 - Errors while processing a REPP request are isolated to this request and do not effect other requests sent by the client or other clients, this is described in (#error-handling).
