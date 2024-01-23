@@ -113,7 +113,7 @@ This section lists the main design criteria.
   This document only describes the use of [@!XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
 - Compatibility with existing EPP commands and corresponding request and response messages.
-- Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of an request message should be optional.
+- Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of a request message should be optional.
 
 - Performance, reducing the number of required request and response messages, improves the performance and network bandwidth requirements for both client and server. Fewer messages have to be created, marshalled, and transmitted.
 
@@ -121,7 +121,7 @@ This section lists the main design criteria.
 
 [@!RFC3735, Section 2] of [@!RFC3735] describes how the EPP extension framework can be used to extend EPP functionality by adding new features at the protocol, object and command-response level. This section describes the impact of REPP on each of the extension levels:
 
-- Protocol Extension: (#command-mapping) describes an protocol extension resource for use with existing and future protocol extensions. REPP does not define a new Protocol extension. All existing and future Protocol extension level EPP extensions MAY be used.
+- Protocol Extension: (#command-mapping) describes a protocol extension resource for use with existing and future protocol extensions. REPP does not define a new Protocol extension. All existing and future Protocol extension level EPP extensions MAY be used.
 
 - Object extension: REPP does not define any new object level extensions. All existing and future object level EPP extensions MAY be used.
 
@@ -130,7 +130,7 @@ This section lists the main design criteria.
 
 # Resource Naming Convention
 
-A REPP resource can be a single unique object identifier e.g. a domain name, or consist out of a collection of objects. A collection of objects available for registry operations MUST be identified by: `/{context-root}/{version}/{collection}` 
+A REPP resource can be a single unique object identifier e.g. a domain name or consist out of a collection of objects. A collection of objects available for registry operations MUST be identified by: `/{context-root}/{version}/{collection}` 
 
 - `{context-root}` is the base URL which MUST be specified, the {context-root} MAY be an empty, zero length string.
 
@@ -151,14 +151,14 @@ An example domain name resource, for domain name example.nl, would look like thi
 The path segment after a collection path segment MUST be used to identify an object instance, the path segment after an object instance MUST be used to identify attributes or related collections of the object instance.
 
 <!--TODO ISSUE 7: No need for XML payload for GET requests when URL identifies object -->
-Resource URLs used by REPP contain embedded object identifiers. By using an object identifier in the resource URL, the object identifier in the request messages becomes superfluous. However, since the goal of REPP is to maintain compatibility with existing EPP object mapping schemas, this redundancy is accepted as a trade off. Removing the object identifier from the request message would require updating the object mapping schemas in the EPP RFCs.
+Resource URLs used by REPP contain embedded object identifiers. By using an object identifier in the resource URL, the object identifier in the request messages becomes superfluous. However, since the goal of REPP is to maintain compatibility with existing EPP object mapping schemas, this redundancy is accepted as a tradeoff. Removing the object identifier from the request message would require updating the object mapping schemas in the EPP RFCs.
 
 The server MUST return HTTP status code 412 when the object identifier, for example domain:name, host:name or contact:id, in the EPP request message does not match the {id} object identifier embedded in the URL.
   <!--TODO: is this not mixing epp and http status codes? -->
 
 # Session Management
 
-One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP uses a stateless architecture and does not create and maintain client sessions. The Session concept is an anti pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.
+One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP uses a stateless architecture and does not create and maintain client sessions. The Session concept is an anti-pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.
 
 Session management as described in [@!RFC5730] requires a stateful server architecture for maintaining client and application state over multiple client request and is therefore no longer supported.
 
@@ -168,10 +168,10 @@ A REPP server MUST listen for HTTP connection requests on the standard TCP port 
 
 # REST {#rest}
 
-REPP uses the REST architectural style, each HTTP method is assigned a distinct behaviour, (#http-method) provides a overview of the behaviour assigned to each method. REPP requests are expressed by a URL referring to a resource, a HTTP method, HTTP headers and an optional message body containing the EPP request message. 
+REPP uses the REST architectural style, each HTTP method is assigned a distinct behaviour, (#http-method) provides an overview of the behaviour assigned to each method. REPP requests are expressed by a URL referring to a resource, a HTTP method, HTTP headers and an optional message body containing the EPP request message. 
 
 <!--TODO ISSUE 10: allow for out of order processing -->
-A REPP HTTP message body MUST contain at most a single EPP request or response. HTTP requests MUST be processed independently of each other and in the same order as received by the server. A client MAY choose to send a new request, using an existing connection, before the response for the previous request has been received (pipelining). A server using HTTP/2 [@!RFC7540] or HTTP/3 [@!RFC9114] contains built-in support for stream multiplexing and MAY choose to support pipelining using this mechanism. The response MAY be returned out of order back to the client, due to the fact that some requests require more processing time by the server.
+A REPP HTTP message body MUST contain at most a single EPP request or response. HTTP requests MUST be processed independently of each other and in the same order as received by the server. A client MAY choose to send a new request, using an existing connection, before the response for the previous request has been received (pipelining). A server using HTTP/2 [@!RFC7540] or HTTP/3 [@!RFC9114] contains built-in support for stream multiplexing and MAY choose to support pipelining using this mechanism. The response MAY be returned out of order back to the client, because some requests require more processing time by the server.
 
 HTTP/1 does not use persistent connections by default, the client MAY use the "Connection" header to request for the server not to close the existing connection, so it can be re-used for future requests. The server MAY choose not to honor this request.
 
@@ -229,7 +229,7 @@ All REPP HTTP headers listed below use the "REPP-" prefix, following the recomme
 
 ## Response
 
-The server HTTP response contains a status code, headers and MAY contain an EPP response message in the message body. HTTP headers are used to transmit additional data to the client and MAY be used to send EPP process related data to the client. HTTP headers used by REPP MUST use the "REPP-" prefix, the following response headers have been defined for REPP.
+The server HTTP response contains a status code, headers, and MAY contain an EPP response message in the message body. HTTP headers are used to transmit additional data to the client and MAY be used to send EPP process related data to the client. HTTP headers used by REPP MUST use the "REPP-" prefix, the following response headers have been defined for REPP.
 
 - `REPP-Svtrid`:  This header is the equivalent of the "svTRID" element defined in [@!RFC5730] and MUST be used accordingly when the REPP response does not contain an EPP response in the HTTP message body. If an HTTP message body with the EPP XML equivalent "svTRID" exists, both values MUST be consistent.
 
