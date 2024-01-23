@@ -1342,7 +1342,7 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 - Errors while processing a REPP request are isolated to this request and do not effect other requests sent by the client or other clients, this is described in (#error-handling).
 
 -  Batch-oriented processing (combining multiple EPP commands in a single HTTP request) is not permitted. To maximize scalability
-   every request must contain a single command, as described in section (#rest).
+   every request must contain a single command, as described in (#rest).
 
 
 # IANA Considerations
