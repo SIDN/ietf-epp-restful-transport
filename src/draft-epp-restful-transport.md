@@ -71,7 +71,7 @@ RESTful EPP or REPP - The RESTful transport for EPP described in this document.
 
 URL - A Uniform Resource Locator as defined in [@!RFC3986].
 
-Resource - An object having a type, data and possible relationship to other resources, identified by a URL.
+Resource - An object having a type, data, and possible relationship to other resources, identified by a URL.
 
 Command Mapping - A mapping of [@!RFC5730] EPP commands to RESTful EPP URL resources.
 
@@ -94,16 +94,16 @@ All example requests assume a REPP server using HTTP version 2 is listening on t
 
 # Design Considerations
 
-RESTful transport for EPP (REPP) is designed to improve the ease of design, development, deployment and management
+RESTful transport for EPP (REPP) is designed to improve the ease of design, development, deployment, and management
 of an EPP service, while maintaining compatibility with the existing EPP RFCs.
 This section lists the main design criteria.
 
-- Ease of use, provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. On the basis of these principles a [@!REST] architectural style was chosen, where a client  interacts with a REPP server via HTTP.
+- Ease of use, provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. Based on these principles a [@!REST] architectural style was chosen, where a client  interacts with a REPP server via HTTP.
 
 - Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
   load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. During normal registry operations, the bulk of EPP requests can be expected to be of the informational type, load balancing and possibly separating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.   
 
-- Stateless, [@!RFC5730] REQUIRES a stateful session between a client and server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Each client request needs to provide all of the information necessary for the server to successfully process the request.
+- Stateless, [@!RFC5730] REQUIRES a stateful session between a client and server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Each client request needs to provide all the information necessary for the server to successfully process the request.
 
 - Security, allow for the use of authentication and authorization solutions available 
   for HTTP based applications. HTTP provides an Authorization header [@!RFC2616, section 14.8].
@@ -115,7 +115,7 @@ This section lists the main design criteria.
 - Compatibility with existing EPP commands and corresponding request and response messages.
 - Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of an request message should be optional.
 
-- Performance, reducing the number of required request and response messages, improves the performance and network bandwidth requirements for both client and server. Fewer messages have to be created, marshalled and transmitted.
+- Performance, reducing the number of required request and response messages, improves the performance and network bandwidth requirements for both client and server. Fewer messages have to be created, marshalled, and transmitted.
 
 # EPP Extension Framework
 
@@ -158,7 +158,7 @@ The server MUST return HTTP status code 412 when the object identifier, for exam
 
 # Session Management
 
-One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP uses a stateless architecture and does not create and maintain client sessions. The Session concept is considered to be an anti pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.
+One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP uses a stateless architecture and does not create and maintain client sessions. The Session concept is an anti pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.
 
 Session management as described in [@!RFC5730] requires a stateful server architecture for maintaining client and application state over multiple client request and is therefore no longer supported.
 
@@ -203,7 +203,7 @@ The client MUST synchronize the value for the Content-Type and Accept headers, f
 
 ## Request
 
-In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL and request headers may be sufficient for the server to be able to successfully processes a request for most commands. However, the client MUST include the request message in the HTTP request body when the server uses an EPP extension that requires additional XML elements or attributes to be present in the request message. 
+In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request for most commands. However, the client MUST include the request message in the HTTP request body when the server uses an EPP extension that requires additional XML elements or attributes to be present in the request message. 
 All REPP HTTP headers listed below use the "REPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `REPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.
