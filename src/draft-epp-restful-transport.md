@@ -179,7 +179,7 @@ HTTP/1 does not use persistent connections by default, the client MAY use the "C
 
 REPP commands MUST be executed by using an HTTP method on a resource identified by an URL. The server MUST support the following methods.
 
-- GET: Request a representation of a object resource or a collection of resources
+- GET: Request a representation of an object resource or a collection of resources
 - PUT: Update an existing object resource
 - PATCH: Partially update an existing object resource
 - POST: Create a new object resource
@@ -206,7 +206,7 @@ The client MUST synchronize the value for the Content-Type and Accept headers, f
 In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require a EPP request message. The information conveyed by the HTTP method, URL, and request headers may be sufficient for the server to be able to successfully processes a request for most commands. However, the client MUST include the request message in the HTTP request body when the server uses an EPP extension that requires additional XML elements or attributes to be present in the request message. 
 All REPP HTTP headers listed below use the "REPP-" prefix, following the recommendations in [@!RFC6648].
 
-- `REPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly when the HTTP message body does not contain an EPP request that includes a cltrid.
+- `REPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.
 
 - `REPP-Svcs`: The namespace used by the client in the EPP request message, this is equivalent to the "svcs" element in the Login command defined in [@!RFC5730, section 2.9.1.1]. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.
     <!--TODO issue #31: do we add all namespaces to this header, also for extensions or do we need another header for extension -->
@@ -1339,7 +1339,7 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 - HTTP/1 and HTTP/2 use TCP as a transport protocol and this includes features to provide reliability, flow control, ordered delivery, and congestion control [@!RFC793, section 1.5] describes these features in detail; congestion control principles are described further in [@!RFC2581] and [@!RFC2914]. HTTP/3 uses QUIC (UDP) as a transport protocol, which has built-in congestion control over UDP.
 
 - (#rest) describes how requests are processed independently of each other.
-- Errors while processing a REPP request are isolated to this request and do not effect other requests sent by the client or other clients, this is described in (#error-handling).
+- Errors while processing a REPP request are isolated to this request and do not affect other requests sent by the client or other clients, this is described in (#error-handling).
 
 -  Batch-oriented processing (combining multiple EPP commands in a single HTTP request) is not permitted. To maximize scalability
    every request must contain a single command, as described in (#rest).
@@ -1378,7 +1378,7 @@ Table: Obsolete EPP result codes
 
 # Overview of EPP modifications
 
-This section lists an non-exhaustive overview of the most important modifications made in RESTful EPP, compared to the EPP RFCs.
+This section lists a non-exhaustive overview of the most important modifications made in RESTful EPP, compared to the EPP RFCs.
 
 - The use of HTTP as an additional application layer protocol.
 - HTTP adds additional status codes.
@@ -1386,7 +1386,7 @@ This section lists an non-exhaustive overview of the most important modification
 - No client sessions, every request needs to include authentication credentials.
 - A command MUST only contain a single object to operate on, the check command. For example, the Check command only supports 1 object per request.
 - Request messages may no longer be required for most commands
-- Authentication and authorizations has become an out-of-band process.
+- Authentication and authorizations have become an out-of-band process.
 - Support for additional data formats such as JSON.
 
 
