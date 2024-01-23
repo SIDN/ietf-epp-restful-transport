@@ -262,7 +262,7 @@ When an EPP command results in a negative completion result code (2xxx), the ser
 
 The client MUST be able to use the best practices for RESTful applications and use the HTTP status code to determine if the EPP request was successfully processed. The client MAY use the well defined HTTP status code and REPP-Eppcode HTTP header for error handling logic, without having to parse the EPP result code in the message body. 
 
-For example, a client sending an Object Tranfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-Eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.
+For example, a client sending an Object Transfer request for an Object already linked to an active transfer process, will result in an EPP result code 2106, the HTTP response contains a status code 422 and he value for the REPP-Eppcode HTTP header is set to 2106. The client MAY use the HTTP status code for checking if an EPP command failed and only parse the result message when additional information from the response message is required for handling the error.
 
 # Command Mapping {#command-mapping}
 
@@ -302,8 +302,8 @@ Extension [1]      | *        | /{c}/{i}/extension/*      | *           | *
 Extension [2]      | *        | /extension/*              | *           | *
 Table: Mapping of EPP Command to REPP Request
 
-[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.2] 
-[2] This mapping is used for Protocol extensions based on the extension mechanism as defined in [RFC5730, secion 2.7.1] 
+[1] This mapping is used for Object extensions based on the extension mechanism as defined in [RFC5730, section 2.7.2] 
+[2] This mapping is used for Protocol extensions based on the extension mechanism as defined in [RFC5730, seciton 2.7.1] 
 
 When there is a mismatch between a resource identifier in the HTTP message body and the resource identifier in the URL used for a request, then the server MUST return HTTP status code 400 (Bad Request). The examples, in the sections below, assume the server does not use any EPP extensions and therefore the client does not add any request message to the HTTP message body.  
 
@@ -355,7 +355,7 @@ S: </epp>
 The Login command defined in [@!RFC5730, section 2.9.1.1] is used to establish a session between client and server, this is part of the stateful nature of the EPP protocol. REPP is stateless and MUST NOT maintain any client state and does not include a Login command. The client MUST include all information in a REPP request, required for the server to be able to properly process the request. This includes request attributes defined as for Login command in [@!RFC5730, section 2.9.1.1].
 
   <!--TODO ISSUE #16: do we support changing password using /password  -->
-The request attributes from the Login command, used for configuring the client session, are are moved to the HTTP layer.
+The request attributes from the Login command, used for configuring the client session, are moved to the HTTP layer.
 
 - `clID`: Replaced by HTTP authentication
 - `pw:`: Replaced by HTTP authentication
@@ -374,7 +374,7 @@ Due to the stateless nature of REPP, the session concept is no longer used and t
 ## Query Resources
 
    <!--TODO: ISSUE #9: How to handle authInfo data for INFO command (GET request)? -->
-A REPP client MAY use the HTTP GET method for executing a query command only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semanticsfor content received in a GET request. When an EPP object requires additional authInfo information, as described in [@!RFC5731] and [@!RFC5733], the client MUST use the HTTP POST method and add the query command content to the HTTP message body.
+A REPP client MAY use the HTTP GET method for executing a query command only when no request data has to be added to the HTTP message body. Sending content using an HTTP GET request is discouraged in [@!RFC9110], there exists no generally defined semantics for content received in a GET request. When an EPP object requires additional authInfo information, as described in [@!RFC5731] and [@!RFC5733], the client MUST use the HTTP POST method and add the query command content to the HTTP message body.
 
 ### Check
 
@@ -413,7 +413,7 @@ S: REPP-result-code: 1000
 
 ### Info
 
-The Object Info request MUST use the HTTP GET method on a resource identifying an object instance, using an empty message body. If the object has authorization information attachted and the authorization then the client MUST include the REPP-AuthInfo HTTP header. If the authorization is linked to a database object the client MUST include the REPP-Roid header.
+The Object Info request MUST use the HTTP GET method on a resource identifying an object instance, using an empty message body. If the object has authorization information attached and the authorization then the client MUST include the REPP-AuthInfo HTTP header. If the authorization is linked to a database object the client MUST include the REPP-Roid header.
 
 Example request for an object not using authorization information.  
 
@@ -572,7 +572,7 @@ S:</epp>
 - Request message: Optional
 - Response message: Poll Ack response
 
-The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "op=ack" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP DELETE method. The "msgID" attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successfull response, the server may add content to the message body of an error response. 
+The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "op=ack" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP DELETE method. The "msgID" attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successful response, the server may add content to the message body of an error response. 
 
 Example request:
 
