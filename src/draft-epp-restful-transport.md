@@ -334,7 +334,7 @@ Example response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 799
 S: Content-Type: application/epp+xml
@@ -402,7 +402,7 @@ Example response:
 
 ```
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: REPP-Cltrid: ABC-12345
 S: REPP-Svtrid: XYZ-12345
@@ -456,7 +456,7 @@ Example Info response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 424
 S: Content-Type: application/epp+xml
@@ -539,7 +539,7 @@ Example response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 312
 S: Content-Type: application/epp+xml
@@ -590,7 +590,7 @@ Example response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
 S: REPP-Eppcode: 1000
@@ -673,7 +673,7 @@ Example Transfer Query response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 230
 S: Content-Type: application/epp+xml
@@ -738,7 +738,7 @@ Example Domain Create response:
 
 ```xml
 S: HTTP/2 200
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 642
@@ -790,7 +790,7 @@ Example Domain Delete response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
@@ -851,7 +851,7 @@ Example Renew response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 205
@@ -967,7 +967,7 @@ Example Transfer response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 328
@@ -1017,7 +1017,7 @@ Example response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
@@ -1062,7 +1062,7 @@ Example Reject response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
@@ -1109,7 +1109,7 @@ Example Approve response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
@@ -1169,7 +1169,7 @@ Example response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Length: 80
 S: REPP-Svtrid: XYZ-12345
@@ -1227,7 +1227,7 @@ Example response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 0
@@ -1292,7 +1292,7 @@ Example response:
 
 ```xml
 S: HTTP/2 200 OK
-S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
 S: Server: Example REPP server v1.0
 S: Content-Language: en
 S: Content-Length: 642
