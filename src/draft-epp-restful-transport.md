@@ -278,6 +278,7 @@ EPP commands are mapped to RESTful EPP requests using four elements.
 - `{c}`:  An abbreviation for {collection}: this MUST be substituted with
   "domains", "hosts", "contacts" or any other collection of objects.
 - `{i}`:  An abbreviation for an object id, this MUST be substituted with the value of a domain name, hostname, contact-id or a message-id or any other defined object.
+- `Optional`: A request message is only required when the server uses an EPP extension, which requires the use of XML elements and/or atributes that are not mapped to REPP.
 
 {#tbl-cmd-mapping}
 Command            | Method   | Resource                  | Request     | Response
@@ -759,7 +760,7 @@ S:         </domain:creData>
 S:      </resData>
 S:      <trID>
 S:         <clTRID>ABC-12345</clTRID>
-S:         <svTRID>54321-XYZ</svTRID>
+S:         <svTRID>XYZ-12345</svTRID>
 S:      </trID>
 S:   </response>
 S:</epp>
@@ -1313,7 +1314,7 @@ S:         </ips:creData>
 S:      </resData>
 S:      <trID>
 S:         <clTRID>ABC-12345</clTRID>
-S:         <svTRID>54321-XYZ</svTRID>
+S:         <svTRID>XYZ-12345</svTRID>
 S:      </trID>
 S:   </response>
 S:</epp>
