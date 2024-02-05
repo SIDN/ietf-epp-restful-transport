@@ -1357,7 +1357,7 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 
 # Security Considerations
 
-Running REPP relies on the security of the underlying HTTP transport, hence the best common practices for securing HTTP also apply to REPP. It is RECOMMENDED to follow them closely.
+Running REPP relies on the security of the underlying HTTP [@!RFC9110] transport, hence the best common practices for securing HTTP also apply to REPP. It is RECOMMENDED to follow them closely.
 
 Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS [@!RFC5246]. [@!RFC5734, Section 9] describes the level of security that is REQUIRED for all REPP endpoints.
 
