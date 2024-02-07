@@ -5,7 +5,7 @@
 Network Working Group                                         M. Wullink
 Internet-Draft                                                 M. Davids
 Intended status: Standards Track                               SIDN Labs
-Expires: 25 July 2024                                    22 January 2024
+Expires: 10 August 2024                                  7 February 2024
 
 
         Extensible Provisioning Protocol (EPP) RESTful Transport
@@ -16,7 +16,7 @@ Abstract
    This document describes RESTful EPP (REPP), a data format agnostic,
    REST based Application Programming Interface (API) for the Extensible
    Provisioning Protocol [RFC5730].  REPP enables the development of a
-   stateless and scaleable EPP service.
+   stateless and scalable EPP service.
 
    This document includes a mapping of [RFC5730] [XML] EPP commands to a
    RESTful HTTP based interface.  Existing semantics as defined in
@@ -38,7 +38,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 July 2024.
+   This Internet-Draft will expire on 10 August 2024.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Wullink & Davids          Expires 25 July 2024                  [Page 1]
+Wullink & Davids         Expires 10 August 2024                 [Page 1]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    extracted from this document must include Revised BSD License text as
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Wullink & Davids          Expires 25 July 2024                  [Page 2]
+Wullink & Davids         Expires 10 August 2024                 [Page 2]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    13. Security Considerations . . . . . . . . . . . . . . . . . . .  39
@@ -149,7 +149,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    must contain all the information necessary for the server to process
    the request.
 
-   REPP is data format agnostic, the client uses agent-driven content
+   REPP is data format agnostic, the client uses server-driven content
    negotiation.  Allowing the client to select from a set of
    representation media types supported by the server, such as XML, JSON
    [RFC8259] or [YAML].
@@ -165,9 +165,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                  [Page 3]
+Wullink & Davids         Expires 10 August 2024                 [Page 3]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    RESTful - A RESTful web service is a web service or API implemented
@@ -183,15 +183,15 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    URL - A Uniform Resource Locator as defined in [RFC3986].
 
-   Resource - An object having a type, data and possible relationship to
-   other resources, identified by a URL.
+   Resource - An object having a type, data, and possible relationship
+   to other resources, identified by a URL.
 
    Command Mapping - A mapping of [RFC5730] EPP commands to RESTful EPP
    URL resources.
 
    REPP client - An HTTP user agent performing an REPP request
 
-   REPP server - An HTTP server resposible for processing requests and
+   REPP server - An HTTP server responsible for processing requests and
    returning results in any supported media type.
 
 3.  Conventions Used in This Document
@@ -221,21 +221,21 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                  [Page 4]
+Wullink & Davids         Expires 10 August 2024                 [Page 4]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 4.  Design Considerations
 
    RESTful transport for EPP (REPP) is designed to improve the ease of
-   design, development, deployment and management of an EPP service,
+   design, development, deployment, and management of an EPP service,
    while maintaining compatibility with the existing EPP RFCs.  This
    section lists the main design criteria.
 
    -  Ease of use, provide a clear, clean, easy to use and self-
       explanatory interface that can easily be integrated into existing
-      software systems.  On the basis of these principles a [REST]
+      software systems.  Based on these principles a [REST]
       architectural style was chosen, where a client interacts with a
       REPP server via HTTP.
 
@@ -246,16 +246,16 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       the TCP session can be used to transmit multiple request messages
       and these are then all processed by a single EPP server and not
       load balanced across a pool of available servers.  During normal
-      registry operations, the bulk of EPP requests canb be expected to
+      registry operations, the bulk of EPP requests can be expected to
       be of the informational type, load balancing and possibly
-      seperating these to dedicated compute resources may also improve
+      separating these to dedicated compute resources may also improve
       registry services and provide better performance for the transform
       request types.
 
    -  Stateless, [RFC5730] REQUIRES a stateful session between a client
       and server.  A REPP server MUST be stateless and MUST NOT keep
       client session or any other application state.  Each client
-      request needs to provide all of the information necessary for the
+      request needs to provide all the information necessary for the
       server to successfully process the request.
 
    -  Security, allow for the use of authentication and authorization
@@ -265,7 +265,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  Content negotiation, A server may choose to include support for
       multiple media types.  The client must be able to signal to the
       server what media type the server should expect for the request
-      content en to use for the response content.  This document only
+      content and to use for the response content.  This document only
       describes the use of [XML] but the use of other media types such
       as JSON [RFC7159] should also be possible.
 
@@ -277,19 +277,19 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                  [Page 5]
+Wullink & Davids         Expires 10 August 2024                 [Page 5]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    -  Simplicity, when the semantics of a resource URL and HTTP method
-      match an EPP command and request message, the use of an request
+      match an EPP command and request message, the use of a request
       message should be optional.
 
    -  Performance, reducing the number of required request and response
       messages, improves the performance and network bandwidth
       requirements for both client and server.  Fewer messages have to
-      be created, marshalled and transmitted.
+      be created, marshalled, and transmitted.
 
 5.  EPP Extension Framework
 
@@ -298,7 +298,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    protocol, object and command-response level.  This section describes
    the impact of REPP on each of the extension levels:
 
-   -  Protocol Extension: Section 9 describes an protocol extension
+   -  Protocol Extension: Section 9 describes a protocol extension
       resource for use with existing and future protocol extensions.
       REPP does not define a new Protocol extension.  All existing and
       future Protocol extension level EPP extensions MAY be used.
@@ -316,7 +316,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 6.  Resource Naming Convention
 
    A REPP resource can be a single unique object identifier e.g. a
-   domain name, or consist out of a collection of objects.  A collection
+   domain name or consist out of a collection of objects.  A collection
    of objects available for registry operations MUST be identified by:
    /{context-root}/{version}/{collection}
 
@@ -333,9 +333,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                  [Page 6]
+Wullink & Davids         Expires 10 August 2024                 [Page 6]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    -  {collection} MUST be substituted by "domains", "hosts" or
@@ -360,11 +360,11 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    instance MUST be used to identify attributes or related collections
    of the object instance.
 
-   Reource URLs used by REPP contain embedded object identifiers.  By
+   Resource URLs used by REPP contain embedded object identifiers.  By
    using an object identifier in the resource URL, the object identifier
    in the request messages becomes superfluous.  However, since the goal
    of REPP is to maintain compatibility with existing EPP object mapping
-   schemas, this redundancy is accepted as a trade off.  Removing the
+   schemas, this redundancy is accepted as a tradeoff.  Removing the
    object identifier from the request message would require updating the
    object mapping schemas in the EPP RFCs.
 
@@ -378,9 +378,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    One of the main design considerations for REPP is to enable scalable
    EPP services, for this reason the REPP uses a stateless architecture
    and does not create and maintain client sessions.  The Session
-   concept is considered to be an anti pattern in the context of a
-   stateless service, the server MUST NOT maintain any state information
-   relating to the client or EPP transaction.
+   concept is an anti-pattern in the context of a stateless service, the
+   server MUST NOT maintain any state information relating to the client
+   or EPP transaction.
 
    Session management as described in [RFC5730] requires a stateful
    server architecture for maintaining client and application state over
@@ -389,9 +389,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                  [Page 7]
+Wullink & Davids         Expires 10 August 2024                 [Page 7]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    A REPP request MUST contain all information required for the server
@@ -410,21 +410,21 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 8.  REST
 
    REPP uses the REST architectural style, each HTTP method is assigned
-   a distinct behaviour, Section 8.1 provides a overview of the
-   behaviour assigned to each method.  REPP requests are expressed by a
-   URL refering to a resource, a HTTP method, HTTP headers and an
-   optional message body containing the EPP request message.
+   a distinct behavior, Section 8.1 provides an overview of the behavior
+   assigned to each method.  REPP requests are expressed by a URL
+   referring to a resource, a HTTP method, HTTP headers and an optional
+   message body containing the EPP request message.
 
    A REPP HTTP message body MUST contain at most a single EPP request or
    response.  HTTP requests MUST be processed independently of each
    other and in the same order as received by the server.  A client MAY
    choose to send a new request, using an existing connection, before
    the response for the previous request has been received (pipelining).
-   A server using HTTP/2 [RFC7540] or HTTP/3 [RFC9114] contains builtin
+   A server using HTTP/2 [RFC7540] or HTTP/3 [RFC9114] contains built-in
    support for stream multiplexing and MAY choose to support pipelining
    using this mechanism.  The response MAY be returned out of order back
-   to the client, due to the fact that some requests require more
-   processing time by the server.
+   to the client, because some requests require more processing time by
+   the server.
 
    HTTP/1 does not use persistent connections by default, the client MAY
    use the "Connection" header to request for the server not to close
@@ -436,8 +436,8 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    REPP commands MUST be executed by using an HTTP method on a resource
    identified by an URL.  The server MUST support the following methods.
 
-   -  GET: Request a representation of a object resource or a collection
-      of resources
+   -  GET: Request a representation of an object resource or a
+      collection of resources
    -  PUT: Update an existing object resource
    -  PATCH: Partially update an existing object resource
    -  POST: Create a new object resource
@@ -445,9 +445,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                  [Page 8]
+Wullink & Davids         Expires 10 August 2024                 [Page 8]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    -  HEAD: Check for the existence of an object resource
@@ -458,8 +458,8 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    The server MAY choose to support multiple data format for EPP object
    representations, such as XML and JSON.  The client and server MUST
-   support agent-driven content negotiation and related HTTP headers for
-   content negotiation, as described in Section 12.2 of [RFC2616].
+   support server-driven content negotiation and related HTTP headers
+   for content negotiation, as described in Section 12.2 of [RFC2616].
 
    The client MUST use the following HTTP headers:
 
@@ -482,8 +482,8 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    In contrast to EPP over TCP [RFC5734], a REPP request does not always
    require a EPP request message.  The information conveyed by the HTTP
-   method, URL and request headers may be sufficient for the server to
-   be able to successfully proceses a request for most commands.
+   method, URL, and request headers may be sufficient for the server to
+   be able to successfully processes a request for most commands.
    However, the client MUST include the request message in the HTTP
    request body when the server uses an EPP extension that requires
    additional XML elements or attributes to be present in the request
@@ -492,7 +492,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    -  REPP-Cltrid: The client transaction identifier is the equivalent
       of the clTRID element defined in [RFC5730] and MUST be used
-      accordingly when the HTTP message body does not contain an EPP
+      accordingly, when the HTTP message body does not contain an EPP
       request that includes a cltrid.
 
    -  REPP-Svcs: The namespace used by the client in the EPP request
@@ -501,9 +501,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                  [Page 9]
+Wullink & Davids         Expires 10 August 2024                 [Page 9]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
       use this header if the media type of the request or response
@@ -535,7 +535,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       consistent "lang" elements in the Greeting response.  The value of
       the Accept-Language header MUST match 1 of the languages from the
       Greeting.  When the server receives a request using an unsupported
-      langauge, the server MUST respond using the default language
+      language, the server MUST respond using the default language
       configured for the server, as required in Section 2.9.1.1 of
       [RFC5730]
 
@@ -557,14 +557,14 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 10]
+Wullink & Davids         Expires 10 August 2024                [Page 10]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 8.4.  Response
 
-   The server HTTP response contains a status code, headers and MAY
+   The server HTTP response contains a status code, headers, and MAY
    contain an EPP response message in the message body.  HTTP headers
    are used to transmit additional data to the client and MAY be used to
    send EPP process related data to the client.  HTTP headers used by
@@ -598,7 +598,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  REPP-Check-Reason: An optional alternative for the "object:reason"
       element in an Object Check response and MUST be used accordingly.
 
-   -  REPP-Queue-Size: Return the number of unackknowledged messages in
+   -  REPP-Queue-Size: Return the number of unacknowledged messages in
       the client message queue.  The server MAY include this header in
       all REPP responses.
 
@@ -613,19 +613,19 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 11]
+Wullink & Davids         Expires 10 August 2024                [Page 11]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
-   -  Content-Encoding: The server MAY choose to compresses the
-      responses message body, using a algorithm selected from the list
-      of algorithms provided by the client using the Accept-Encoding
+   -  Content-Encoding: The server MAY choose to compress the responses
+      message body, using an algorithm selected from the list of
+      algorithms provided by the client using the Accept-Encoding
       request header.
 
    REPP does not always return an EPP response message in the HTTP
    message body.  The Object Check request for example may return an
-   empty HTTP response body.  When the server does not return a EPP
+   empty HTTP response body.  When the server does not return an EPP
    message, it MUST return at least the REPP-Svtrid, REPP-Cltrid and
    REPP-Eppcode headers.
 
@@ -643,7 +643,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    error MUST be included in the message body of the HTTP response, as
    described in [RFC9110], but only when this is permitted for the used
    HTTP method.  Errors related to the HTTP protocol MUST result in the
-   use of an apropriate HTTP status code by the HTTP server.  An error
+   use of an appropriate HTTP status code by the HTTP server.  An error
    or problem while processing one request MUST NOT result in the
    failure of other independent requests using the same connection.
 
@@ -654,13 +654,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    handling logic, without having to parse the EPP result code in the
    message body.
 
-   For example, a client sending an Object Tranfer request for an Object
-   already linked to an active transfer process, will result in an EPP
-   result code 2106, the HTTP response contains a status code 422 and he
-   value for the REPP-Eppcode HTTP header is set to 2106.  The client
-   MAY use the HTTP status code for checking if an EPP command failed
-   and only parse the result message when additional information from
-   the response message is required for handling the error.
+   For example, a client sending an Object Transfer request for an
+   Object already linked to an active transfer process, will result in
+   an EPP result code 2106, the HTTP response contains a status code 422
+   and he value for the REPP-Eppcode HTTP header is set to 2106.  The
+   client MAY use the HTTP status code for checking if an EPP command
+   failed and only parse the result message when additional information
+   from the response message is required for handling the error.
 
 9.  Command Mapping
 
@@ -669,9 +669,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 12]
+Wullink & Davids         Expires 10 August 2024                [Page 12]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    1.  Resource defined by a URL
@@ -692,6 +692,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    -  {i}: An abbreviation for an object id, this MUST be substituted
       with the value of a domain name, hostname, contact-id or a
       message-id or any other defined object.
+   -  Optional: A request message is only required when the server uses
+      an EPP extension, which requires the use of XML elements and/or
+      atributes that are not mapped to REPP.
 
    +===========+=========+======================+==========+==========+
    | Command   | Method  | Resource             | Request  | Response |
@@ -719,17 +722,17 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    +-----------+---------+----------------------+----------+----------+
    | Transfer  | POST    | /{c}/{i}/transfers   | Optional | Yes      |
    | Request   |         |                      |          |          |
+
+
+
+Wullink & Davids         Expires 10 August 2024                [Page 13]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
    +-----------+---------+----------------------+----------+----------+
    | Transfer  | GET     | /{c}/{i}/transfers/  | Optional | Yes      |
    | Query     |         | latest               |          |          |
-
-
-
-Wullink & Davids          Expires 25 July 2024                 [Page 13]
-
-Internet-Draft          RESTful Transport for EPP           January 2024
-
-
    +-----------+---------+----------------------+----------+----------+
    | Transfer  | DELETE  | /{c}/{i}/transfers/  | Optional | Yes      |
    | Cancel    |         | latest               |          |          |
@@ -752,9 +755,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
              Table 1: Mapping of EPP Command to REPP Request
 
    [1] This mapping is used for Object extensions based on the extension
-   mechanism as defined in [RFC5730, secion 2.7.2] [2] This mapping is
+   mechanism as defined in [RFC5730, section 2.7.2] [2] This mapping is
    used for Protocol extensions based on the extension mechanism as
-   defined in [RFC5730, secion 2.7.1]
+   defined in [RFC5730, seciton 2.7.1]
 
    When there is a mismatch between a resource identifier in the HTTP
    message body and the resource identifier in the URL used for a
@@ -778,12 +781,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-
-
-
-Wullink & Davids          Expires 25 July 2024                 [Page 14]
+Wullink & Davids         Expires 10 August 2024                [Page 14]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    The version value used in the Hello response MUST match the version
@@ -802,7 +802,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 799
    S: Content-Type: application/epp+xml
@@ -830,16 +830,16 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    [RFC5730].
 
    The request attributes from the Login command, used for configuring
-   the client session, are are moved to the HTTP layer.
+   the client session, are moved to the HTTP layer.
 
    -  clID: Replaced by HTTP authentication
    -  pw:: Replaced by HTTP authentication
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 15]
+Wullink & Davids         Expires 10 August 2024                [Page 15]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    -  newPW: Replaced by out of band process
@@ -864,7 +864,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    A REPP client MAY use the HTTP GET method for executing a query
    command only when no request data has to be added to the HTTP message
    body.  Sending content using an HTTP GET request is discouraged in
-   [RFC9110], there exists no generally defined semanticsfor content
+   [RFC9110], there exists no generally defined semantics for content
    received in a GET request.  When an EPP object requires additional
    authInfo information, as described in [RFC5731] and [RFC5733], the
    client MUST use the HTTP POST method and add the query command
@@ -893,9 +893,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 16]
+Wullink & Davids         Expires 10 August 2024                [Page 16]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    C: HEAD /repp/v1/domains/example.nl HTTP/2
@@ -908,7 +908,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: REPP-Cltrid: ABC-12345
    S: REPP-Svtrid: XYZ-12345
@@ -920,7 +920,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
    The Object Info request MUST use the HTTP GET method on a resource
    identifying an object instance, using an empty message body.  If the
-   object has authorization information attachted and the authorization
+   object has authorization information attached and the authorization
    then the client MUST include the REPP-AuthInfo HTTP header.  If the
    authorization is linked to a database object the client MUST include
    the REPP-Roid header.
@@ -949,9 +949,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 17]
+Wullink & Davids         Expires 10 August 2024                [Page 17]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    C: GET /repp/v1/domains/example.nl HTTP/2
@@ -967,7 +967,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example Info response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 424
    S: Content-Type: application/epp+xml
@@ -1005,9 +1005,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 18]
+Wullink & Davids         Expires 10 August 2024                [Page 18]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    The Domain Name Mapping Section 3.1.2 describes an optional "hosts"
@@ -1061,15 +1061,15 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 19]
+Wullink & Davids         Expires 10 August 2024                [Page 19]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    Example response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 312
    S: Content-Type: application/epp+xml
@@ -1109,7 +1109,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    message resource URL, using the {id} path element.  The server MUST
    use REPP headers to return the EPP result code and the number of
    messages left in the queue.  The server MUST NOT add content to the
-   HTTP message body of a successfull response, the server may add
+   HTTP message body of a successful response, the server may add
    content to the message body of an error response.
 
    Example request:
@@ -1117,9 +1117,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 20]
+Wullink & Davids         Expires 10 August 2024                [Page 20]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    C: DELETE /repp/v1/messages/12345 HTTP/2
@@ -1132,7 +1132,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Language: en
    S: REPP-Eppcode: 1000
@@ -1173,9 +1173,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 21]
+Wullink & Davids         Expires 10 August 2024                [Page 21]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -1229,13 +1229,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 22]
+Wullink & Davids         Expires 10 August 2024                [Page 22]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 230
    S: Content-Type: application/epp+xml
@@ -1285,9 +1285,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 23]
+Wullink & Davids         Expires 10 August 2024                [Page 23]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    C: POST /repp/v1/domains HTTP/2
@@ -1341,13 +1341,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 24]
+Wullink & Davids         Expires 10 August 2024                [Page 24]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    S: HTTP/2 200
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Language: en
    S: Content-Length: 642
@@ -1369,7 +1369,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S:      </resData>
    S:      <trID>
    S:         <clTRID>ABC-12345</clTRID>
-   S:         <svTRID>54321-XYZ</svTRID>
+   S:         <svTRID>XYZ-12345</svTRID>
    S:      </trID>
    S:   </response>
    S:</epp>
@@ -1397,13 +1397,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 25]
+Wullink & Davids         Expires 10 August 2024                [Page 25]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 80
    S: REPP-Svtrid: XYZ-12345
@@ -1434,7 +1434,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    current-date query parameter MAY be used for date on which the
    current validity period ends, as described in Section 3.2.3 of
    [RFC5731].  The new period MAY be added to the request using the unit
-   and value request parameters.  The reponse MUST include the Location
+   and value request parameters.  The response MUST include the Location
    header for the renewed object.
 
    Example Domain Renew request:
@@ -1453,9 +1453,9 @@ C:
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 26]
+Wullink & Davids         Expires 10 August 2024                [Page 26]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 C: POST /repp/v1/domains/example.nl/renewals?current-date=2024-01-01?unit=y&value=1 HTTP/2
@@ -1471,7 +1471,7 @@ C:
    Example Renew response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Language: en
    S: Content-Length: 205
@@ -1509,9 +1509,9 @@ C:
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 27]
+Wullink & Davids         Expires 10 August 2024                [Page 27]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 9.5.4.1.  Request
@@ -1526,7 +1526,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    in Section 3.2.4 of [RFC5730], Section 3.2.4 of [RFC5731] and
    Section 3.2.4 of [RFC5733].
 
-   If the transfer request is successful, then the reponse MUST include
+   If the transfer request is successful, then the response MUST include
    the Location header for the object being transferred.
 
    Example request not using object authorization:
@@ -1565,9 +1565,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 28]
+Wullink & Davids         Expires 10 August 2024                [Page 28]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    C: POST /repp/v1/domains/example.nl/transfers?unit=y&value=1 HTTP/2
@@ -1582,7 +1582,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example Transfer response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Language: en
    S: Content-Length: 328
@@ -1621,9 +1621,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 29]
+Wullink & Davids         Expires 10 August 2024                [Page 29]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -1636,7 +1636,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 80
    S: REPP-Svtrid: XYZ-12345
@@ -1677,15 +1677,15 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 30]
+Wullink & Davids         Expires 10 August 2024                [Page 30]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    Example Reject response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 80
    S: REPP-Svtrid: XYZ-12345
@@ -1733,13 +1733,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 31]
+Wullink & Davids         Expires 10 August 2024                [Page 31]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 80
    S: REPP-Svtrid: XYZ-12345
@@ -1789,9 +1789,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 32]
+Wullink & Davids         Expires 10 August 2024                [Page 32]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    C: PATCH /repp/v1/domains/example.nl HTTP/2
@@ -1820,7 +1820,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    Example response:
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Length: 80
    S: REPP-Svtrid: XYZ-12345
@@ -1845,9 +1845,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 33]
+Wullink & Davids         Expires 10 August 2024                [Page 33]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 9.6.  Extension Framework
@@ -1901,13 +1901,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 34]
+Wullink & Davids         Expires 10 August 2024                [Page 34]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Language: en
    S: Content-Length: 0
@@ -1957,9 +1957,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 35]
+Wullink & Davids         Expires 10 August 2024                [Page 35]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    C: POST /repp/v1/ips HTTP/2
@@ -2013,13 +2013,13 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 36]
+Wullink & Davids         Expires 10 August 2024                [Page 36]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    S: HTTP/2 200 OK
-   S: Date: Fri, 17 Nov 2023 12:00:00 UTC
+   S: Date: Wed, 24 Jan 2024 12:00:00 UTC
    S: Server: Example REPP server v1.0
    S: Content-Language: en
    S: Content-Length: 642
@@ -2041,7 +2041,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
    S:      </resData>
    S:      <trID>
    S:         <clTRID>ABC-12345</clTRID>
-   S:         <svTRID>54321-XYZ</svTRID>
+   S:         <svTRID>XYZ-12345</svTRID>
    S:      </trID>
    S:   </response>
    S:</epp>
@@ -2049,7 +2049,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 9.6.3.  Command-Response Extension
 
    Command-Response Extensions allow for adding elements to an existing
-   object mapping, therefore no new extension reource is required, the
+   object mapping, therefore no new extension resource is required, the
    existing resources can be used for existing and future extensions of
    this type.
 
@@ -2069,9 +2069,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 37]
+Wullink & Davids         Expires 10 August 2024                [Page 37]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
       architectural style for defining a stateless API based on the
@@ -2094,20 +2094,20 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       delivery, and congestion control Section 1.5 of [RFC793] describes
       these features in detail; congestion control principles are
       described further in [RFC2581] and [RFC2914].  HTTP/3 uses QUIC
-      (UDP) as a transport protocol, which has builtin congestion
+      (UDP) as a transport protocol, which has built-in congestion
       control over UDP.
 
    -  Section 8 describes how requests are processed independently of
       each other.
 
    -  Errors while processing a REPP request are isolated to this
-      request and do not effect other requests sent by the client or
-      other clients, this is described in section Section 8.5.
+      request and do not affect other requests sent by the client or
+      other clients, this is described in Section 8.5.
 
    -  Batch-oriented processing (combining multiple EPP commands in a
       single HTTP request) is not permitted.  To maximize scalability
       every request must contain a single command, as described in
-      section Section 8.
+      Section 8.
 
 11.  IANA Considerations
 
@@ -2125,9 +2125,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 38]
+Wullink & Davids         Expires 10 August 2024                [Page 38]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 13.  Security Considerations
@@ -2181,14 +2181,14 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 39]
+Wullink & Davids         Expires 10 August 2024                [Page 39]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 15.  Overview of EPP modifications
 
-   This section lists an non-exhaustive overview of the most important
+   This section lists a non-exhaustive overview of the most important
    modifications made in RESTful EPP, compared to the EPP RFCs.
 
    -  The use of HTTP as an additional application layer protocol.
@@ -2201,7 +2201,7 @@ Internet-Draft          RESTful Transport for EPP           January 2024
       check command.  For example, the Check command only supports 1
       object per request.
    -  Request messages may no longer be required for most commands
-   -  Authentication and authorizations has become an out-of-band
+   -  Authentication and authorizations have become an out-of-band
       process.
    -  Support for additional data formats such as JSON.
 
@@ -2237,9 +2237,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 40]
+Wullink & Davids         Expires 10 August 2024                [Page 40]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
@@ -2293,9 +2293,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 41]
+Wullink & Davids         Expires 10 August 2024                [Page 41]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    [RFC5734]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
@@ -2349,9 +2349,9 @@ Internet-Draft          RESTful Transport for EPP           January 2024
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 42]
+Wullink & Davids         Expires 10 August 2024                [Page 42]
 
-Internet-Draft          RESTful Transport for EPP           January 2024
+Internet-Draft          RESTful Transport for EPP          February 2024
 
 
    [RFC9113]  Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
@@ -2405,4 +2405,4 @@ Authors' Addresses
 
 
 
-Wullink & Davids          Expires 25 July 2024                 [Page 43]
+Wullink & Davids         Expires 10 August 2024                [Page 43]
