@@ -53,7 +53,7 @@ REPP includes a mapping of [@!RFC5730] EPP commands to REST resources based on U
 
 The stateless nature of REPP requires that no client or application state is maintained on the server. Each client request to the server must contain all the information necessary for the server to process the request.
 
-REPP is data format agnostic, the client uses agent-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as XML, JSON [@!RFC8259] or [@!YAML].
+REPP is data format agnostic, the client uses server-driven content negotiation. Allowing the client to select from a set of representation media types supported by the server, such as XML, JSON [@!RFC8259] or [@!YAML].
 
 # Terminology
 
@@ -191,7 +191,7 @@ REPP commands MUST be executed by using an HTTP method on a resource identified 
 
   <!--TODO ISSUE 6:Allow for additional dataformat -->    
 The server MAY choose to support multiple data format for EPP object representations, such as XML and JSON.
-The client and server MUST support agent-driven content negotiation and related HTTP headers for content negotiation, as described in [@!RFC2616, section 12.2].
+The client and server MUST support server-driven content negotiation and related HTTP headers for content negotiation, as described in [@!RFC2616, section 12.2].
   
 The client MUST use the following HTTP headers:
 
