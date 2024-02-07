@@ -1357,6 +1357,8 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 
 # Security Considerations
 
+Running REPP relies on the security of the underlying HTTP [@!RFC9110] transport, hence the best common practices for securing HTTP also apply to REPP. It is RECOMMENDED to follow them closely.
+
 Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS [@!RFC5246]. [@!RFC5734, Section 9] describes the level of security that is REQUIRED for all REPP endpoints.
 
 The EPP Login command, described by [@!RFC5730], for creating a client session MUST NOT be used anymore. Due to the stateless nature of REPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) [@!RFC7519] or Basic authentication [@!RFC7617].
