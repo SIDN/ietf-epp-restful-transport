@@ -298,7 +298,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Poll Request</td>
 <td>GET</td>
 <td>/messages</td>
-<td>Optional</td>
+<td>No</td>
 <td>Yes</td>
 </tr>
 
@@ -306,7 +306,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Poll Ack</td>
 <td>DELETE</td>
 <td>/messages/{i}</td>
-<td>Optional</td>
+<td>No</td>
 <td>Yes</td>
 </tr>
 
@@ -499,6 +499,7 @@ S: REPP-Svtrid: XYZ-12345
 S: REPP-Check-Avail: 0
 S: REPP-Check-Reason: In use
 S: REPP-result-code: 1000
+s: Content-Length: 0
 
 ]]>
 </artwork>
@@ -613,7 +614,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 <ul spacing="compact">
 <li>Request: GET /messages</li>
-<li>Request message: Optional</li>
+<li>Request message: None</li>
 <li>Response message: Poll response</li>
 </ul>
 <t>The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue. The &quot;op=req&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.2.3"></xref> are assigned to the HTTP GET method.</t>
@@ -665,7 +666,7 @@ S:</epp>
 
 <ul spacing="compact">
 <li>Request: DELETE /messages/{id}</li>
-<li>Request message: Optional</li>
+<li>Request message: None</li>
 <li>Response message: Poll Ack response</li>
 </ul>
 <t>The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The &quot;op=ack&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.2.3"></xref> are assigned to the HTTP DELETE method. The &quot;msgID&quot; attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successful response, the server may add content to the message body of an error response.</t>
@@ -1420,6 +1421,7 @@ every request must contain a single command, as described in <xref target="rest"
 </section>
 
 <section anchor="security-considerations"><name>Security Considerations</name>
+<t>Running REPP relies on the security of the underlying HTTP <xref target="RFC9110"></xref> transport, hence the best common practices for securing HTTP also apply to REPP. It is RECOMMENDED to follow them closely.</t>
 <t>Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS <xref target="RFC5246"></xref>. <xref target="RFC5734" sectionFormat="bare" section="Section 9"></xref> describes the level of security that is REQUIRED for all REPP endpoints.</t>
 <t>The EPP Login command, described by <xref target="RFC5730"></xref>, for creating a client session MUST NOT be used anymore. Due to the stateless nature of REPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) <xref target="RFC7519"></xref> or Basic authentication <xref target="RFC7617"></xref>.</t>
 <t>The management of authentication credentials, such as the &quot;Change password&quot; functionality of the EPP Login command, MUST be performed by an out-of-band process. REPP (HTTP) servers are vulnerable to common denial-of-service attacks. Therefore, the security considerations of <xref target="RFC5734"></xref> also apply to REPP.</t>

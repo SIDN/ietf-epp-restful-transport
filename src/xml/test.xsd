@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schema targetNamespace="urn:ietf:params:xml:ns:test-1.0"
+xmlns:test="urn:ietf:params:xml:ns:test-1.0"
+xmlns="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+   <element name="hello"/>
+
+   </schema>

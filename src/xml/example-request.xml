@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<repp xmlns="urn:ietf:params:xml:ns:repp-1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ietf:params:xml:ns:repp-1.0 repp-1.0.xsd">
+    <request>
+        <body>
+            <test:hello xmlns:test="urn:ietf:params:xml:ns:test-1.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ietf:params:xml:ns:test-1.0 test.xsd">
+                <!-- Object-specific elements. -->
+            </test:hello>
+        </body>
+    </request>
+</repp>

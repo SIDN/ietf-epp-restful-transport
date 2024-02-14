@@ -288,8 +288,8 @@ Login              | N/A      | N/A                       | N/A         | N/A
 Logout             | N/A      | N/A                       | N/A         | N/A
 Check              | HEAD     | /{c}/{i}                  | Optional    | No
 Info               | GET      | /{c}/{i}                  | Optional    | Yes
-Poll Request       | GET      | /messages                 | Optional    | Yes
-Poll Ack           | DELETE   | /messages/{i}             | Optional    | Yes
+Poll Request       | GET      | /messages                 | No          | Yes
+Poll Ack           | DELETE   | /messages/{i}             | No          | Yes
 Create             | POST     | /{c}                      | Yes         | Yes
 Delete             | DELETE   | /{c}/{i}                  | Optional    | Yes
 Renew              | POST     | /{c}/{i}/renewals         | Optional    | Yes
@@ -409,6 +409,7 @@ S: REPP-Svtrid: XYZ-12345
 S: REPP-Check-Avail: 0
 S: REPP-Check-Reason: In use
 S: REPP-result-code: 1000
+s: Content-Length: 0
 
 ```
 
@@ -519,7 +520,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 #### Poll Request
 
 - Request: GET /messages
-- Request message: Optional
+- Request message: None
 - Response message: Poll response
 
 The client MUST use the HTTP GET method on the messages resource collection to request the message at the head of the queue. The "op=req" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP GET method.
@@ -570,7 +571,7 @@ S:</epp>
 #### Poll Ack
 
 - Request: DELETE /messages/{id}
-- Request message: Optional
+- Request message: None
 - Response message: Poll Ack response
 
 The client MUST use the HTTP DELETE method to acknowledge receipt of a message from the queue. The "op=ack" semantics from [@!RFC5730, Section 2.9.2.3] are assigned to the HTTP DELETE method. The "msgID" attribute of a received EPP Poll message MUST be included in the message resource URL, using the {id} path element. The server MUST use REPP headers to return the EPP result code and the number of messages left in the queue. The server MUST NOT add content to the HTTP message body of a successful response, the server may add content to the message body of an error response. 

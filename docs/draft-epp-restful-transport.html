@@ -1210,7 +1210,7 @@ li > p:last-of-type:only-child {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Wullink &amp; Davids</td>
-<td class="center">Expires 10 August 2024</td>
+<td class="center">Expires 17 August 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1223,12 +1223,12 @@ li > p:last-of-type:only-child {
 <dd class="internet-draft">draft-wullink-restful-epp-01</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-02-07" class="published">7 February 2024</time>
+<time datetime="2024-02-14" class="published">14 February 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-08-10">10 August 2024</time></dd>
+<dd class="expires"><time datetime="2024-08-17">17 August 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1267,7 +1267,7 @@ li > p:last-of-type:only-child {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 10 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 17 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1834,14 +1834,14 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
             <td class="text-left" rowspan="1" colspan="1">Poll Request</td>
             <td class="text-left" rowspan="1" colspan="1">GET</td>
             <td class="text-left" rowspan="1" colspan="1">/messages</td>
-            <td class="text-left" rowspan="1" colspan="1">Optional</td>
+            <td class="text-left" rowspan="1" colspan="1">No</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Poll Ack</td>
             <td class="text-left" rowspan="1" colspan="1">DELETE</td>
             <td class="text-left" rowspan="1" colspan="1">/messages/{i}</td>
-            <td class="text-left" rowspan="1" colspan="1">Optional</td>
+            <td class="text-left" rowspan="1" colspan="1">No</td>
             <td class="text-left" rowspan="1" colspan="1">Yes</td>
           </tr>
           <tr>
@@ -2063,6 +2063,7 @@ S: REPP-Svtrid: XYZ-12345
 S: REPP-Check-Avail: 0
 S: REPP-Check-Reason: In use
 S: REPP-result-code: 1000
+s: Content-Length: 0
 
 
 </pre><a href="#section-9.4.1-7" class="pilcrow">¶</a>
@@ -2208,7 +2209,7 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 <ul class="compact">
 <li class="compact" id="section-9.4.3.1-1.1">Request: GET /messages<a href="#section-9.4.3.1-1.1" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.4.3.1-1.2">Request message: Optional<a href="#section-9.4.3.1-1.2" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.4.3.1-1.2">Request message: None<a href="#section-9.4.3.1-1.2" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.4.3.1-1.3">Response message: Poll response<a href="#section-9.4.3.1-1.3" class="pilcrow">¶</a>
 </li>
@@ -2268,7 +2269,7 @@ S:&lt;/epp&gt;
 <ul class="compact">
 <li class="compact" id="section-9.4.3.2-1.1">Request: DELETE /messages/{id}<a href="#section-9.4.3.2-1.1" class="pilcrow">¶</a>
 </li>
-              <li class="compact" id="section-9.4.3.2-1.2">Request message: Optional<a href="#section-9.4.3.2-1.2" class="pilcrow">¶</a>
+              <li class="compact" id="section-9.4.3.2-1.2">Request message: None<a href="#section-9.4.3.2-1.2" class="pilcrow">¶</a>
 </li>
               <li class="compact" id="section-9.4.3.2-1.3">Response message: Poll Ack response<a href="#section-9.4.3.2-1.3" class="pilcrow">¶</a>
 </li>
@@ -3163,9 +3164,10 @@ every request must contain a single command, as described in <a href="#rest" cla
       <h2 id="name-security-considerations">
 <a href="#section-13" class="section-number selfRef">13. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-13-1">Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span>. <a href="https://rfc-editor.org/rfc/rfc5734#appendix-Section%209" class="relref">Section 9</a> describes the level of security that is REQUIRED for all REPP endpoints.<a href="#section-13-1" class="pilcrow">¶</a></p>
-<p id="section-13-2">The EPP Login command, described by <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>, for creating a client session MUST NOT be used anymore. Due to the stateless nature of REPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span> or Basic authentication <span>[<a href="#RFC7617" class="cite xref">RFC7617</a>]</span>.<a href="#section-13-2" class="pilcrow">¶</a></p>
-<p id="section-13-3">The management of authentication credentials, such as the "Change password" functionality of the EPP Login command, MUST be performed by an out-of-band process. REPP (HTTP) servers are vulnerable to common denial-of-service attacks. Therefore, the security considerations of <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span> also apply to REPP.<a href="#section-13-3" class="pilcrow">¶</a></p>
+<p id="section-13-1">Running REPP relies on the security of the underlying HTTP <span>[<a href="#RFC9110" class="cite xref">RFC9110</a>]</span> transport, hence the best common practices for securing HTTP also apply to REPP. It is RECOMMENDED to follow them closely.<a href="#section-13-1" class="pilcrow">¶</a></p>
+<p id="section-13-2">Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span>. <a href="https://rfc-editor.org/rfc/rfc5734#appendix-Section%209" class="relref">Section 9</a> describes the level of security that is REQUIRED for all REPP endpoints.<a href="#section-13-2" class="pilcrow">¶</a></p>
+<p id="section-13-3">The EPP Login command, described by <span>[<a href="#RFC5730" class="cite xref">RFC5730</a>]</span>, for creating a client session MUST NOT be used anymore. Due to the stateless nature of REPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span> or Basic authentication <span>[<a href="#RFC7617" class="cite xref">RFC7617</a>]</span>.<a href="#section-13-3" class="pilcrow">¶</a></p>
+<p id="section-13-4">The management of authentication credentials, such as the "Change password" functionality of the EPP Login command, MUST be performed by an out-of-band process. REPP (HTTP) servers are vulnerable to common denial-of-service attacks. Therefore, the security considerations of <span>[<a href="#RFC5734" class="cite xref">RFC5734</a>]</span> also apply to REPP.<a href="#section-13-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="obsolete-epp-result-codes">
