@@ -705,7 +705,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    +-----------+---------+----------------------+----------+----------+
    | Logout    | N/A     | N/A                  | N/A      | N/A      |
    +-----------+---------+----------------------+----------+----------+
-   | Check     | HEAD    | /{c}/{i}             | Optional | No       |
+   | Check     | HEAD    | /{c}/{i}             | No       | No       |
    +-----------+---------+----------------------+----------+----------+
    | Info      | GET     | /{c}/{i}             | Optional | Yes      |
    +-----------+---------+----------------------+----------+----------+
@@ -873,7 +873,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 9.4.1.  Check
 
    -  Request: HEAD /{collection}/{id}
-   -  Request message: Optional
+   -  Request message: None
    -  Response message: None
 
    The HTTP HEAD method MUST be used for object existence check.  The
@@ -1501,8 +1501,8 @@ C:
    is specified in [RFC5731] and [RFC5733].  The Transfer command is
    mapped to a nested resource, named "transfers".  The semantics of the
    HTTP DELETE method are determined by the role of the client executing
-   the DELETE method.  For the current sponsoring client of the object,
-   the DELETE method is defined as "reject transfer".  For the new
+   the DELETE method.  The DELETE method is defined as "reject transfer"
+   for the current sponsoring client of the object.  For the new
    sponsoring client the DELETE method is defined as "cancel transfer".
 
 
@@ -1520,11 +1520,12 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    -  Request message: Optional
    -  Response message: Status
 
-   To start a new object transfer process, the client MUST use the HTTP
-   POST method for a unique resource to create a new transfer resource
-   object, not all EPP objects support the Transfer command as described
-   in Section 3.2.4 of [RFC5730], Section 3.2.4 of [RFC5731] and
-   Section 3.2.4 of [RFC5733].
+   The "op=request" semantics from Section 2.9.3.4 are assigned to the
+   HTTP POST method.  In order to initiate a new object transfer
+   process, the client MUST use the HTTP POST method on a unique
+   resource to create a new transfer resource object.  Not all EPP
+   objects support the Transfer command as described in Section 3.2.4 of
+   [RFC5730], Section 3.2.4 of [RFC5731] and Section 3.2.4 of [RFC5733].
 
    If the transfer request is successful, then the response MUST include
    the Location header for the object being transferred.
@@ -1554,7 +1555,6 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
    Example request using 1 year renewal period, using the unit and value
    query parameters:
-
 
 
 
@@ -1612,9 +1612,9 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    -  Request message: Optional
    -  Response message: Status
 
-   The new sponsoring client MUST use the HTTP DELETE method to cancel a
-   requested transfer.  The semantics of the HTTP DELETE method are
-   determined by the role of the client sending the request.
+   The "op=cancel" semantics from Section 2.9.3.4 are assigned to the
+   HTTP DELETE method.  The new sponsoring client MUST use the HTTP
+   DELETE method to cancel a requested transfer.
 
    Example request:
 
@@ -1662,9 +1662,9 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    -  Request message: None
    -  Response message: Status
 
-   The semantics of the HTTP DELETE method are determined by the role of
-   the client sending the request.  For the current sponsoring client of
-   the object, the DELETE method is defined as "reject transfer".
+   The "op=reject" semantics from Section 2.9.3.4 are assigned to the
+   HTTP DELETE method.  The currently sponsoring client of the object
+   MUST use the HTTP DELETE method to reject a started transfer process.
 
    Example request:
 
@@ -1711,8 +1711,10 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    -  Request message: Optional
    -  Response message: Status
 
-   The current sponsoring client MUST use the HTTP PUT method to approve
-   a transfer requested by the new sponsoring client.
+   The "op=approve" semantics from Section 2.9.3.4 are assigned to the
+   HTTP PUT method.  The currently sponsoring client MUST use the HTTP
+   PUT method to approve a transfer requested by the new sponsoring
+   client.
 
    Example Approve request:
 
@@ -1725,8 +1727,6 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    C: Content-Length: 0
 
    Example Approve response:
-
-
 
 
 

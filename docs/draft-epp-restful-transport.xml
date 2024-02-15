@@ -281,7 +281,7 @@ Restful EPP and HTTP protocol are both an application layer protocol, having the
 <td>Check</td>
 <td>HEAD</td>
 <td>/{c}/{i}</td>
-<td>Optional</td>
+<td>No</td>
 <td>No</td>
 </tr>
 
@@ -472,7 +472,7 @@ A REPP client MAY use the HTTP GET method for executing a query command only whe
 
 <ul spacing="compact">
 <li>Request: HEAD /{collection}/{id}</li>
-<li>Request message: Optional</li>
+<li>Request message: None</li>
 <li>Response message: None</li>
 </ul>
 <t>The HTTP HEAD method MUST be used for object existence check. The response MUST contain the <tt>REPP-Check-Avail</tt> header and MAY contain the <tt>REPP-Check-Reason</tt> header. The value of the <tt>REPP-Check-Avail</tt> header MUST be &quot;0&quot; or &quot;1&quot; as described in <xref target="RFC5730" sectionFormat="of" section="2.9.2.1"></xref>, depending on whether the object can be provisioned or not.</t>
@@ -969,7 +969,7 @@ S:</repp>
 </section>
 
 <section anchor="transfer"><name>Transfer</name>
-<t>Transferring an object from one sponsoring client to another client is specified in <xref target="RFC5731"></xref> and <xref target="RFC5733"></xref>. The Transfer command is mapped to a nested resource, named &quot;transfers&quot;. The semantics of the HTTP DELETE method are determined by the role of the client executing the DELETE method. For the current sponsoring client of the object, the DELETE method is defined as &quot;reject transfer&quot;. For the new sponsoring client the DELETE method is defined as &quot;cancel transfer&quot;.</t>
+<t>Transferring an object from one sponsoring client to another client is specified in <xref target="RFC5731"></xref> and <xref target="RFC5733"></xref>. The Transfer command is mapped to a nested resource, named &quot;transfers&quot;. The semantics of the HTTP DELETE method are determined by the role of the client executing the DELETE method. The DELETE method is defined as &quot;reject transfer&quot; for the current sponsoring client of the object. For the new sponsoring client the DELETE method is defined as &quot;cancel transfer&quot;.</t>
 
 <section anchor="request-1"><name>Request</name>
 
@@ -978,7 +978,8 @@ S:</repp>
 <li>Request message: Optional</li>
 <li>Response message: Status</li>
 </ul>
-<t>To start a new object transfer process, the client MUST use the HTTP POST method for a unique resource to create a new transfer resource object, not all EPP objects support the Transfer command as described in <xref target="RFC5730" sectionFormat="of" section="3.2.4"></xref>, <xref target="RFC5731" sectionFormat="of" section="3.2.4"></xref> and <xref target="RFC5733" sectionFormat="of" section="3.2.4"></xref>.</t>
+<t>The &quot;op=request&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.3.4"></xref> are assigned to the HTTP POST method.
+In order to initiate a new object transfer process, the client MUST use the HTTP POST method on a unique resource to create a new transfer resource object. Not all EPP objects support the Transfer command as described in <xref target="RFC5730" sectionFormat="of" section="3.2.4"></xref>, <xref target="RFC5731" sectionFormat="of" section="3.2.4"></xref> and <xref target="RFC5733" sectionFormat="of" section="3.2.4"></xref>.</t>
 <t>If the transfer request is successful, then the response MUST include the Location header for the object being transferred.</t>
 <t>Example request not using object authorization:</t>
 
@@ -1057,7 +1058,8 @@ S:</repp>
 <li>Request message: Optional</li>
 <li>Response message: Status</li>
 </ul>
-<t>The new sponsoring client MUST use the HTTP DELETE method to cancel a requested transfer. The semantics of the HTTP DELETE method are determined by the role of the client sending the request.</t>
+<t>The &quot;op=cancel&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.3.4"></xref> are assigned to the HTTP DELETE method.
+The new sponsoring client MUST use the HTTP DELETE method to cancel a requested transfer.</t>
 <t>Example request:</t>
 
 <artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -1102,7 +1104,8 @@ S:</repp>
 <li>Request message:  None</li>
 <li>Response message: Status</li>
 </ul>
-<t>The semantics of the HTTP DELETE method are determined by the role of the client sending the request. For the current sponsoring client of the object, the DELETE method is defined as &quot;reject transfer&quot;.</t>
+<t>The &quot;op=reject&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.3.4"></xref> are assigned to the HTTP DELETE method.
+The currently sponsoring client of the object MUST use the HTTP DELETE method to reject a started transfer process.</t>
 <t>Example request:</t>
 
 <artwork><![CDATA[C: DELETE /repp/v1/domains/example.nl/transfers/latest HTTP/2
@@ -1148,7 +1151,8 @@ S:</repp>
 <li>Request message: Optional</li>
 <li>Response message: Status</li>
 </ul>
-<t>The current sponsoring client MUST use the HTTP PUT method to approve a transfer requested by the new sponsoring client.</t>
+<t>The &quot;op=approve&quot; semantics from <xref target="RFC5730" sectionFormat="bare" section="Section 2.9.3.4"></xref> are assigned to the HTTP PUT method.
+The currently sponsoring client MUST use the HTTP PUT method to approve a transfer requested by the new sponsoring client.</t>
 <t>Example Approve request:</t>
 
 <artwork><![CDATA[C: PUT /repp/v1/domains/example.nl/transfers/latest HTTP/2
