@@ -114,7 +114,7 @@ Wullink & Davids         Expires 18 August 2024                 [Page 2]
 Internet-Draft          RESTful Transport for EPP          February 2024
 
 
-   13. Internationalization Considerations . . . . . . . . . . . . .  46
+   13. Internationalization Considerations . . . . . . . . . . . . .  47
    14. Security Considerations . . . . . . . . . . . . . . . . . . .  47
    15. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  47
    16. Overview of EPP modifications . . . . . . . . . . . . . . . .  48
@@ -1160,8 +1160,9 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    The Transfer Query request MUST use the special "latest" sub-resource
    to refer to the latest object transfer.  A latest transfer object may
    not exist, when no transfer has been initiated for the specified
-   object.  The client MUST use the HTTP GET method and MUST NOT add
-   content to the HTTP message body.
+   object.  The "op=query" semantics from Section 2.9.3.4 are assigned
+   to the HTTP GET method.  The client MUST use the HTTP GET method and
+   MUST NOT add content to the HTTP message body.
 
    -  Request: GET {collection}/{id}/transfers/latest
    -  Request message: Optional
@@ -1169,7 +1170,6 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
    Example domain name Transfer Query request without authorization
    information required:
-
 
 
 
@@ -2560,15 +2560,15 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 12.  IANA Considerations
 
-   [TBD: at the moment we don't see any]
+   The URNs used in this document for XML namespaces and XML schemas
+   have been registered by the IANA as described by [RFC3688].
 
-13.  Internationalization Considerations
+   Registration request for the REPP namespace:
 
-   [TBD: any?  Accept-Language in HTTP Header]
-
-
-
-
+   -  URI: urn:ietf:params:xml:ns:repp-1.0
+   -  Registrant Contact: See the "Author's Address" section of this
+      document.
+   -  XML: None.  Namespace URIs do not represent an XML specification.
 
 
 
@@ -2577,6 +2577,17 @@ Wullink & Davids         Expires 18 August 2024                [Page 46]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
+
+   Registration request for the EPP XML schema:
+
+   -  URI: urn:ietf:params:xml:schema:repp-1.0
+   -  Registrant Contact: See the "Author's Address" section of this
+      document.
+   -  XML: See the Section 11 section of this document.
+
+13.  Internationalization Considerations
+
+   [TBD: any?  Accept-Language in HTTP Header]
 
 14.  Security Considerations
 
@@ -2606,6 +2617,23 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    The following EPP result codes specified in [RFC5730] are no longer
    meaningful in the context of RESTful EPP and MUST NOT be used.
 
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 47]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
               +======+======================================+
               | Code | Reason                               |
               +======+======================================+
@@ -2626,13 +2654,6 @@ Internet-Draft          RESTful Transport for EPP          February 2024
               +------+--------------------------------------+
 
                      Table 2: Obsolete EPP result codes
-
-
-
-Wullink & Davids         Expires 18 August 2024                [Page 47]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
 
 16.  Overview of EPP modifications
 
@@ -2662,6 +2683,13 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 18.1.  Normative References
 
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 48]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,
               <http://www.ics.uci.edu/~fielding/pubs/dissertation/
@@ -2680,16 +2708,6 @@ Internet-Draft          RESTful Transport for EPP          February 2024
               Control", RFC 2581, DOI 10.17487/RFC2581, April 1999,
               <https://www.rfc-editor.org/info/rfc2581>.
 
-
-
-
-
-
-Wullink & Davids         Expires 18 August 2024                [Page 48]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
-
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
               Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
               Transfer Protocol -- HTTP/1.1", RFC 2616,
@@ -2706,6 +2724,10 @@ Internet-Draft          RESTful Transport for EPP          February 2024
               RFC 2914, DOI 10.17487/RFC2914, September 2000,
               <https://www.rfc-editor.org/info/rfc2914>.
 
+   [RFC3688]  Mealling, M., "The IETF XML Registry", BCP 81, RFC 3688,
+              DOI 10.17487/RFC3688, January 2004,
+              <https://www.rfc-editor.org/info/rfc3688>.
+
    [RFC3735]  Hollenbeck, S., "Guidelines for Extending the Extensible
               Provisioning Protocol (EPP)", RFC 3735,
               DOI 10.17487/RFC3735, March 2004,
@@ -2715,6 +2737,14 @@ Internet-Draft          RESTful Transport for EPP          February 2024
               Resource Identifier (URI): Generic Syntax", STD 66,
               RFC 3986, DOI 10.17487/RFC3986, January 2005,
               <https://www.rfc-editor.org/info/rfc3986>.
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 49]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
 
    [RFC5246]  Dierks, T. and E. Rescorla, "The Transport Layer Security
               (TLS) Protocol Version 1.2", RFC 5246,
@@ -2737,14 +2767,6 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    [RFC5733]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Contact Mapping", STD 69, RFC 5733, DOI 10.17487/RFC5733,
               August 2009, <https://www.rfc-editor.org/info/rfc5733>.
-
-
-
-
-Wullink & Davids         Expires 18 August 2024                [Page 49]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
 
    [RFC5734]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Transport over TCP", STD 69, RFC 5734,
@@ -2770,6 +2792,16 @@ Internet-Draft          RESTful Transport for EPP          February 2024
               (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
               <https://www.rfc-editor.org/info/rfc7519>.
 
+
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 50]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
    [RFC7540]  Belshe, M., Peon, R., and M. Thomson, Ed., "Hypertext
               Transfer Protocol Version 2 (HTTP/2)", RFC 7540,
               DOI 10.17487/RFC7540, May 2015,
@@ -2792,15 +2824,6 @@ Internet-Draft          RESTful Transport for EPP          February 2024
               Ed., "HTTP Semantics", STD 97, RFC 9110,
               DOI 10.17487/RFC9110, June 2022,
               <https://www.rfc-editor.org/info/rfc9110>.
-
-
-
-
-
-Wullink & Davids         Expires 18 August 2024                [Page 50]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
 
    [RFC9113]  Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
               DOI 10.17487/RFC9113, June 2022,
@@ -2829,6 +2852,12 @@ Authors' Addresses
    URI:   https://sidn.nl/
 
 
+
+Wullink & Davids         Expires 18 August 2024                [Page 51]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
    Marco Davids
    SIDN Labs
    Email: marco.davids@sidn.nl
@@ -2853,4 +2882,31 @@ Authors' Addresses
 
 
 
-Wullink & Davids         Expires 18 August 2024                [Page 51]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 52]

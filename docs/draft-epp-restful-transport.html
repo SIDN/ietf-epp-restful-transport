@@ -2327,7 +2327,8 @@ S:&lt;/repp&gt;
 <a href="#section-9.4.4" class="section-number selfRef">9.4.4. </a><a href="#name-transfer-query" class="section-name selfRef">Transfer Query</a>
           </h4>
 <p id="section-9.4.4-1">The Transfer Query request MUST use the special "latest" sub-resource to refer to the
-latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.<a href="#section-9.4.4-1" class="pilcrow">¶</a></p>
+latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object.
+The "op=query" semantics from <a href="https://rfc-editor.org/rfc/rfc5730#appendix-Section%202.9.3.4" class="relref">Section 2.9.3.4</a> are assigned to the HTTP GET method. The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.<a href="#section-9.4.4-1" class="pilcrow">¶</a></p>
 <ul class="compact">
 <li class="compact" id="section-9.4.4-2.1">Request: GET {collection}/{id}/transfers/latest<a href="#section-9.4.4-2.1" class="pilcrow">¶</a>
 </li>
@@ -3556,7 +3557,25 @@ elementFormDefault="qualified"&gt;
       <h2 id="name-iana-considerations">
 <a href="#section-12" class="section-number selfRef">12. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-12-1">[TBD: at the moment we don't see any]<a href="#section-12-1" class="pilcrow">¶</a></p>
+<p id="section-12-1">The URNs used in this document for XML namespaces and XML schemas have been registered by the IANA as described by <span>[<a href="#RFC3688" class="cite xref">RFC3688</a>]</span>.<a href="#section-12-1" class="pilcrow">¶</a></p>
+<p id="section-12-2">Registration request for the REPP namespace:<a href="#section-12-2" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-12-3.1">URI: urn:ietf:params:xml:ns:repp-1.0<a href="#section-12-3.1" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-12-3.2">Registrant Contact: See the "Author's Address" section of this document.<a href="#section-12-3.2" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-12-3.3">XML: None.  Namespace URIs do not represent an XML specification.<a href="#section-12-3.3" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="section-12-4">Registration request for the EPP XML schema:<a href="#section-12-4" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-12-5.1">URI: urn:ietf:params:xml:schema:repp-1.0<a href="#section-12-5.1" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-12-5.2">Registrant Contact: See the "Author's Address" section of this document.<a href="#section-12-5.2" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-12-5.3">XML: See the <a href="#formal-syntax" class="auto internal xref">Section 11</a> section of this document.<a href="#section-12-5.3" class="pilcrow">¶</a>
+</li>
+      </ul>
 </section>
 </div>
 <div id="internationalization-considerations">
@@ -3691,6 +3710,10 @@ meaningful in the context of RESTful EPP and MUST NOT be used.<a href="#section-
 <dt id="RFC2914">[RFC2914]</dt>
         <dd>
 <span class="refAuthor">Floyd, S.</span>, <span class="refTitle">"Congestion Control Principles"</span>, <span class="seriesInfo">BCP 41</span>, <span class="seriesInfo">RFC 2914</span>, <span class="seriesInfo">DOI 10.17487/RFC2914</span>, <time datetime="2000-09" class="refDate">September 2000</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2914">https://www.rfc-editor.org/info/rfc2914</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3688">[RFC3688]</dt>
+        <dd>
+<span class="refAuthor">Mealling, M.</span>, <span class="refTitle">"The IETF XML Registry"</span>, <span class="seriesInfo">BCP 81</span>, <span class="seriesInfo">RFC 3688</span>, <span class="seriesInfo">DOI 10.17487/RFC3688</span>, <time datetime="2004-01" class="refDate">January 2004</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3688">https://www.rfc-editor.org/info/rfc3688</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC3735">[RFC3735]</dt>
         <dd>

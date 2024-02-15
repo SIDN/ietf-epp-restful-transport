@@ -617,7 +617,8 @@ S:</repp>
 ### Transfer Query
 
 The Transfer Query request MUST use the special "latest" sub-resource to refer to the
-latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object. The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.
+latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object.
+The "op=query" semantics from [@!RFC5730, Section 2.9.3.4] are assigned to the HTTP GET method. The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.
 
 - Request: GET {collection}/{id}/transfers/latest
 - Request message: Optional
@@ -1350,7 +1351,7 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 -  Batch-oriented processing (combining multiple EPP commands in a single HTTP request) is not permitted. To maximize scalability
    every request must contain a single command, as described in (#rest).
 
-# Formal Syntax
+# Formal Syntax {#formal-syntax}
 
 This section contains the XML Schema notation defined for REPP, based on the XML schema defined in [@!RFC5730].
 The XML schema defined in [@!RFC5730] contains XML elements and attributes that are no longer required in a REPP context.
@@ -1738,7 +1739,20 @@ elementFormDefault="qualified">
 
 # IANA Considerations
 
-[TBD: at the moment we don't see any] 
+The URNs used in this document for XML namespaces and XML schemas have been registered by the IANA as described by [@!RFC3688].
+
+Registration request for the REPP namespace:
+
+- URI: urn:ietf:params:xml:ns:repp-1.0
+- Registrant Contact: See the "Author's Address" section of this document.
+- XML: None.  Namespace URIs do not represent an XML specification.
+
+Registration request for the EPP XML schema:
+
+- URI: urn:ietf:params:xml:schema:repp-1.0
+- Registrant Contact: See the "Author's Address" section of this document.
+- XML: See the (#formal-syntax) section of this document.
+
 
 # Internationalization Considerations
 
