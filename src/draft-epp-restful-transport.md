@@ -1,7 +1,6 @@
 %%%
 title = "Extensible Provisioning Protocol (EPP) RESTful Transport"
 abbrev = "RESTful Transport for EPP"
-ipr = "trust200902"
 area = "Internet"
 workgroup = "Network Working Group"
 submissiontype = "IETF"
