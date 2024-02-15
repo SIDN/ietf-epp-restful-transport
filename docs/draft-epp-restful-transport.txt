@@ -5,7 +5,7 @@
 Network Working Group                                         M. Wullink
 Internet-Draft                                                 M. Davids
 Intended status: Standards Track                               SIDN Labs
-Expires: 17 August 2024                                 14 February 2024
+Expires: 18 August 2024                                 15 February 2024
 
 
         Extensible Provisioning Protocol (EPP) RESTful Transport
@@ -38,7 +38,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 August 2024.
+   This Internet-Draft will expire on 18 August 2024.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Wullink & Davids         Expires 17 August 2024                 [Page 1]
+Wullink & Davids         Expires 18 August 2024                 [Page 1]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -104,24 +104,25 @@ Table of Contents
        9.6.2.  Object Extension  . . . . . . . . . . . . . . . . . .  35
        9.6.3.  Command-Response Extension  . . . . . . . . . . . . .  37
    10. Protocol Considerations . . . . . . . . . . . . . . . . . . .  37
-   11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  38
-   12. Internationalization Considerations . . . . . . . . . . . . .  38
+   11. Formal Syntax . . . . . . . . . . . . . . . . . . . . . . . .  38
+   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  46
 
 
 
-Wullink & Davids         Expires 17 August 2024                 [Page 2]
+Wullink & Davids         Expires 18 August 2024                 [Page 2]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
 
-   13. Security Considerations . . . . . . . . . . . . . . . . . . .  38
-   14. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  39
-   15. Overview of EPP modifications . . . . . . . . . . . . . . . .  39
-   16. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  40
-   17. References  . . . . . . . . . . . . . . . . . . . . . . . . .  40
-     17.1.  Normative References . . . . . . . . . . . . . . . . . .  40
-     17.2.  Informative References . . . . . . . . . . . . . . . . .  43
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  43
+   13. Internationalization Considerations . . . . . . . . . . . . .  46
+   14. Security Considerations . . . . . . . . . . . . . . . . . . .  47
+   15. Obsolete EPP Result Codes . . . . . . . . . . . . . . . . . .  47
+   16. Overview of EPP modifications . . . . . . . . . . . . . . . .  48
+   17. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  48
+   18. References  . . . . . . . . . . . . . . . . . . . . . . . . .  48
+     18.1.  Normative References . . . . . . . . . . . . . . . . . .  48
+     18.2.  Informative References . . . . . . . . . . . . . . . . .  51
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  51
 
 1.  Introduction
 
@@ -164,8 +165,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-
-Wullink & Davids         Expires 17 August 2024                 [Page 3]
+Wullink & Davids         Expires 18 August 2024                 [Page 3]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -221,7 +221,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                 [Page 4]
+Wullink & Davids         Expires 18 August 2024                 [Page 4]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -229,9 +229,8 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 4.  Design Considerations
 
    RESTful transport for EPP (REPP) is designed to improve the ease of
-   design, development, deployment, and management of an EPP service,
-   while maintaining compatibility with the existing EPP RFCs.  This
-   section lists the main design criteria.
+   design, development, deployment, and management of an EPP service.
+   This section lists the main design criteria.
 
    -  Ease of use, provide a clear, clean, easy to use and self-
       explanatory interface that can easily be integrated into existing
@@ -269,22 +268,19 @@ Internet-Draft          RESTful Transport for EPP          February 2024
       describes the use of [XML] but the use of other media types such
       as JSON [RFC7159] should also be possible.
 
-   -  Compatibility with existing EPP commands and corresponding request
-      and response messages.
-
-
-
-
-
-
-Wullink & Davids         Expires 17 August 2024                 [Page 5]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
+   -  Compatibility with existing EPP semantics defined in the EPP RFCs.
 
    -  Simplicity, when the semantics of a resource URL and HTTP method
       match an EPP command and request message, the use of a request
       message should be optional.
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                 [Page 5]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
 
    -  Performance, reducing the number of required request and response
       messages, improves the performance and network bandwidth
@@ -328,19 +324,19 @@ Internet-Draft          RESTful Transport for EPP          February 2024
       element in the EPP RFCs.  The version used in the REPP URL MUST
       match the version used in EPP Greeting message.
 
-
-
-
-
-
-Wullink & Davids         Expires 17 August 2024                 [Page 6]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
-
    -  {collection} MUST be substituted by "domains", "hosts" or
       "contacts" or other supported objects, referring to either
       [RFC5731], [RFC5732] or [RFC5733].
+
+
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                 [Page 6]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
 
    A trailing slash MAY be added to each request.  Implementations MUST
    consider requests which only differ with respect to this trailing
@@ -389,7 +385,11 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                 [Page 7]
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                 [Page 7]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -445,7 +445,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                 [Page 8]
+Wullink & Davids         Expires 18 August 2024                 [Page 8]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -501,7 +501,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                 [Page 9]
+Wullink & Davids         Expires 18 August 2024                 [Page 9]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -557,7 +557,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 10]
+Wullink & Davids         Expires 18 August 2024                [Page 10]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -613,7 +613,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 11]
+Wullink & Davids         Expires 18 August 2024                [Page 11]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -669,7 +669,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 12]
+Wullink & Davids         Expires 18 August 2024                [Page 12]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -725,7 +725,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 13]
+Wullink & Davids         Expires 18 August 2024                [Page 13]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -781,7 +781,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 14]
+Wullink & Davids         Expires 18 August 2024                [Page 14]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -809,14 +809,14 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: Content-Language: en
    S:
    S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S: <repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:   <greeting>
    S:      <svcMenu>
    S:         <version>1.0</version>
    S:         <!-- The rest of the response is omitted here -->
    S:      <svcMenu>
    S:   </greeting>
-   S: </epp>
+   S: </repp>
 
 9.2.  Login
 
@@ -837,7 +837,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 15]
+Wullink & Davids         Expires 18 August 2024                [Page 15]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -893,7 +893,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 16]
+Wullink & Davids         Expires 18 August 2024                [Page 16]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -949,7 +949,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 17]
+Wullink & Davids         Expires 18 August 2024                [Page 17]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -975,7 +975,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -990,7 +990,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.4.2.1.  Object Filtering
 
@@ -1005,7 +1005,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 18]
+Wullink & Davids         Expires 18 August 2024                [Page 18]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1061,7 +1061,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 19]
+Wullink & Davids         Expires 18 August 2024                [Page 19]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1077,7 +1077,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1301
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1301">
    S:      <msg>Command completed successfully; ack to dequeue</msg>
@@ -1094,7 +1094,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.4.3.2.  Poll Ack
 
@@ -1117,7 +1117,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 20]
+Wullink & Davids         Expires 18 August 2024                [Page 20]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1142,7 +1142,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: Content-Length: 145
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -1153,7 +1153,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.4.4.  Transfer Query
 
@@ -1173,7 +1173,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 21]
+Wullink & Davids         Expires 18 August 2024                [Page 21]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1229,7 +1229,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 22]
+Wullink & Davids         Expires 18 August 2024                [Page 22]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1243,7 +1243,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -1256,7 +1256,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.5.  Transform Resources
 
@@ -1285,7 +1285,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 23]
+Wullink & Davids         Expires 18 August 2024                [Page 23]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1300,18 +1300,18 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    C: Content-Length: 220
    C:
    C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-   C:  <command>
-   C:    <create>
+   C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+   C:  <request>
+   C:    <body>
    C:      <domain:create
    C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
    C:        <domain:name>example.nl</domain:name>
    C:        <!-- The rest of the request is omitted here -->
    C:      </domain:create>
-   C:    </create>
+   C:    </body>
    C:    <clTRID>ABC-12345</clTRID>
-   C:  </command>
-   C:</epp>
+   C:  </request>
+   C:</repp>
 
    Example Domain Create response:
 
@@ -1341,7 +1341,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 24]
+Wullink & Davids         Expires 18 August 2024                [Page 24]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1356,7 +1356,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0"
    S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
    S:   <response>
    S:      <result code="1000">
@@ -1372,7 +1372,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:         <svTRID>XYZ-12345</svTRID>
    S:      </trID>
    S:   </response>
-   S:</epp>
+   S:</repp>
 
 9.5.2.  Delete
 
@@ -1397,7 +1397,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 25]
+Wullink & Davids         Expires 18 August 2024                [Page 25]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1411,7 +1411,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -1421,7 +1421,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.5.3.  Renew
 
@@ -1453,7 +1453,7 @@ C:
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 26]
+Wullink & Davids         Expires 18 August 2024                [Page 26]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1480,7 +1480,7 @@ C:
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -1493,7 +1493,7 @@ C:
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.5.4.  Transfer
 
@@ -1509,7 +1509,7 @@ C:
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 27]
+Wullink & Davids         Expires 18 August 2024                [Page 27]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1565,7 +1565,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 28]
+Wullink & Davids         Expires 18 August 2024                [Page 28]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1591,7 +1591,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1001
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1001">
    S:      <msg>Command completed successfully; action pending</msg>
@@ -1604,7 +1604,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.5.4.2.  Cancel
 
@@ -1621,7 +1621,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 29]
+Wullink & Davids         Expires 18 August 2024                [Page 29]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1644,7 +1644,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -1654,7 +1654,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.5.4.3.  Reject
 
@@ -1677,7 +1677,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 30]
+Wullink & Davids         Expires 18 August 2024                [Page 30]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1693,7 +1693,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -1703,7 +1703,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.5.4.4.  Approve
 
@@ -1733,7 +1733,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 31]
+Wullink & Davids         Expires 18 August 2024                [Page 31]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1747,7 +1747,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -1757,7 +1757,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.5.5.  Update
 
@@ -1789,7 +1789,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 32]
+Wullink & Davids         Expires 18 August 2024                [Page 32]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1804,18 +1804,18 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    C: Content-Length: 252
    C:
    C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-   C:  <command>
-   C:    <update>
+   C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+   C:  <request>
+   C:    <body>
    C:      <domain:update
    C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
    C:        <domain:name>example.nl</domain:name>
    C:           <!-- The rest of the request is omitted here -->
    C:      </domain:update>
-   C:    </update>
+   C:    </body>
    C:    <clTRID>ABC-12345</clTRID>
-   C:  </command>
-   C:</epp>
+   C:  </request>
+   C:</repp>
 
    Example response:
 
@@ -1828,7 +1828,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -1838,14 +1838,14 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 
 
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 33]
+Wullink & Davids         Expires 18 August 2024                [Page 33]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1901,7 +1901,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 34]
+Wullink & Davids         Expires 18 August 2024                [Page 34]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1916,7 +1916,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
    S:  <response>
    S:    <result code="1000">
    S:      <msg>Command completed successfully</msg>
@@ -1926,7 +1926,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S:      <svTRID>XYZ-12345</svTRID>
    S:    </trID>
    S:  </response>
-   S:</epp>
+   S:</repp>
 
 9.6.2.  Object Extension
 
@@ -1957,7 +1957,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 35]
+Wullink & Davids         Expires 18 August 2024                [Page 35]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -1973,18 +1973,18 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    C: Content-Length: 220
    C:
    C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-   C:  <command>
-   C:    <create>
-   C:      <ips:create
-   C:       xmlns:ip="https://example.nl/epp-ips-1.0">
-   C:        <ips:address>192.0.2.1</ips:address>
+   C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+   C:  <request>
+   C:    <body>
+   C:      <ip:create
+   C:       xmlns:ip="https://example.nl/epp-ip-1.0">
+   C:        <ip:address>192.0.2.1</ip:address>
    C:        <!-- The rest of the request is omitted here -->
-   C:      </ips:create>
-   C:    </create>
+   C:      </ip:create>
+   C:    </body>
    C:    <clTRID>ABC-12345</clTRID>
-   C:  </command>
-   C:</epp>
+   C:  </request>
+   C:</repp>
 
    Example response:
 
@@ -2013,7 +2013,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 36]
+Wullink & Davids         Expires 18 August 2024                [Page 36]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -2028,23 +2028,23 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    S: REPP-Eppcode: 1000
    S:
    S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-   S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
-   S:     xmlns:ips="https://example.nl/epp-ips-1.0">
+   S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0"
+   S:     xmlns:ip="https://example.nl/epp-ip-1.0">
    S:   <response>
    S:      <result code="1000">
    S:         <msg>Command completed successfully</msg>
    S:      </result>
    S:      <resData>
-   S:         <ips:creData>
+   S:         <ip:creData>
    S:            <!-- The rest of the response is omitted here -->
-   S:         </ips:creData>
+   S:         </ip:creData>
    S:      </resData>
    S:      <trID>
    S:         <clTRID>ABC-12345</clTRID>
    S:         <svTRID>XYZ-12345</svTRID>
    S:      </trID>
    S:   </response>
-   S:</epp>
+   S:</repp>
 
 9.6.3.  Command-Response Extension
 
@@ -2069,7 +2069,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
 
 
-Wullink & Davids         Expires 17 August 2024                [Page 37]
+Wullink & Davids         Expires 18 August 2024                [Page 37]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
@@ -2109,26 +2109,480 @@ Internet-Draft          RESTful Transport for EPP          February 2024
       every request must contain a single command, as described in
       Section 8.
 
-11.  IANA Considerations
+11.  Formal Syntax
+
+   This section contains the XML Schema notation defined for REPP, based
+   on the XML schema defined in [RFC5730].  The XML schema defined in
+   [RFC5730] contains XML elements and attributes that are no longer
+   required in a REPP context.
+
+   The following changes have been made:
+
+   -  deleted hello from eppType
+   -  renamed command to request in eppType
+   -  deleted choice and all child elements from commandtype
+   -  renamed commandtype to requestType
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 38]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
+   -  renamed readWriteType to bodyType
+   -  created body element for requestType
+   -  deleted loginType
+   -  deleted credsOptionsType
+   -  deleted loginSvcType
+   -  deleted pwType
+   -  deleted pollType
+   -  deleted transferType
+   -  deleted transferOpType
+
+   The formal syntax presented here is a complete schema representation
+   of REPP suitable for automated validation of REPP XML instances.
+
+   <?xml version="1.0" encoding="UTF-8"?>
+
+   <schema targetNamespace="urn:ietf:params:xml:ns:repp-1.0"
+   xmlns:repp="urn:ietf:params:xml:ns:repp-1.0"
+   xmlns:eppcom="urn:ietf:params:xml:ns:eppcom-1.0"
+   xmlns="http://www.w3.org/2001/XMLSchema"
+   elementFormDefault="qualified">
+
+      <!--
+      Import common element types.
+      -->
+        <import namespace="urn:ietf:params:xml:ns:eppcom-1.0"/>
+
+        <annotation>
+          <documentation>
+            RESTful Extensible Provisioning Protocol v1.0 schema.
+          </documentation>
+        </annotation>
+
+      <!--
+      Every EPP XML instance must begin with this element.
+      -->
+
+      <element name="repp" type="repp:eppType"/>
+
+      <!--
+      An EPP XML instance must contain a greeting, request, response, or extension.
+      -->
+        <complexType name="eppType">
+          <choice>
+            <element name="greeting" type="repp:greetingType"/>
+            <element name="request" type="repp:requestType"/>
+            <element name="response" type="repp:responseType"/>
+            <element name="extension" type="repp:extAnyType"/>
+          </choice>
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 39]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
+        </complexType>
+
+      <!--
+      A greeting is sent by a server in response to a client connection
+      or <hello>.
+      -->
+        <complexType name="greetingType">
+          <sequence>
+            <element name="svID" type="repp:sIDType"/>
+            <element name="svDate" type="dateTime"/>
+            <element name="svcMenu" type="repp:svcMenuType"/>
+            <element name="dcp" type="repp:dcpType"/>
+          </sequence>
+        </complexType>
+
+      <!--
+      Server IDs are strings with minimum and maximum length restrictions.
+      -->
+        <simpleType name="sIDType">
+          <restriction base="normalizedString">
+            <minLength value="3"/>
+            <maxLength value="64"/>
+          </restriction>
+        </simpleType>
+
+      <!--
+      A server greeting identifies available object services.
+      -->
+        <complexType name="svcMenuType">
+          <sequence>
+            <element name="version" type="repp:versionType"
+             maxOccurs="unbounded"/>
+            <element name="lang" type="language"
+             maxOccurs="unbounded"/>
+            <element name="objURI" type="anyURI"
+             maxOccurs="unbounded"/>
+            <element name="svcExtension" type="repp:extURIType"
+             minOccurs="0"/>
+          </sequence>
+        </complexType>
+
+      <!--
+      Data Collection Policy types.
+      -->
+        <complexType name="dcpType">
+          <sequence>
+            <element name="access" type="repp:dcpAccessType"/>
+            <element name="statement" type="repp:dcpStatementType"
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 40]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
+             maxOccurs="unbounded"/>
+            <element name="expiry" type="repp:dcpExpiryType"
+             minOccurs="0"/>
+          </sequence>
+        </complexType>
+
+        <complexType name="dcpAccessType">
+          <choice>
+            <element name="all"/>
+            <element name="none"/>
+            <element name="null"/>
+            <element name="other"/>
+            <element name="personal"/>
+            <element name="personalAndOther"/>
+          </choice>
+        </complexType>
+
+        <complexType name="dcpStatementType">
+          <sequence>
+            <element name="purpose" type="repp:dcpPurposeType"/>
+            <element name="recipient" type="repp:dcpRecipientType"/>
+            <element name="retention" type="repp:dcpRetentionType"/>
+          </sequence>
+        </complexType>
+
+        <complexType name="dcpPurposeType">
+          <sequence>
+            <element name="admin"
+             minOccurs="0"/>
+            <element name="contact"
+             minOccurs="0"/>
+            <element name="other"
+             minOccurs="0"/>
+            <element name="prov"
+             minOccurs="0"/>
+          </sequence>
+        </complexType>
+
+        <complexType name="dcpRecipientType">
+          <sequence>
+            <element name="other"
+             minOccurs="0"/>
+            <element name="ours" type="repp:dcpOursType"
+             minOccurs="0" maxOccurs="unbounded"/>
+            <element name="public"
+             minOccurs="0"/>
+            <element name="same"
+             minOccurs="0"/>
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 41]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
+            <element name="unrelated"
+             minOccurs="0"/>
+          </sequence>
+        </complexType>
+
+        <complexType name="dcpOursType">
+          <sequence>
+            <element name="recDesc" type="repp:dcpRecDescType"
+             minOccurs="0"/>
+          </sequence>
+        </complexType>
+
+        <simpleType name="dcpRecDescType">
+          <restriction base="token">
+            <minLength value="1"/>
+            <maxLength value="255"/>
+          </restriction>
+        </simpleType>
+
+        <complexType name="dcpRetentionType">
+          <choice>
+            <element name="business"/>
+            <element name="indefinite"/>
+            <element name="legal"/>
+            <element name="none"/>
+            <element name="stated"/>
+          </choice>
+        </complexType>
+
+        <complexType name="dcpExpiryType">
+          <choice>
+            <element name="absolute" type="dateTime"/>
+            <element name="relative" type="duration"/>
+          </choice>
+        </complexType>
+
+      <!--
+      Extension framework types.
+      -->
+        <complexType name="extAnyType">
+          <sequence>
+            <any namespace="##other"
+             maxOccurs="unbounded"/>
+          </sequence>
+        </complexType>
+
+        <complexType name="extURIType">
+          <sequence>
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 42]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
+            <element name="extURI" type="anyURI"
+             maxOccurs="unbounded"/>
+          </sequence>
+        </complexType>
+
+      <!--
+      An EPP version number is a dotted pair of decimal numbers.
+      -->
+        <simpleType name="versionType">
+          <restriction base="token">
+            <pattern value="[1-9]+\.[0-9]+"/>
+            <enumeration value="1.0"/>
+          </restriction>
+        </simpleType>
+
+      <!--
+      Request type, reduced to a single <body> element for object-data.
+      -->
+
+   <complexType name="requestType">
+     <sequence>
+       <element name="body" type="repp:bodyType"/>
+       <element name="extension" type="repp:extAnyType"
+        minOccurs="0"/>
+       <element name="clTRID" type="repp:trIDStringType"
+        minOccurs="0"/>
+     </sequence>
+   </complexType>
+
+
+      <!--
+        All other object-centric request bodies. EPP doesn't specify the syntax or
+        semantics of object-centric body elements.
+        The elements MUST be described in detail in another schema specific to the object.
+      -->
+        <complexType name="bodyType">
+          <sequence>
+            <any namespace="##other"/>
+          </sequence>
+        </complexType>
+
+        <complexType name="trIDType">
+          <sequence>
+            <element name="clTRID" type="repp:trIDStringType"
+             minOccurs="0"/>
+            <element name="svTRID" type="repp:trIDStringType"/>
+          </sequence>
+        </complexType>
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 43]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
+        <simpleType name="trIDStringType">
+          <restriction base="token">
+            <minLength value="3"/>
+            <maxLength value="64"/>
+          </restriction>
+        </simpleType>
+
+      <!--
+      Response types.
+      -->
+        <complexType name="responseType">
+          <sequence>
+            <element name="result" type="repp:resultType"
+             maxOccurs="unbounded"/>
+            <element name="msgQ" type="repp:msgQType"
+             minOccurs="0"/>
+
+            <element name="resData" type="repp:extAnyType"
+             minOccurs="0"/>
+            <element name="extension" type="repp:extAnyType"
+             minOccurs="0"/>
+            <element name="trID" type="repp:trIDType"/>
+          </sequence>
+        </complexType>
+
+        <complexType name="resultType">
+          <sequence>
+            <element name="msg" type="repp:msgType"/>
+            <choice minOccurs="0" maxOccurs="unbounded">
+              <element name="value" type="repp:errValueType"/>
+              <element name="extValue" type="repp:extErrValueType"/>
+            </choice>
+          </sequence>
+          <attribute name="code" type="repp:resultCodeType"
+           use="required"/>
+        </complexType>
+
+        <complexType name="errValueType" mixed="true">
+          <sequence>
+            <any namespace="##any" processContents="skip"/>
+          </sequence>
+          <anyAttribute namespace="##any" processContents="skip"/>
+        </complexType>
+
+        <complexType name="extErrValueType">
+          <sequence>
+            <element name="value" type="repp:errValueType"/>
+            <element name="reason" type="repp:msgType"/>
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 44]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
+          </sequence>
+        </complexType>
+
+        <complexType name="msgQType">
+          <sequence>
+            <element name="qDate" type="dateTime"
+             minOccurs="0"/>
+            <element name="msg" type="repp:mixedMsgType"
+             minOccurs="0"/>
+          </sequence>
+          <attribute name="count" type="unsignedLong"
+           use="required"/>
+          <attribute name="id" type="eppcom:minTokenType"
+           use="required"/>
+        </complexType>
+
+        <complexType name="mixedMsgType" mixed="true">
+          <sequence>
+            <any processContents="skip"
+             minOccurs="0" maxOccurs="unbounded"/>
+          </sequence>
+          <attribute name="lang" type="language"
+           default="en"/>
+        </complexType>
+
+      <!--
+      Human-readable text may be expressed in languages other than English.
+      -->
+        <complexType name="msgType">
+          <simpleContent>
+            <extension base="normalizedString">
+              <attribute name="lang" type="language"
+               default="en"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+
+      <!--
+      EPP result codes.
+      -->
+        <simpleType name="resultCodeType">
+          <restriction base="unsignedShort">
+            <enumeration value="1000"/>
+            <enumeration value="1001"/>
+            <enumeration value="1300"/>
+            <enumeration value="1301"/>
+            <enumeration value="1500"/>
+            <enumeration value="2000"/>
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 45]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
+            <enumeration value="2001"/>
+            <enumeration value="2002"/>
+            <enumeration value="2003"/>
+            <enumeration value="2004"/>
+            <enumeration value="2005"/>
+            <enumeration value="2100"/>
+            <enumeration value="2101"/>
+            <enumeration value="2102"/>
+            <enumeration value="2103"/>
+            <enumeration value="2104"/>
+            <enumeration value="2105"/>
+            <enumeration value="2106"/>
+            <enumeration value="2200"/>
+            <enumeration value="2201"/>
+            <enumeration value="2202"/>
+            <enumeration value="2300"/>
+            <enumeration value="2301"/>
+            <enumeration value="2302"/>
+            <enumeration value="2303"/>
+            <enumeration value="2304"/>
+            <enumeration value="2305"/>
+            <enumeration value="2306"/>
+            <enumeration value="2307"/>
+            <enumeration value="2308"/>
+            <enumeration value="2400"/>
+            <enumeration value="2500"/>
+            <enumeration value="2501"/>
+            <enumeration value="2502"/>
+          </restriction>
+        </simpleType>
+
+      <!--
+      End of schema.
+      -->
+      </schema>
+
+12.  IANA Considerations
 
    [TBD: at the moment we don't see any]
 
-12.  Internationalization Considerations
+13.  Internationalization Considerations
 
    [TBD: any?  Accept-Language in HTTP Header]
 
-13.  Security Considerations
+
+
+
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 46]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
+14.  Security Considerations
 
    Running REPP relies on the security of the underlying HTTP [RFC9110]
    transport, hence the best common practices for securing HTTP also
    apply to REPP.  It is RECOMMENDED to follow them closely.
-
-
-
-Wullink & Davids         Expires 17 August 2024                [Page 38]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
 
    Data confidentiality and integrity MUST be enforced, all data
    transport between a client and server MUST be encrypted using TLS
@@ -2147,7 +2601,7 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    common denial-of-service attacks.  Therefore, the security
    considerations of [RFC5734] also apply to REPP.
 
-14.  Obsolete EPP Result Codes
+15.  Obsolete EPP Result Codes
 
    The following EPP result codes specified in [RFC5730] are no longer
    meaningful in the context of RESTful EPP and MUST NOT be used.
@@ -2173,18 +2627,17 @@ Internet-Draft          RESTful Transport for EPP          February 2024
 
                      Table 2: Obsolete EPP result codes
 
-15.  Overview of EPP modifications
-
-   This section lists a non-exhaustive overview of the most important
-   modifications made in RESTful EPP, compared to the EPP RFCs.
 
 
-
-
-Wullink & Davids         Expires 17 August 2024                [Page 39]
+Wullink & Davids         Expires 18 August 2024                [Page 47]
 
 Internet-Draft          RESTful Transport for EPP          February 2024
 
+
+16.  Overview of EPP modifications
+
+   This section lists a non-exhaustive overview of the most important
+   modifications made in RESTful EPP, compared to the EPP RFCs.
 
    -  The use of HTTP as an additional application layer protocol.
    -  HTTP adds additional status codes.
@@ -2200,14 +2653,14 @@ Internet-Draft          RESTful Transport for EPP          February 2024
       process.
    -  Support for additional data formats such as JSON.
 
-16.  Acknowledgments
+17.  Acknowledgments
 
    The authors would like to thank Miek Gieben who worked with us on an
    earlier, similar draft.
 
-17.  References
+18.  References
 
-17.1.  Normative References
+18.1.  Normative References
 
    [REST]     Fielding, R., "Architectural Styles and the Design of
               Network-based Software Architectures", 2000,
@@ -2227,20 +2680,21 @@ Internet-Draft          RESTful Transport for EPP          February 2024
               Control", RFC 2581, DOI 10.17487/RFC2581, April 1999,
               <https://www.rfc-editor.org/info/rfc2581>.
 
+
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 48]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
    [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
               Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
               Transfer Protocol -- HTTP/1.1", RFC 2616,
               DOI 10.17487/RFC2616, June 1999,
               <https://www.rfc-editor.org/info/rfc2616>.
-
-
-
-
-
-Wullink & Davids         Expires 17 August 2024                [Page 40]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
 
    [RFC2617]  Franks, J., Hallam-Baker, P., Hostetler, J., Lawrence, S.,
               Leach, P., Luotonen, A., and L. Stewart, "HTTP
@@ -2284,19 +2738,18 @@ Internet-Draft          RESTful Transport for EPP          February 2024
               Contact Mapping", STD 69, RFC 5733, DOI 10.17487/RFC5733,
               August 2009, <https://www.rfc-editor.org/info/rfc5733>.
 
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 49]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
    [RFC5734]  Hollenbeck, S., "Extensible Provisioning Protocol (EPP)
               Transport over TCP", STD 69, RFC 5734,
               DOI 10.17487/RFC5734, August 2009,
               <https://www.rfc-editor.org/info/rfc5734>.
-
-
-
-
-
-Wullink & Davids         Expires 17 August 2024                [Page 41]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
 
    [RFC6648]  Saint-Andre, P., Crocker, D., and M. Nottingham,
               "Deprecating the "X-" Prefix and Similar Constructs in
@@ -2340,6 +2793,15 @@ Internet-Draft          RESTful Transport for EPP          February 2024
               DOI 10.17487/RFC9110, June 2022,
               <https://www.rfc-editor.org/info/rfc9110>.
 
+
+
+
+
+Wullink & Davids         Expires 18 August 2024                [Page 50]
+
+Internet-Draft          RESTful Transport for EPP          February 2024
+
+
    [RFC9113]  Thomson, M., Ed. and C. Benfield, Ed., "HTTP/2", RFC 9113,
               DOI 10.17487/RFC9113, June 2022,
               <https://www.rfc-editor.org/info/rfc9113>.
@@ -2347,20 +2809,13 @@ Internet-Draft          RESTful Transport for EPP          February 2024
    [RFC9114]  Bishop, M., Ed., "HTTP/3", RFC 9114, DOI 10.17487/RFC9114,
               June 2022, <https://www.rfc-editor.org/info/rfc9114>.
 
-
-
-Wullink & Davids         Expires 17 August 2024                [Page 42]
-
-Internet-Draft          RESTful Transport for EPP          February 2024
-
-
    [XML]      W3C, "Extensible Markup Language (XML) 1.0 (Fifth
               Edition)", 2013, <https://www.w3.org/TR/xml>.
 
    [YAML]     YAML Language Development Team, "YAML: YAML Ain't Markup
               Language", 2000, <https://yaml.org/spec/1.2.2/>.
 
-17.2.  Informative References
+18.2.  Informative References
 
    [SIDN-EXT] SIDN, "Extensible Provisioning Protocol v1.0 schema .NL
               extensions", 2019,
@@ -2398,11 +2853,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-Wullink & Davids         Expires 17 August 2024                [Page 43]
+Wullink & Davids         Expires 18 August 2024                [Page 51]

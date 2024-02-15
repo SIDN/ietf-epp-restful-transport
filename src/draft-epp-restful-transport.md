@@ -95,8 +95,7 @@ All example requests assume a REPP server using HTTP version 2 is listening on t
 # Design Considerations
 
 RESTful transport for EPP (REPP) is designed to improve the ease of design, development, deployment, and management
-of an EPP service, while maintaining compatibility with the existing EPP RFCs.
-This section lists the main design criteria.
+of an EPP service. This section lists the main design criteria.
 
 - Ease of use, provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. Based on these principles a [@!REST] architectural style was chosen, where a client  interacts with a REPP server via HTTP.
 
@@ -112,7 +111,7 @@ This section lists the main design criteria.
   The client must be able to signal to the server what media type the server should expect for the request content and to use for the response content.
   This document only describes the use of [@!XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
-- Compatibility with existing EPP commands and corresponding request and response messages.
+- Compatibility with existing EPP semantics defined in the EPP RFCs.
 - Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of a request message should be optional.
 
 - Performance, reducing the number of required request and response messages, improves the performance and network bandwidth requirements for both client and server. Fewer messages have to be created, marshalled, and transmitted.
@@ -341,14 +340,14 @@ S: Content-Type: application/epp+xml
 S: Content-Language: en
 S:
 S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S: <repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:   <greeting>
 S:      <svcMenu>
 S:         <version>1.0</version>
 S:         <!-- The rest of the response is omitted here -->
 S:      <svcMenu>
 S:   </greeting>
-S: </epp>
+S: </repp>
 ```
 
 ##  Login
@@ -465,7 +464,7 @@ S: Content-Language: en
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -480,7 +479,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 
@@ -548,7 +547,7 @@ S: Content-Language: en
 S: REPP-Eppcode: 1301
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1301">
 S:      <msg>Command completed successfully; ack to dequeue</msg>
@@ -565,7 +564,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 #### Poll Ack
@@ -601,7 +600,7 @@ S: REPP-Cltrid: ABC-12345
 S: Content-Length: 145
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -612,7 +611,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 ### Transfer Query
@@ -682,7 +681,7 @@ S: Content-Language: en
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -695,7 +694,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 ## Transform Resources
@@ -721,18 +720,18 @@ C: Accept-Language: en
 C: Content-Length: 220
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-C:  <command>
-C:    <create>
+C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+C:  <request>
+C:    <body>
 C:      <domain:create
 C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
 C:        <domain:name>example.nl</domain:name>
 C:        <!-- The rest of the request is omitted here -->
 C:      </domain:create>
-C:    </create>
+C:    </body>
 C:    <clTRID>ABC-12345</clTRID>
-C:  </command>
-C:</epp>
+C:  </request>
+C:</repp>
 ```
 
 Example Domain Create response:
@@ -748,7 +747,7 @@ S: Location: https://repp.example.nl/repp/v1/domains/example.nl
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0"
 S:     xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
 S:   <response>
 S:      <result code="1000">
@@ -764,7 +763,7 @@ S:         <clTRID>ABC-12345</clTRID>
 S:         <svTRID>XYZ-12345</svTRID>
 S:      </trID>
 S:   </response>
-S:</epp>
+S:</repp>
 ```
 
 ### Delete
@@ -799,7 +798,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -809,7 +808,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 ### Renew
@@ -861,7 +860,7 @@ S: Content-Type: application/epp+xml
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -874,7 +873,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 ### Transfer
@@ -947,7 +946,7 @@ C: Accept-Language: en
 C: Content-Length: 252
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 C:  <command>
 C:    <transfer op="request">
 C:      <domain:transfer
@@ -960,7 +959,7 @@ C:      </domain:transfer>
 C:    </transfer>
 C:    <clTRID>ABC-12345</clTRID>
 C:  </command>
-C:</epp>
+C:</repp>
 ```
 -->
 
@@ -977,7 +976,7 @@ S: Location: https://repp.example.nl/repp/v1/domains/example.nl/transfers/latest
 S: REPP-Eppcode: 1001
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1001">
 S:      <msg>Command completed successfully; action pending</msg>
@@ -990,7 +989,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 
@@ -1026,7 +1025,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1036,7 +1035,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 #### Reject
@@ -1071,7 +1070,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1081,7 +1080,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 
 ```
 
@@ -1118,7 +1117,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1128,7 +1127,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 ### Update
@@ -1152,18 +1151,18 @@ C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 252
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-C:  <command>
-C:    <update>
+C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+C:  <request>
+C:    <body>
 C:      <domain:update
 C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
 C:        <domain:name>example.nl</domain:name>
 C:           <!-- The rest of the request is omitted here -->
 C:      </domain:update>
-C:    </update>
+C:    </body>
 C:    <clTRID>ABC-12345</clTRID>
-C:  </command>
-C:</epp>
+C:  </request>
+C:</repp>
 ```
 
 Example response:
@@ -1178,7 +1177,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1188,7 +1187,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 ## Extension Framework
@@ -1237,7 +1236,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1247,7 +1246,7 @@ S:      <clTRID>ABC-12345</clTRID>
 S:      <svTRID>XYZ-12345</svTRID>
 S:    </trID>
 S:  </response>
-S:</epp>
+S:</repp>
 ```
 
 ### Object Extension
@@ -1274,18 +1273,18 @@ C: Content-Type: application/epp+xml
 C: Content-Length: 220
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
-C:  <command>
-C:    <create>
-C:      <ips:create
-C:       xmlns:ip="https://example.nl/epp-ips-1.0">
-C:        <ips:address>192.0.2.1</ips:address>
+C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+C:  <request>
+C:    <body>
+C:      <ip:create
+C:       xmlns:ip="https://example.nl/epp-ip-1.0">
+C:        <ip:address>192.0.2.1</ip:address>
 C:        <!-- The rest of the request is omitted here -->
-C:      </ips:create>
-C:    </create>
+C:      </ip:create>
+C:    </body>
 C:    <clTRID>ABC-12345</clTRID>
-C:  </command>
-C:</epp>
+C:  </request>
+C:</repp>
 
 ```
 
@@ -1302,23 +1301,23 @@ S: Location: https://repp.example.nl/repp/v1/ips/192.0.2.1
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0"
-S:     xmlns:ips="https://example.nl/epp-ips-1.0">
+S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0"
+S:     xmlns:ip="https://example.nl/epp-ip-1.0">
 S:   <response>
 S:      <result code="1000">
 S:         <msg>Command completed successfully</msg>
 S:      </result>
 S:      <resData>
-S:         <ips:creData>
+S:         <ip:creData>
 S:            <!-- The rest of the response is omitted here -->
-S:         </ips:creData>
+S:         </ip:creData>
 S:      </resData>
 S:      <trID>
 S:         <clTRID>ABC-12345</clTRID>
 S:         <svTRID>XYZ-12345</svTRID>
 S:      </trID>
 S:   </response>
-S:</epp>
+S:</repp>
 
 ```
  
@@ -1347,6 +1346,391 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 -  Batch-oriented processing (combining multiple EPP commands in a single HTTP request) is not permitted. To maximize scalability
    every request must contain a single command, as described in (#rest).
 
+# Formal Syntax
+
+This section contains the XML Schema notation defined for REPP, based on the XML schema defined in [@!RFC5730].
+The XML schema defined in [@!RFC5730] contains XML elements and attributes that are no longer required in a REPP context.
+
+The following changes have been made:
+
+- deleted hello from eppType
+- renamed command to request in eppType
+- deleted choice and all child elements from commandtype 
+- renamed commandtype to requestType
+- renamed readWriteType to bodyType
+- created body element for requestType
+- deleted loginType
+- deleted credsOptionsType
+- deleted loginSvcType
+- deleted pwType
+- deleted pollType
+- deleted transferType
+- deleted transferOpType
+
+The formal syntax presented here is a complete schema representation of REPP suitable for automated validation of REPP XML instances.
+
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<schema targetNamespace="urn:ietf:params:xml:ns:repp-1.0"
+xmlns:repp="urn:ietf:params:xml:ns:repp-1.0"
+xmlns:eppcom="urn:ietf:params:xml:ns:eppcom-1.0"
+xmlns="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+
+   <!--
+   Import common element types.
+   -->
+     <import namespace="urn:ietf:params:xml:ns:eppcom-1.0"/>
+
+     <annotation>
+       <documentation>
+         RESTful Extensible Provisioning Protocol v1.0 schema.
+       </documentation>
+     </annotation>
+
+   <!--
+   Every EPP XML instance must begin with this element.
+   -->
+
+   <element name="repp" type="repp:eppType"/>
+
+   <!--
+   An EPP XML instance must contain a greeting, request, response, or extension.
+   -->
+     <complexType name="eppType">
+       <choice>
+         <element name="greeting" type="repp:greetingType"/>
+         <element name="request" type="repp:requestType"/>
+         <element name="response" type="repp:responseType"/>
+         <element name="extension" type="repp:extAnyType"/>
+       </choice>
+     </complexType>
+
+   <!--
+   A greeting is sent by a server in response to a client connection
+   or <hello>.
+   -->
+     <complexType name="greetingType">
+       <sequence>
+         <element name="svID" type="repp:sIDType"/>
+         <element name="svDate" type="dateTime"/>
+         <element name="svcMenu" type="repp:svcMenuType"/>
+         <element name="dcp" type="repp:dcpType"/>
+       </sequence>
+     </complexType>
+
+   <!--
+   Server IDs are strings with minimum and maximum length restrictions.
+   -->
+     <simpleType name="sIDType">
+       <restriction base="normalizedString">
+         <minLength value="3"/>
+         <maxLength value="64"/>
+       </restriction>
+     </simpleType>
+
+   <!--
+   A server greeting identifies available object services.
+   -->
+     <complexType name="svcMenuType">
+       <sequence>
+         <element name="version" type="repp:versionType"
+          maxOccurs="unbounded"/>
+         <element name="lang" type="language"
+          maxOccurs="unbounded"/>
+         <element name="objURI" type="anyURI"
+          maxOccurs="unbounded"/>
+         <element name="svcExtension" type="repp:extURIType"
+          minOccurs="0"/>
+       </sequence>
+     </complexType>
+
+   <!--
+   Data Collection Policy types.
+   -->
+     <complexType name="dcpType">
+       <sequence>
+         <element name="access" type="repp:dcpAccessType"/>
+         <element name="statement" type="repp:dcpStatementType"
+          maxOccurs="unbounded"/>
+         <element name="expiry" type="repp:dcpExpiryType"
+          minOccurs="0"/>
+       </sequence>
+     </complexType>
+
+     <complexType name="dcpAccessType">
+       <choice>
+         <element name="all"/>
+         <element name="none"/>
+         <element name="null"/>
+         <element name="other"/>
+         <element name="personal"/>
+         <element name="personalAndOther"/>
+       </choice>
+     </complexType>
+
+     <complexType name="dcpStatementType">
+       <sequence>
+         <element name="purpose" type="repp:dcpPurposeType"/>
+         <element name="recipient" type="repp:dcpRecipientType"/>
+         <element name="retention" type="repp:dcpRetentionType"/>
+       </sequence>
+     </complexType>
+
+     <complexType name="dcpPurposeType">
+       <sequence>
+         <element name="admin"
+          minOccurs="0"/>
+         <element name="contact"
+          minOccurs="0"/>
+         <element name="other"
+          minOccurs="0"/>
+         <element name="prov"
+          minOccurs="0"/>
+       </sequence>
+     </complexType>
+
+     <complexType name="dcpRecipientType">
+       <sequence>
+         <element name="other"
+          minOccurs="0"/>
+         <element name="ours" type="repp:dcpOursType"
+          minOccurs="0" maxOccurs="unbounded"/>
+         <element name="public"
+          minOccurs="0"/>
+         <element name="same"
+          minOccurs="0"/>
+         <element name="unrelated"
+          minOccurs="0"/>
+       </sequence>
+     </complexType>
+
+     <complexType name="dcpOursType">
+       <sequence>
+         <element name="recDesc" type="repp:dcpRecDescType"
+          minOccurs="0"/>
+       </sequence>
+     </complexType>
+
+     <simpleType name="dcpRecDescType">
+       <restriction base="token">
+         <minLength value="1"/>
+         <maxLength value="255"/>
+       </restriction>
+     </simpleType>
+
+     <complexType name="dcpRetentionType">
+       <choice>
+         <element name="business"/>
+         <element name="indefinite"/>
+         <element name="legal"/>
+         <element name="none"/>
+         <element name="stated"/>
+       </choice>
+     </complexType>
+
+     <complexType name="dcpExpiryType">
+       <choice>
+         <element name="absolute" type="dateTime"/>
+         <element name="relative" type="duration"/>
+       </choice>
+     </complexType>
+
+   <!--
+   Extension framework types.
+   -->
+     <complexType name="extAnyType">
+       <sequence>
+         <any namespace="##other"
+          maxOccurs="unbounded"/>
+       </sequence>
+     </complexType>
+
+     <complexType name="extURIType">
+       <sequence>
+         <element name="extURI" type="anyURI"
+          maxOccurs="unbounded"/>
+       </sequence>
+     </complexType>
+
+   <!--
+   An EPP version number is a dotted pair of decimal numbers.
+   -->
+     <simpleType name="versionType">
+       <restriction base="token">
+         <pattern value="[1-9]+\.[0-9]+"/>
+         <enumeration value="1.0"/>
+       </restriction>
+     </simpleType>
+
+   <!--
+   Request type, reduced to a single <body> element for object-data.
+   -->
+
+<complexType name="requestType">
+  <sequence>
+    <element name="body" type="repp:bodyType"/>
+    <element name="extension" type="repp:extAnyType"
+     minOccurs="0"/>
+    <element name="clTRID" type="repp:trIDStringType"
+     minOccurs="0"/>
+  </sequence>
+</complexType>
+
+ 
+   <!--
+     All other object-centric request bodies. EPP doesn't specify the syntax or
+     semantics of object-centric body elements.
+     The elements MUST be described in detail in another schema specific to the object.
+   -->
+     <complexType name="bodyType">
+       <sequence>
+         <any namespace="##other"/>
+       </sequence>
+     </complexType>
+
+     <complexType name="trIDType">
+       <sequence>
+         <element name="clTRID" type="repp:trIDStringType"
+          minOccurs="0"/>
+         <element name="svTRID" type="repp:trIDStringType"/>
+       </sequence>
+     </complexType>
+
+     <simpleType name="trIDStringType">
+       <restriction base="token">
+         <minLength value="3"/>
+         <maxLength value="64"/>
+       </restriction>
+     </simpleType>
+
+   <!--
+   Response types.
+   -->
+     <complexType name="responseType">
+       <sequence>
+         <element name="result" type="repp:resultType"
+          maxOccurs="unbounded"/>
+         <element name="msgQ" type="repp:msgQType"
+          minOccurs="0"/>
+
+         <element name="resData" type="repp:extAnyType"
+          minOccurs="0"/>
+         <element name="extension" type="repp:extAnyType"
+          minOccurs="0"/>
+         <element name="trID" type="repp:trIDType"/>
+       </sequence>
+     </complexType>
+
+     <complexType name="resultType">
+       <sequence>
+         <element name="msg" type="repp:msgType"/>
+         <choice minOccurs="0" maxOccurs="unbounded">
+           <element name="value" type="repp:errValueType"/>
+           <element name="extValue" type="repp:extErrValueType"/>
+         </choice>
+       </sequence>
+       <attribute name="code" type="repp:resultCodeType"
+        use="required"/>
+     </complexType>
+
+     <complexType name="errValueType" mixed="true">
+       <sequence>
+         <any namespace="##any" processContents="skip"/>
+       </sequence>
+       <anyAttribute namespace="##any" processContents="skip"/>
+     </complexType>
+
+     <complexType name="extErrValueType">
+       <sequence>
+         <element name="value" type="repp:errValueType"/>
+         <element name="reason" type="repp:msgType"/>
+       </sequence>
+     </complexType>
+
+     <complexType name="msgQType">
+       <sequence>
+         <element name="qDate" type="dateTime"
+          minOccurs="0"/>
+         <element name="msg" type="repp:mixedMsgType"
+          minOccurs="0"/>
+       </sequence>
+       <attribute name="count" type="unsignedLong"
+        use="required"/>
+       <attribute name="id" type="eppcom:minTokenType"
+        use="required"/>
+     </complexType>
+
+     <complexType name="mixedMsgType" mixed="true">
+       <sequence>
+         <any processContents="skip"
+          minOccurs="0" maxOccurs="unbounded"/>
+       </sequence>
+       <attribute name="lang" type="language"
+        default="en"/>
+     </complexType>
+
+   <!--
+   Human-readable text may be expressed in languages other than English.
+   -->
+     <complexType name="msgType">
+       <simpleContent>
+         <extension base="normalizedString">
+           <attribute name="lang" type="language"
+            default="en"/>
+         </extension>
+       </simpleContent>
+     </complexType>
+
+   <!--
+   EPP result codes.
+   -->
+     <simpleType name="resultCodeType">
+       <restriction base="unsignedShort">
+         <enumeration value="1000"/>
+         <enumeration value="1001"/>
+         <enumeration value="1300"/>
+         <enumeration value="1301"/>
+         <enumeration value="1500"/>
+         <enumeration value="2000"/>
+         <enumeration value="2001"/>
+         <enumeration value="2002"/>
+         <enumeration value="2003"/>
+         <enumeration value="2004"/>
+         <enumeration value="2005"/>
+         <enumeration value="2100"/>
+         <enumeration value="2101"/>
+         <enumeration value="2102"/>
+         <enumeration value="2103"/>
+         <enumeration value="2104"/>
+         <enumeration value="2105"/>
+         <enumeration value="2106"/>
+         <enumeration value="2200"/>
+         <enumeration value="2201"/>
+         <enumeration value="2202"/>
+         <enumeration value="2300"/>
+         <enumeration value="2301"/>
+         <enumeration value="2302"/>
+         <enumeration value="2303"/>
+         <enumeration value="2304"/>
+         <enumeration value="2305"/>
+         <enumeration value="2306"/>
+         <enumeration value="2307"/>
+         <enumeration value="2308"/>
+         <enumeration value="2400"/>
+         <enumeration value="2500"/>
+         <enumeration value="2501"/>
+         <enumeration value="2502"/>
+       </restriction>
+     </simpleType>
+
+   <!--
+   End of schema.
+   -->
+   </schema>
+```
 
 # IANA Considerations
 

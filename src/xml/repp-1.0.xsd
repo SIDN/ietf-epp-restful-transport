@@ -7,32 +7,13 @@ xmlns="http://www.w3.org/2001/XMLSchema"
 elementFormDefault="qualified">
 
    <!--
-   Changes:
-   - remove hello from eppType
-   - rename command to request in eppType
-   - delete poll command from commandtype
-   - create requestType based on commandtype
-   - delete commandtype 
-   - delete loginType
-   - delete login and logout from requestType
-   - delete credsOptionsType
-   - delete loginSvcType
-   - delete pwType
-   - delete pollType
-   - create bodyType with optiol transferOpType 
-   - delete readWriteType
-   - merged readWriteType and transferType into requestType
-   -->
-
-
-   <!--
    Import common element types.
    -->
      <import namespace="urn:ietf:params:xml:ns:eppcom-1.0" schemaLocation="eppcom-1.0.xsd"/>
 
      <annotation>
        <documentation>
-         Extensible Provisioning Protocol v1.0 schema.
+         RESTful Extensible Provisioning Protocol v1.0 schema.
        </documentation>
      </annotation>
 
@@ -43,8 +24,7 @@ elementFormDefault="qualified">
    <element name="repp" type="repp:eppType"/>
 
    <!--
-   An EPP XML instance must contain a greeting, request, command,
-   response, or extension.
+   An EPP XML instance must contain a greeting, request, response, or extension.
    -->
      <complexType name="eppType">
        <choice>
@@ -213,7 +193,7 @@ elementFormDefault="qualified">
      </simpleType>
 
    <!--
-   Command types.
+   Request type, reduced to a single <body> element for object-data.
    -->
 
 <complexType name="requestType">
@@ -228,31 +208,15 @@ elementFormDefault="qualified">
 
  
    <!--
-   The <transfer> command.  This is object-specific, and uses attributes
-   to identify the requested operation.
+     All other object-centric request bodies. EPP doesn't specify the syntax or
+     semantics of object-centric body elements.
+     The elements MUST be described in detail in another schema specific to the object.
    -->
      <complexType name="bodyType">
        <sequence>
          <any namespace="##other"/>
        </sequence>
-       <attribute name="op" type="repp:transferOpType"/>
      </complexType>
-
-     <simpleType name="transferOpType">
-       <restriction base="token">
-         <enumeration value="approve"/>
-         <enumeration value="cancel"/>
-         <enumeration value="query"/>
-         <enumeration value="reject"/>
-         <enumeration value="request"/>
-       </restriction>
-     </simpleType>
-
-   <!--
-   All other object-centric commands.  EPP doesn't specify the syntax or
-   semantics of object-centric command elements.  The elements MUST be
-   described in detail in another schema specific to the object.
-   -->
 
      <complexType name="trIDType">
        <sequence>
