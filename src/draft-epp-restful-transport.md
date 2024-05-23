@@ -9,7 +9,7 @@ TocDepth = 4
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "draft-wullink-restful-epp-01"
+value = "draft-wullink-restful-epp-02"
 stream = "IETF"
 status = "standard"
 
@@ -36,7 +36,8 @@ organization = "SIDN Labs"
 
 .# Abstract
 
-This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol [@!RFC5730]. REPP enables the development of a stateless and scalable EPP service.
+This document describes RESTful EPP (REPP), a data format agnostic, REST based Application Programming Interface (API) for the Extensible Provisioning Protocol [@!RFC5730]. REPP leverages HTTP and the REST architectural style to allow improved control of routing, caching and load balancing for EPP services.
+REPP is fully backwards compatible with the existing EPP  RFCs, but also includes additional features for more efficient EPP request processing.
 
 This document includes a mapping of [@!RFC5730] [@!XML] EPP commands to a RESTful HTTP based interface. Existing semantics as defined in [@!RFC5731], [@!RFC5732] and [@!RFC5733] are retained and reused in RESTful EPP. 
 
@@ -96,12 +97,15 @@ All example requests assume a REPP server using HTTP version 2 is listening on t
 RESTful transport for EPP (REPP) is designed to improve the ease of design, development, deployment, and management
 of an EPP service. This section lists the main design criteria.
 
+- Compatibility with existing EPP semantics and XML schemas, defined in the EPP RFCs.
+- Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of a request message should be optional.
+
 - Ease of use, provide a clear, clean, easy to use and self-explanatory interface that can easily be integrated into existing software systems. Based on these principles a [@!REST] architectural style was chosen, where a client  interacts with a REPP server via HTTP.
 
 - Scalability, HTTP allows the use of well know mechanisms for creating scalable systems, such as 
   load balancing. Load balancing at the level of request messages is more efficient compared to load balancing based on TCP sessions. When using EPP over TCP, the TCP session can be used to transmit multiple request messages and these are then all processed by a single EPP server and not load balanced across a pool of available servers. During normal registry operations, the bulk of EPP requests can be expected to be of the informational type, load balancing and possibly separating these to dedicated compute resources may also improve registry services and provide better performance for the transform request types.   
 
-- Stateless, [@!RFC5730] REQUIRES a stateful session between a client and server. A REPP server MUST be stateless and MUST NOT keep client session or any other application state. Each client request needs to provide all the information necessary for the server to successfully process the request.
+- Session state, [@!RFC5730] REQUIRES a stateful session between a client and server. A REPP server uses the HTTP protocol for a stateless transport layer. The EPP session information may be kept on both the client-side or the server-side.
 
 - Security, allow for the use of authentication and authorization solutions available 
   for HTTP based applications. HTTP provides an Authorization header [@!RFC2616, section 14.8].
@@ -110,8 +114,6 @@ of an EPP service. This section lists the main design criteria.
   The client must be able to signal to the server what media type the server should expect for the request content and to use for the response content.
   This document only describes the use of [@!XML] but the use of other media types such as JSON [@!RFC7159] should also be possible.
   
-- Compatibility with existing EPP semantics defined in the EPP RFCs.
-- Simplicity, when the semantics of a resource URL and HTTP method match an EPP command and request message, the use of a request message should be optional.
 
 - Performance, reducing the number of required request and response messages, improves the performance and network bandwidth requirements for both client and server. Fewer messages have to be created, marshalled, and transmitted.
 
@@ -156,13 +158,7 @@ The server MUST return HTTP status code 412 when the object identifier, for exam
 
 # Session Management
 
-One of the main design considerations for REPP is to enable scalable EPP services, for this reason the REPP uses a stateless architecture and does not create and maintain client sessions. The Session concept is an anti-pattern in the context of a stateless service, the server MUST NOT maintain any state information relating to the client or EPP transaction.
-
-Session management as described in [@!RFC5730] requires a stateful server architecture for maintaining client and application state over multiple client request and is therefore no longer supported.
-
-A REPP request MUST contain all information required for the server to be able to successfully process the request. The client MUST include authentication credentials for each request. This MAY be done by using any of the available HTTP authentication mechanisms, such as those described in [@!RFC2617].
-
-A REPP server MUST listen for HTTP connection requests on the standard TCP port assigned in [@!RFC2616]. After a connection has been established, the server MUST NOT return a Greeting message. The server MAY close open TCP connections when these violate server policies, for instance connections having a long inactivity period or a long connection lifetime. 
+A REPP server MUST listen for HTTP connection requests on the standard TCP port assigned in [@!RFC2616]. After a connection has been established, the server MUST return a Greeting message. The server MAY close open TCP connections when these violate server policies.
 
 # REST {#rest}
 
@@ -205,11 +201,6 @@ In contrast to EPP over TCP [@!RFC5734], a REPP request does not always require 
 All REPP HTTP headers listed below use the "REPP-" prefix, following the recommendations in [@!RFC6648].
 
 - `REPP-Cltrid`:  The client transaction identifier is the equivalent of the `clTRID` element defined in [@!RFC5730] and MUST be used accordingly, when the HTTP message body does not contain an EPP request that includes a cltrid.
-
-- `REPP-Svcs`: The namespace used by the client in the EPP request message, this is equivalent to the "svcs" element in the Login command defined in [@!RFC5730, section 2.9.1.1]. The client MUST use this header if the media type of the request or response message body content requires the server to know what namespaces to use. Such as is the case for XML-based request and response messages. The header value MAY contain multiple comma separated namespaces.
-    <!--TODO issue #31: do we add all namespaces to this header, also for extensions or do we need another header for extension -->
-
-- `REPP-Svcs-Ext`: The extension namespace used by the client in the EPP request message, this is equivalent to the "svcExtension" element in the Login command defined in [@!RFC5730, section 2.9.1.1]
 
 - `REPP-AuthInfo`: The client MAY use this header for sending basic token-based authorization information, as described in [@!RFC5731, section 2.6] and [@!RFC5733, section 2.8]. If the authorization is linked to a contact object then the client MUST also include the REPP-Roid header.
 
@@ -282,20 +273,20 @@ EPP commands are mapped to RESTful EPP requests using four elements.
 Command            | Method   | Resource                  | Request     | Response
 -------------------|----------|---------------------------|-------------|-----------------
 Hello              | OPTIONS  | /                         | No          | Yes
-Login              | N/A      | N/A                       | N/A         | N/A
-Logout             | N/A      | N/A                       | N/A         | N/A
+Login              | POST     | /session                  | Yes         | Yes
+Logout             | DELETE   | /session                  | N/A         | Yes
 Check              | HEAD     | /{c}/{i}                  | No          | No
 Info               | GET      | /{c}/{i}                  | Optional    | Yes
 Poll Request       | GET      | /messages                 | No          | Yes
 Poll Ack           | DELETE   | /messages/{i}             | No          | Yes
 Create             | POST     | /{c}                      | Yes         | Yes
 Delete             | DELETE   | /{c}/{i}                  | Optional    | Yes
-Renew              | POST     | /{c}/{i}/renewals         | Optional    | Yes
-Transfer Request   | POST     | /{c}/{i}/transfers        | Optional    | Yes
-Transfer Query     | GET      | /{c}/{i}/transfers/latest | Optional    | Yes
-Transfer Cancel    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Yes
-Transfer Approve   | PUT      | /{c}/{i}/transfers/latest | Optional    | Yes
-Transfer Reject    | DELETE   | /{c}/{i}/transfers/latest | Optional    | Yes
+Renew              | POST     | /{c}/{i}/renewal          | Optional    | Yes
+Transfer Request   | POST     | /{c}/{i}/transfer         | Optional    | Yes
+Transfer Query     | GET      | /{c}/{i}/transfer         | Optional    | Yes
+Transfer Cancel    | DELETE   | /{c}/{i}/transfer         | Optional    | Yes
+Transfer Approve   | PUT      | /{c}/{i}/transfer         | Optional    | Yes
+Transfer Reject    | DELETE   | /{c}/{i}/transfer         | Optional    | Yes
 Update             | PATCH    | /{c}/{i}                  | Yes         | Yes
 Extension [1]      | *        | /{c}/{i}/extension/*      | *           | *
 Extension [2]      | *        | /extension/*              | *           | *
@@ -312,7 +303,7 @@ When there is a mismatch between a resource identifier in the HTTP message body 
 - Request message: None
 - Response message: Greeting response
 
-Due to the stateless nature of REPP, the server does not respond by sending a Greeting message when a connection is created, as described in [@!RFC5730, section 2]. The client MUST request a Greeting by using the Hello request as described in [@!RFC5730, section 2.3]. The server MUST respond by returning a Greeting response, as defined in [@!RFC5730, section 2.4].
+The client MAY request a Greeting by using the Hello request as described in [@!RFC5730, section 2.3]. The server MUST respond by returning a Greeting response, as defined in [@!RFC5730, section 2.4].
 
 The version value used in the Hello response MUST match the version value used for the `{version}` path segment in the URL used for the Hello request.
 
@@ -339,7 +330,7 @@ S: Content-Type: application/epp+xml
 S: Content-Language: en
 S:
 S: <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S: <repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S: <epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:   <greeting>
 S:      <svcMenu>
 S:         <version>1.0</version>
@@ -351,24 +342,113 @@ S: </repp>
 
 ##  Login
 
-The Login command defined in [@!RFC5730, section 2.9.1.1] is used to establish a session between client and server, this is part of the stateful nature of the EPP protocol. REPP is stateless and MUST NOT maintain any client state and does not include a Login command. The client MUST include all information in a REPP request, required for the server to be able to properly process the request. This includes request attributes defined as for Login command in [@!RFC5730, section 2.9.1.1].
+The Login command defined in [@!RFC5730, section 2.9.1.1] is used to establish a session between client and server, this is part of the stateful nature of the EPP protocol. 
 
-  <!--TODO ISSUE #16: do we support changing password using /password  -->
-The request attributes from the Login command, used for configuring the client session, are moved to the HTTP layer.
+- Request: POST /session
+- Request message: Login
+- Response message: Login response
 
-- `clID`: Replaced by HTTP authentication
-- `pw:`: Replaced by HTTP authentication
-- `newPW`: Replaced by out of band process
-- `version`: Replaced by the `{version}` path parameter in the request URL.
-- `lang`: Replaced by the `Accept-Language` HTTP header.
-- `svcs`: Replaced by the `REPP-Svcs` HTTP header.
-- `svcExtension`:  Replaced by the `REPP-Svcs-Ext` HTTP header.
+Example request for creating a new EPP session:
 
-The server MUST check the namespaces used in the REPP-Svcs HTTP header. An unsupported namespace MUST result in the appropriate EPP result code.
+```xml
+C: POST /repp/v1/session HTTP/2
+C: Host: repp.example.nl
+C:
+C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C: <epp>
+C:   <command>
+C:       <login>
+C:          <clID>ClientX</clID>
+C:          <pw>super-secret-password</pw>
+C:          <options>
+C:             <version>1.0</version>
+C:             <lang>en</lang>
+C:          </options>
+C:          <svcs>
+C:             <objURI>urn:ietf:params:xml:ns:obj1</objURI>
+C:             <svcExtension>
+C:                  <extURI>http://custom/obj1ext-1.0</extURI>
+C:             </svcExtension>
+C:          </svcs>
+C:       </login>
+C:       <clTRID>ABC-12345</clTRID>
+C:  </command>
+C:</epp>
+
+```
+Example response:
+
+```xml
+S: HTTP/2 200 OK
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
+S: Server: Example REPP server v1.0
+S: REPP-Cltrid: ABC-12345
+S: REPP-Svtrid: XYZ-12345
+S: REPP-result-code: 1000
+S: Content-Length: 0
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1000">
+S:      <msg>Command completed successfully</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+
+```
 
 ##  Logout
 
-Due to the stateless nature of REPP, the session concept is no longer used and therefore the Logout command MUST NOT be implemented by the server.
+- Request: DELETE /session
+- Request message: Logout
+- Response message: Logout response
+
+Example request for destroying an existing EPP session:
+
+```xml
+C: DELETE /repp/v1/session HTTP/2
+C: Host: repp.example.nl
+C: Accept-Language: en
+C:
+C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+C:  <command>
+C:    <logout/>
+C:    <clTRID>ABC-12345</clTRID>
+C:  </command>
+C:</epp>
+
+```
+Example response:
+
+```xml
+S: HTTP/2 200 OK
+S: Date: Wed, 24 Jan 2024 12:00:00 UTC
+S: Server: Example REPP server v1.0
+S: REPP-Cltrid: ABC-12345
+S: REPP-Svtrid: XYZ-12345
+S: REPP-result-code: 1000
+S: Content-Length: 0
+S:
+S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
+S:  <response>
+S:    <result code="1500">
+S:      <msg>Command completed successfully; ending session</msg>
+S:    </result>
+S:    <trID>
+S:      <clTRID>ABC-12345</clTRID>
+S:      <svTRID>XYZ-12345</svTRID>
+S:    </trID>
+S:  </response>
+S:</epp>
+
+```
 
 ## Query Resources
 
@@ -393,7 +473,6 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept-Language: en
 C: REPP-Cltrid: ABC-12345
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 Example response:
@@ -407,7 +486,7 @@ S: REPP-Svtrid: XYZ-12345
 S: REPP-Check-Avail: 0
 S: REPP-Check-Reason: In use
 S: REPP-result-code: 1000
-s: Content-Length: 0
+S: Content-Length: 0
 
 ```
 
@@ -428,7 +507,6 @@ C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-Cltrid: ABC-12345
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -447,7 +525,6 @@ C: Accept-Language: en
 C: REPP-Cltrid: ABC-12345
 C: REPP-AuthInfo: secret-token
 C: REPP-Roid: REG-XYZ-12345
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -463,7 +540,7 @@ S: Content-Language: en
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -482,34 +559,30 @@ S:</repp>
 ```
 
 
-#### Object Filtering
+#### Host filter
 
   <!-- TODO: ISSIE #42: make filtering generic -->
-The server MUST support the use of the `filter` and `val` query parameters for the purpose of limiting the number of objects in a response.
+The server MUST support the use of the `hosts` query parameter for the purpose of limiting the number of objects in a response.
 
-- `filter`: The attribute or field name to apply the filter on
-- `val`: The value used for filtering
-
-The Domain Name Mapping [@!RFC5731, Section 3.1.2] describes an optional "hosts" attribute for the Domain Info command. This attribute may be used for filtering hosts returned in the Info response, and is mapped to the `filter` and `val` query parameters. If the filtering query parameters are absent from the request URL, the server MUST use the default filter value described in the corresponding EPP RFCs.
+The Domain Name Mapping [@!RFC5731, Section 3.1.2] describes an optional "hosts" attribute for the Domain Info command. This attribute may be used for filtering hosts returned in the Info response, and is mapped to the `hosts` query parameter. If the filtering query parameter is absent from the request URL, the server MUST use the default filter value described in the corresponding EPP RFCs.
 
 URLs used for filtering based on `hosts` attribute for Domain Info request:
 
 -  default: GET /domains/{id}
--  all: GET /domains/{id}?filter=hosts&val=all
--  del: GET /domains/{id}?filter=hosts&val=del
--  sub: GET /domains/{id}?filter=hosts&val=sub
--  none: GET /domains/{id}?filter=hosts&val=none
+-  all: GET /domains/{id}?hosts=all
+-  del: GET /domains/{id}?hosts=del
+-  sub: GET /domains/{id}?hosts=sub
+-  none: GET /domains/{id}?hosts=none
 
 Example Domain Info request, the response should only include delegated hosts:
 
 ```
-C: GET /repp/v1/domains/example.nl?filter=hosts&val=del HTTP/2
+C: GET /repp/v1/domains/example.nl?hosts=del HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-Cltrid: ABC-12345
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -546,7 +619,7 @@ S: Content-Language: en
 S: REPP-Eppcode: 1301
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1301">
 S:      <msg>Command completed successfully; ack to dequeue</msg>
@@ -599,7 +672,7 @@ S: REPP-Cltrid: ABC-12345
 S: Content-Length: 145
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -619,20 +692,19 @@ The Transfer Query request MUST use the special "latest" sub-resource to refer t
 latest object transfer. A latest transfer object may not exist, when no transfer has been initiated for the specified object.
 The "op=query" semantics from [@!RFC5730, Section 2.9.3.4] are assigned to the HTTP GET method. The client MUST use the HTTP GET method and MUST NOT add content to the HTTP message body.
 
-- Request: GET {collection}/{id}/transfers/latest
+- Request: GET {collection}/{id}/transfer
 - Request message: Optional
 - Response message: Transfer Query response
 
 Example domain name Transfer Query request without authorization information required:
 
 ```
-C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
+C: GET /repp/v1/domains/example.nl/transfer HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-Cltrid: ABC-12345
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -641,14 +713,13 @@ If the requested object has associated authorization information that is not lin
 Example domain name Transfer Query request using REPP-AuthInfo header:
 
 ```
-C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
+C: GET /repp/v1/domains/example.nl/transfer HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
 C: REPP-Cltrid: ABC-12345
 C: REPP-AuthInfo: secret-token
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 
 ```
 
@@ -657,7 +728,7 @@ If the requested object has associated authorization information linked to anoth
 Example domain name Transfer Query request and authorization using REPP-AuthInfo and the REPP-Roid header:
 
 ```
-C: GET /repp/v1/domains/example.nl/transfers/latest HTTP/2
+C: GET /repp/v1/domains/example.nl/transfer HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
@@ -681,7 +752,7 @@ S: Content-Language: en
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -715,12 +786,11 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: Content-Length: 220
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:  <request>
 C:    <body>
 C:      <domain:create
@@ -798,7 +868,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -813,21 +883,20 @@ S:</repp>
 
 ### Renew
 
-- Request: POST /{collection}/{id}/renewals
+- Request: POST /{collection}/{id}/renewal
 - Request message: Optional
 - Response message: Renew response
 
-The Renew command is mapped to a nested collection, named "renewals". Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The response MUST include the Location header for the renewed object.
+The Renew command is mapped to a nested collection, named "renewal". Not all EPP object types include support for the renew command. The current-date query parameter MAY be used for date on which the current validity period ends, as described in [@!RFC5731, section 3.2.3]. The new period MAY be added to the request using the unit and value request parameters. The response MUST include the Location header for the renewed object.
 
 Example Domain Renew request:
 
 ```
-C: POST /repp/v1/domains/example.nl/renewals?current-date=2024-01-01 HTTP/2
+C: POST /repp/v1/domains/example.nl/renewal?current-date=2024-01-01 HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: Content-Length: 0
 C: 
@@ -836,12 +905,11 @@ C:
 Example Domain Renew request, using 1 year period:
 
 ```
-C: POST /repp/v1/domains/example.nl/renewals?current-date=2024-01-01?unit=y&value=1 HTTP/2
+C: POST /repp/v1/domains/example.nl/renewal?current-date=2024-01-01?unit=y&value=1 HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: Content-Length: 0
 C: 
@@ -860,7 +928,7 @@ S: Content-Type: application/epp+xml
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -898,7 +966,6 @@ C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: REPP-Cltrid: ABC-12345
 C: Content-Length: 0
@@ -912,7 +979,6 @@ C: POST /repp/v1/domains/example.nl/transfers HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: REPP-Cltrid: ABC-12345
 C: REPP-AuthInfo: secret-token
 C: Accept-Language: en
@@ -927,42 +993,11 @@ C: POST /repp/v1/domains/example.nl/transfers?unit=y&value=1 HTTP/2
 C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Accept-Language: en
 C: REPP-Cltrid: ABC-12345
 C: Content-Length: 0
 
 ```
-
-<!--
-Example request using object authorization linked to a contact object:
-
-```xml
-C: POST /repp/v1/domains/example.nl/transfers HTTP/2
-C: Host: repp.example.nl
-C: Authorization: Bearer <token>
-C: Accept: application/epp+xml
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
-C: Accept-Language: en
-C: Content-Length: 252
-C:
-C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
-C:  <command>
-C:    <transfer op="request">
-C:      <domain:transfer
-C:       xmlns:domain="urn:ietf:params:xml:ns:domain-1.0">
-C:        <domain:name>example.nl</domain:name>
-C:        <domain:authInfo>
-C:          <domain:pw roid="DOM-12345">secret</domain:pw>
-C:        </domain:authInfo>
-C:      </domain:transfer>
-C:    </transfer>
-C:    <clTRID>ABC-12345</clTRID>
-C:  </command>
-C:</repp>
-```
--->
 
 Example Transfer response:
 
@@ -977,7 +1012,7 @@ S: Location: https://repp.example.nl/repp/v1/domains/example.nl/transfers/latest
 S: REPP-Eppcode: 1001
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1001">
 S:      <msg>Command completed successfully; action pending</msg>
@@ -1027,7 +1062,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1073,7 +1108,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1121,7 +1156,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1151,11 +1186,10 @@ C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Content-Type: application/epp+xml
 C: Accept-Language: en
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
 C: Content-Length: 252
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:  <request>
 C:    <body>
 C:      <domain:update
@@ -1181,7 +1215,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1221,8 +1255,6 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-Svcs: urn:ietf:params:xml:ns:domain-1.0
-C: REPP-Svcs-Ext: https://rxsd.domain-registry.nl/sidn-ext-epp-1.0
 C: REPP-Cltrid: ABC-12345
 
 ```
@@ -1240,7 +1272,7 @@ S: REPP-Cltrid: ABC-12345
 S: REPP-Eppcode: 1000
 S:
 S:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-S:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+S:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 S:  <response>
 S:    <result code="1000">
 S:      <msg>Command completed successfully</msg>
@@ -1271,13 +1303,12 @@ C: Host: repp.example.nl
 C: Authorization: Bearer <token>
 C: Accept: application/epp+xml
 C: Accept-Language: en
-C: REPP-Svcs-Ext: https://example.nl/epp-ips-1.0
 C: REPP-Cltrid: ABC-12345
 C: Content-Type: application/epp+xml
 C: Content-Length: 220
 C:
 C:<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-C:<repp xmlns="urn:ietf:params:xml:ns:repp-1.0">
+C:<epp xmlns="urn:ietf:params:xml:ns:epp-1.0">
 C:  <request>
 C:    <body>
 C:      <ip:create
@@ -1336,8 +1367,6 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 
 [@!RFC5730, section 2.1] of the EPP protocol specification describes considerations to be addressed by a transport or protocol mapping. These are satisfied by a combination of REPP features and features provided by HTTP protocol and underlying transport protocols, as described below.
 
-- The consideration: "The transport mapping MUST preserve the stateful nature of the protocol", is updated to: "The transport mapping MUST preserve the stateful nature of the protocol, when using a stateful transport protocol". REPP uses the REST architectural style for defining a stateless API based on the stateless HTTP protocol, and therefore satisfies the updated consideration. 
-
 - (#rest) describes how HTTP multiplexing may be used for pipelining multiple requests. A server may allow pipelining, requests are to be processed in the order they have been received.
 
 - REPP is based on the HTTP protocol, which uses the client-server model.
@@ -1350,407 +1379,10 @@ Command-Response Extensions allow for adding elements to an existing object mapp
 -  Batch-oriented processing (combining multiple EPP commands in a single HTTP request) is not permitted. To maximize scalability
    every request must contain a single command, as described in (#rest).
 
-# Formal Syntax {#formal-syntax}
-
-This section contains the XML Schema notation defined for REPP, based on the XML schema defined in [@!RFC5730].
-The XML schema defined in [@!RFC5730] contains XML elements and attributes that are no longer required in a REPP context.
-
-The following changes have been made:
-
-- deleted hello from eppType
-- renamed command to request in eppType
-- deleted choice and all child elements from commandtype 
-- renamed commandtype to requestType
-- renamed readWriteType to bodyType
-- created body element for requestType
-- deleted loginType
-- deleted credsOptionsType
-- deleted loginSvcType
-- deleted pwType
-- deleted pollType
-- deleted transferType
-- deleted transferOpType
-
-The formal syntax presented here is a complete schema representation of REPP suitable for automated validation of REPP XML instances.
-
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-
-<schema targetNamespace="urn:ietf:params:xml:ns:repp-1.0"
-xmlns:repp="urn:ietf:params:xml:ns:repp-1.0"
-xmlns:eppcom="urn:ietf:params:xml:ns:eppcom-1.0"
-xmlns="http://www.w3.org/2001/XMLSchema"
-elementFormDefault="qualified">
-
-   <!--
-   Import common element types.
-   -->
-     <import namespace="urn:ietf:params:xml:ns:eppcom-1.0"/>
-
-     <annotation>
-       <documentation>
-         RESTful Extensible Provisioning Protocol v1.0 schema.
-       </documentation>
-     </annotation>
-
-   <!--
-   Every EPP XML instance must begin with this element.
-   -->
-
-   <element name="repp" type="repp:eppType"/>
-
-   <!--
-   An EPP XML instance must contain a greeting, request, response, or extension.
-   -->
-     <complexType name="eppType">
-       <choice>
-         <element name="greeting" type="repp:greetingType"/>
-         <element name="request" type="repp:requestType"/>
-         <element name="response" type="repp:responseType"/>
-         <element name="extension" type="repp:extAnyType"/>
-       </choice>
-     </complexType>
-
-   <!--
-   A greeting is sent by a server in response to a client connection
-   or <hello>.
-   -->
-     <complexType name="greetingType">
-       <sequence>
-         <element name="svID" type="repp:sIDType"/>
-         <element name="svDate" type="dateTime"/>
-         <element name="svcMenu" type="repp:svcMenuType"/>
-         <element name="dcp" type="repp:dcpType"/>
-       </sequence>
-     </complexType>
-
-   <!--
-   Server IDs are strings with minimum and maximum length restrictions.
-   -->
-     <simpleType name="sIDType">
-       <restriction base="normalizedString">
-         <minLength value="3"/>
-         <maxLength value="64"/>
-       </restriction>
-     </simpleType>
-
-   <!--
-   A server greeting identifies available object services.
-   -->
-     <complexType name="svcMenuType">
-       <sequence>
-         <element name="version" type="repp:versionType"
-          maxOccurs="unbounded"/>
-         <element name="lang" type="language"
-          maxOccurs="unbounded"/>
-         <element name="objURI" type="anyURI"
-          maxOccurs="unbounded"/>
-         <element name="svcExtension" type="repp:extURIType"
-          minOccurs="0"/>
-       </sequence>
-     </complexType>
-
-   <!--
-   Data Collection Policy types.
-   -->
-     <complexType name="dcpType">
-       <sequence>
-         <element name="access" type="repp:dcpAccessType"/>
-         <element name="statement" type="repp:dcpStatementType"
-          maxOccurs="unbounded"/>
-         <element name="expiry" type="repp:dcpExpiryType"
-          minOccurs="0"/>
-       </sequence>
-     </complexType>
-
-     <complexType name="dcpAccessType">
-       <choice>
-         <element name="all"/>
-         <element name="none"/>
-         <element name="null"/>
-         <element name="other"/>
-         <element name="personal"/>
-         <element name="personalAndOther"/>
-       </choice>
-     </complexType>
-
-     <complexType name="dcpStatementType">
-       <sequence>
-         <element name="purpose" type="repp:dcpPurposeType"/>
-         <element name="recipient" type="repp:dcpRecipientType"/>
-         <element name="retention" type="repp:dcpRetentionType"/>
-       </sequence>
-     </complexType>
-
-     <complexType name="dcpPurposeType">
-       <sequence>
-         <element name="admin"
-          minOccurs="0"/>
-         <element name="contact"
-          minOccurs="0"/>
-         <element name="other"
-          minOccurs="0"/>
-         <element name="prov"
-          minOccurs="0"/>
-       </sequence>
-     </complexType>
-
-     <complexType name="dcpRecipientType">
-       <sequence>
-         <element name="other"
-          minOccurs="0"/>
-         <element name="ours" type="repp:dcpOursType"
-          minOccurs="0" maxOccurs="unbounded"/>
-         <element name="public"
-          minOccurs="0"/>
-         <element name="same"
-          minOccurs="0"/>
-         <element name="unrelated"
-          minOccurs="0"/>
-       </sequence>
-     </complexType>
-
-     <complexType name="dcpOursType">
-       <sequence>
-         <element name="recDesc" type="repp:dcpRecDescType"
-          minOccurs="0"/>
-       </sequence>
-     </complexType>
-
-     <simpleType name="dcpRecDescType">
-       <restriction base="token">
-         <minLength value="1"/>
-         <maxLength value="255"/>
-       </restriction>
-     </simpleType>
-
-     <complexType name="dcpRetentionType">
-       <choice>
-         <element name="business"/>
-         <element name="indefinite"/>
-         <element name="legal"/>
-         <element name="none"/>
-         <element name="stated"/>
-       </choice>
-     </complexType>
-
-     <complexType name="dcpExpiryType">
-       <choice>
-         <element name="absolute" type="dateTime"/>
-         <element name="relative" type="duration"/>
-       </choice>
-     </complexType>
-
-   <!--
-   Extension framework types.
-   -->
-     <complexType name="extAnyType">
-       <sequence>
-         <any namespace="##other"
-          maxOccurs="unbounded"/>
-       </sequence>
-     </complexType>
-
-     <complexType name="extURIType">
-       <sequence>
-         <element name="extURI" type="anyURI"
-          maxOccurs="unbounded"/>
-       </sequence>
-     </complexType>
-
-   <!--
-   An EPP version number is a dotted pair of decimal numbers.
-   -->
-     <simpleType name="versionType">
-       <restriction base="token">
-         <pattern value="[1-9]+\.[0-9]+"/>
-         <enumeration value="1.0"/>
-       </restriction>
-     </simpleType>
-
-   <!--
-   Request type, reduced to a single <body> element for object-data.
-   -->
-
-<complexType name="requestType">
-  <sequence>
-    <element name="body" type="repp:bodyType"/>
-    <element name="extension" type="repp:extAnyType"
-     minOccurs="0"/>
-    <element name="clTRID" type="repp:trIDStringType"
-     minOccurs="0"/>
-  </sequence>
-</complexType>
-
- 
-   <!--
-     All other object-centric request bodies. EPP doesn't specify the syntax or
-     semantics of object-centric body elements.
-     The elements MUST be described in detail in another schema specific to the object.
-   -->
-     <complexType name="bodyType">
-       <sequence>
-         <any namespace="##other"/>
-       </sequence>
-     </complexType>
-
-     <complexType name="trIDType">
-       <sequence>
-         <element name="clTRID" type="repp:trIDStringType"
-          minOccurs="0"/>
-         <element name="svTRID" type="repp:trIDStringType"/>
-       </sequence>
-     </complexType>
-
-     <simpleType name="trIDStringType">
-       <restriction base="token">
-         <minLength value="3"/>
-         <maxLength value="64"/>
-       </restriction>
-     </simpleType>
-
-   <!--
-   Response types.
-   -->
-     <complexType name="responseType">
-       <sequence>
-         <element name="result" type="repp:resultType"
-          maxOccurs="unbounded"/>
-         <element name="msgQ" type="repp:msgQType"
-          minOccurs="0"/>
-
-         <element name="resData" type="repp:extAnyType"
-          minOccurs="0"/>
-         <element name="extension" type="repp:extAnyType"
-          minOccurs="0"/>
-         <element name="trID" type="repp:trIDType"/>
-       </sequence>
-     </complexType>
-
-     <complexType name="resultType">
-       <sequence>
-         <element name="msg" type="repp:msgType"/>
-         <choice minOccurs="0" maxOccurs="unbounded">
-           <element name="value" type="repp:errValueType"/>
-           <element name="extValue" type="repp:extErrValueType"/>
-         </choice>
-       </sequence>
-       <attribute name="code" type="repp:resultCodeType"
-        use="required"/>
-     </complexType>
-
-     <complexType name="errValueType" mixed="true">
-       <sequence>
-         <any namespace="##any" processContents="skip"/>
-       </sequence>
-       <anyAttribute namespace="##any" processContents="skip"/>
-     </complexType>
-
-     <complexType name="extErrValueType">
-       <sequence>
-         <element name="value" type="repp:errValueType"/>
-         <element name="reason" type="repp:msgType"/>
-       </sequence>
-     </complexType>
-
-     <complexType name="msgQType">
-       <sequence>
-         <element name="qDate" type="dateTime"
-          minOccurs="0"/>
-         <element name="msg" type="repp:mixedMsgType"
-          minOccurs="0"/>
-       </sequence>
-       <attribute name="count" type="unsignedLong"
-        use="required"/>
-       <attribute name="id" type="eppcom:minTokenType"
-        use="required"/>
-     </complexType>
-
-     <complexType name="mixedMsgType" mixed="true">
-       <sequence>
-         <any processContents="skip"
-          minOccurs="0" maxOccurs="unbounded"/>
-       </sequence>
-       <attribute name="lang" type="language"
-        default="en"/>
-     </complexType>
-
-   <!--
-   Human-readable text may be expressed in languages other than English.
-   -->
-     <complexType name="msgType">
-       <simpleContent>
-         <extension base="normalizedString">
-           <attribute name="lang" type="language"
-            default="en"/>
-         </extension>
-       </simpleContent>
-     </complexType>
-
-   <!--
-   EPP result codes.
-   -->
-     <simpleType name="resultCodeType">
-       <restriction base="unsignedShort">
-         <enumeration value="1000"/>
-         <enumeration value="1001"/>
-         <enumeration value="1300"/>
-         <enumeration value="1301"/>
-         <enumeration value="1500"/>
-         <enumeration value="2000"/>
-         <enumeration value="2001"/>
-         <enumeration value="2002"/>
-         <enumeration value="2003"/>
-         <enumeration value="2004"/>
-         <enumeration value="2005"/>
-         <enumeration value="2100"/>
-         <enumeration value="2101"/>
-         <enumeration value="2102"/>
-         <enumeration value="2103"/>
-         <enumeration value="2104"/>
-         <enumeration value="2105"/>
-         <enumeration value="2106"/>
-         <enumeration value="2200"/>
-         <enumeration value="2201"/>
-         <enumeration value="2202"/>
-         <enumeration value="2300"/>
-         <enumeration value="2301"/>
-         <enumeration value="2302"/>
-         <enumeration value="2303"/>
-         <enumeration value="2304"/>
-         <enumeration value="2305"/>
-         <enumeration value="2306"/>
-         <enumeration value="2307"/>
-         <enumeration value="2308"/>
-         <enumeration value="2400"/>
-         <enumeration value="2500"/>
-         <enumeration value="2501"/>
-         <enumeration value="2502"/>
-       </restriction>
-     </simpleType>
-
-   <!--
-   End of schema.
-   -->
-   </schema>
-```
 
 # IANA Considerations
 
-The URNs used in this document for XML namespaces and XML schemas have been registered by the IANA as described by [@!RFC3688].
-
-Registration request for the REPP namespace:
-
-- URI: urn:ietf:params:xml:ns:repp-1.0
-- Registrant Contact: See the "Author's Address" section of this document.
-- XML: None.  Namespace URIs do not represent an XML specification.
-
-Registration request for the EPP XML schema:
-
-- URI: urn:ietf:params:xml:schema:repp-1.0
-- Registrant Contact: See the "Author's Address" section of this document.
-- XML: See the (#formal-syntax) section of this document.
+[TBD: Probably none]
 
 
 # Internationalization Considerations
@@ -1763,36 +1395,14 @@ Running REPP relies on the security of the underlying HTTP [@!RFC9110] transport
 
 Data confidentiality and integrity MUST be enforced, all data transport between a client and server MUST be encrypted using TLS [@!RFC5246]. [@!RFC5734, Section 9] describes the level of security that is REQUIRED for all REPP endpoints.
 
-The EPP Login command, described by [@!RFC5730], for creating a client session MUST NOT be used anymore. Due to the stateless nature of REPP, the client MUST include the authentication credentials in each HTTP request. This MAY be done by using JSON Web Tokens (JWT) [@!RFC7519] or Basic authentication [@!RFC7617].
-
-The management of authentication credentials, such as the "Change password" functionality of the EPP Login command, MUST be performed by an out-of-band process. REPP (HTTP) servers are vulnerable to common denial-of-service attacks. Therefore, the security considerations of [@!RFC5734] also apply to REPP.
-
-
-# Obsolete EPP Result Codes
-
-The following EPP result codes specified in [@!RFC5730] are no longer
-meaningful in the context of RESTful EPP and MUST NOT be used.
-
-| Code | Reason                                                     
-------|------------------------------------------------------------
-| 1500 | Authentication functionality is delegated to the HTTP protocol layer                
-| 2100 | The REPP URL includes a path segment for the version
-| 2200 | Authentication functionality is delegated to the HTTP protocol layer           
-| 2501 | Authentication functionality is delegated to the HTTP protocol layer 
-| 2502 | Rate limiting functionality is delegated to the HTTP protocol layer    
-Table: Obsolete EPP result codes
 
 # Overview of EPP modifications
 
 This section lists a non-exhaustive overview of the most important modifications made in RESTful EPP, compared to the EPP RFCs.
 
-- The use of HTTP as an additional application layer protocol.
-- HTTP adds additional status codes.
-- Some Commands are no longer used, such as the Login and Logout command.
-- No client sessions, every request needs to include authentication credentials.
+- HTTP is used as a transport (application layer) protocol.
 - A command MUST only contain a single object to operate on, the check command. For example, the Check command only supports 1 object per request.
-- Request messages may no longer be required for most commands
-- Authentication and authorizations have become an out-of-band process.
+- Request messages may no longer be required for some commands
 - Support for additional data formats such as JSON.
 
 
