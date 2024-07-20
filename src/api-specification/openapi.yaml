@@ -86,16 +86,6 @@ paths:
         - $ref: '#/components/parameters/p_roid'
         - $ref: '#/components/parameters/p_filter_name'
         - $ref: '#/components/parameters/p_filter_val'
-        - name: filter
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: val
-          in: query
-          required: false
-          schema:
-            type: string
       responses:
           '200':
             $ref: '#/components/responses/200okWithBody'
@@ -172,7 +162,6 @@ paths:
      - $ref: '#/components/parameters/p_cltrid'
      - $ref: '#/components/parameters/p_svcs'
      - $ref: '#/components/parameters/p_svcs-ext'
-     - $ref: '#/components/parameters/p_acceptLanguage'
      - $ref: '#/components/parameters/p_acceptLanguage'
      - $ref: '#/components/parameters/p_authinfo'
      - $ref: '#/components/parameters/p_roid'
@@ -545,7 +534,7 @@ components:
       required: false
     p_filter_val:
       in: query
-      name: filter
+      name: val
       description: Value to use for filter
       schema:
         type: string
