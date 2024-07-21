@@ -1,5 +1,13 @@
 # Generating code
 
+## Install OpenAPI Generator
+
+```
+brew install openapi-generator
+```
+
+see: https://github.com/OpenAPITools/openapi-generator?tab=readme-ov-file#15---homebrew
+
 ## Modify controller template
 
 Template will include header params in the generated code.
