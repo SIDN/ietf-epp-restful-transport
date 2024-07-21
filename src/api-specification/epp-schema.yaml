@@ -1,0 +1,1257 @@
+$schema: http://json-schema.org/draft-07/schema#
+additionalProperties: false
+definitions:
+  domain:addRemType:
+    additionalProperties: false
+    properties:
+      contact:
+        items:
+          $ref: '#/definitions/domain:contactType'
+        minItems: 0
+        type: array
+      ns:
+        $ref: '#/definitions/domain:nsType'
+      status:
+        items:
+          $ref: '#/definitions/domain:statusType'
+        maxItems: 11
+        minItems: 0
+        type: array
+    type: object
+  domain:authInfoChgType:
+    oneOf:
+    - properties:
+        pw:
+          $ref: '#/definitions/eppcom:pwAuthInfoType'
+      required:
+      - pw
+      type: object
+    - properties:
+        ext:
+          $ref: '#/definitions/eppcom:extAuthInfoType'
+      required:
+      - ext
+      type: object
+    - properties:
+        'null':
+          type: 'null'
+      required:
+      - 'null'
+      type: object
+  domain:authInfoType:
+    oneOf:
+    - properties:
+        pw:
+          $ref: '#/definitions/eppcom:pwAuthInfoType'
+      required:
+      - pw
+      type: object
+    - properties:
+        ext:
+          $ref: '#/definitions/eppcom:extAuthInfoType'
+      required:
+      - ext
+      type: object
+  domain:checkNameType:
+    properties:
+      '#value':
+        maxLength: 255
+        minLength: 1
+        type: string
+      '@avail':
+        type: boolean
+    type: object
+  domain:checkType:
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/domain:checkNameType'
+      reason:
+        $ref: '#/definitions/eppcom:reasonType'
+    required:
+    - name
+    type: object
+  domain:chgType:
+    additionalProperties: false
+    properties:
+      authInfo:
+        $ref: '#/definitions/domain:authInfoChgType'
+      registrant:
+        $ref: '#/definitions/domain:clIDChgType'
+    type: object
+  domain:chkDataType:
+    additionalProperties: false
+    properties:
+      cd:
+        items:
+          $ref: '#/definitions/domain:checkType'
+        minItems: 1
+        type: array
+    type: object
+  domain:clIDChgType:
+    maxLength: 16
+    minLength: 0
+    type: string
+  domain:contactAttrType:
+    enum: &id001
+    - admin
+    - billing
+    - tech
+    type: string
+  domain:contactType:
+    properties:
+      '#value':
+        maxLength: 16
+        minLength: 3
+        type: string
+      '@type':
+        enum: *id001
+        type: string
+    type: object
+  domain:creDataType:
+    additionalProperties: false
+    properties:
+      crDate:
+        format: date-time
+        type: string
+      exDate:
+        format: date-time
+        type: string
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+    required:
+    - name
+    - crDate
+    type: object
+  domain:createType:
+    additionalProperties: false
+    properties:
+      authInfo:
+        $ref: '#/definitions/domain:authInfoType'
+      contact:
+        items:
+          $ref: '#/definitions/domain:contactType'
+        minItems: 0
+        type: array
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+      ns:
+        $ref: '#/definitions/domain:nsType'
+      period:
+        $ref: '#/definitions/domain:periodType'
+      registrant:
+        $ref: '#/definitions/eppcom:clIDType'
+    required:
+    - name
+    - authInfo
+    type: object
+  domain:hostAttrType:
+    additionalProperties: false
+    properties:
+      hostAddr:
+        items:
+          $ref: '#/definitions/host:addrType'
+        minItems: 0
+        type: array
+      hostName:
+        $ref: '#/definitions/eppcom:labelType'
+    required:
+    - hostName
+    type: object
+  domain:hostsType:
+    enum: &id002
+    - all
+    - del
+    - none
+    - sub
+    type: string
+  domain:infDataType:
+    additionalProperties: false
+    properties:
+      authInfo:
+        $ref: '#/definitions/domain:authInfoType'
+      clID:
+        $ref: '#/definitions/eppcom:clIDType'
+      contact:
+        items:
+          $ref: '#/definitions/domain:contactType'
+        minItems: 0
+        type: array
+      crDate:
+        format: date-time
+        type: string
+      crID:
+        $ref: '#/definitions/eppcom:clIDType'
+      exDate:
+        format: date-time
+        type: string
+      host:
+        items:
+          $ref: '#/definitions/eppcom:labelType'
+        minItems: 0
+        type: array
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+      ns:
+        $ref: '#/definitions/domain:nsType'
+      registrant:
+        $ref: '#/definitions/eppcom:clIDType'
+      roid:
+        $ref: '#/definitions/eppcom:roidType'
+      status:
+        items:
+          $ref: '#/definitions/domain:statusType'
+        maxItems: 11
+        minItems: 0
+        type: array
+      trDate:
+        format: date-time
+        type: string
+      upDate:
+        format: date-time
+        type: string
+      upID:
+        $ref: '#/definitions/eppcom:clIDType'
+    required:
+    - name
+    - roid
+    - clID
+    type: object
+  domain:infoNameType:
+    properties:
+      '#value':
+        maxLength: 255
+        minLength: 1
+        type: string
+      '@hosts':
+        enum: *id002
+        type: string
+    type: object
+  domain:infoType:
+    additionalProperties: false
+    properties:
+      authInfo:
+        $ref: '#/definitions/domain:authInfoType'
+      name:
+        $ref: '#/definitions/domain:infoNameType'
+    required:
+    - name
+    type: object
+  domain:mNameType:
+    additionalProperties: false
+    properties:
+      name:
+        items:
+          $ref: '#/definitions/eppcom:labelType'
+        minItems: 1
+        type: array
+    type: object
+  domain:nsType:
+    oneOf:
+    - properties:
+        hostObj:
+          items:
+            $ref: '#/definitions/eppcom:labelType'
+          minItems: 1
+          type: array
+      type: object
+    - properties:
+        hostAttr:
+          items:
+            $ref: '#/definitions/domain:hostAttrType'
+          minItems: 1
+          type: array
+      type: object
+  domain:pLimitType:
+    maximum: 99
+    minimum: 1
+    type: integer
+  domain:pUnitType:
+    enum: &id003
+    - y
+    - m
+    type: string
+  domain:paNameType:
+    properties:
+      '#value':
+        maxLength: 255
+        minLength: 1
+        type: string
+      '@paResult':
+        type: boolean
+    type: object
+  domain:panDataType:
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/domain:paNameType'
+      paDate:
+        format: date-time
+        type: string
+      paTRID:
+        $ref: '#/definitions/epp:trIDType'
+    required:
+    - name
+    - paTRID
+    - paDate
+    type: object
+  domain:periodType:
+    properties:
+      '#value':
+        maximum: 99
+        minimum: 1
+        type: integer
+      '@unit':
+        enum: *id003
+        type: string
+    type: object
+  domain:renDataType:
+    additionalProperties: false
+    properties:
+      exDate:
+        format: date-time
+        type: string
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+    required:
+    - name
+    type: object
+  domain:renewType:
+    additionalProperties: false
+    properties:
+      curExpDate:
+        format: date
+        type: string
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+      period:
+        $ref: '#/definitions/domain:periodType'
+    required:
+    - name
+    - curExpDate
+    type: object
+  domain:sNameType:
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+    required:
+    - name
+    type: object
+  domain:statusType:
+    properties:
+      '#value':
+        type: string
+      '@lang':
+        type: string
+      '@s':
+        enum: &id004
+        - clientDeleteProhibited
+        - clientHold
+        - clientRenewProhibited
+        - clientTransferProhibited
+        - clientUpdateProhibited
+        - inactive
+        - ok
+        - pendingCreate
+        - pendingDelete
+        - pendingRenew
+        - pendingTransfer
+        - pendingUpdate
+        - serverDeleteProhibited
+        - serverHold
+        - serverRenewProhibited
+        - serverTransferProhibited
+        - serverUpdateProhibited
+        type: string
+    type: object
+  domain:statusValueType:
+    enum: *id004
+    type: string
+  domain:transferType:
+    additionalProperties: false
+    properties:
+      authInfo:
+        $ref: '#/definitions/domain:authInfoType'
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+      period:
+        $ref: '#/definitions/domain:periodType'
+    required:
+    - name
+    type: object
+  domain:trnDataType:
+    additionalProperties: false
+    properties:
+      acDate:
+        format: date-time
+        type: string
+      acID:
+        $ref: '#/definitions/eppcom:clIDType'
+      exDate:
+        format: date-time
+        type: string
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+      reDate:
+        format: date-time
+        type: string
+      reID:
+        $ref: '#/definitions/eppcom:clIDType'
+      trStatus:
+        $ref: '#/definitions/eppcom:trStatusType'
+    required:
+    - name
+    - trStatus
+    - reID
+    - reDate
+    - acID
+    - acDate
+    type: object
+  domain:updateType:
+    additionalProperties: false
+    properties:
+      add:
+        $ref: '#/definitions/domain:addRemType'
+      chg:
+        $ref: '#/definitions/domain:chgType'
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+      rem:
+        $ref: '#/definitions/domain:addRemType'
+    required:
+    - name
+    type: object
+  epp:commandType:
+    additionalProperties:
+      oneOf:
+      - properties:
+          check:
+            $ref: '#/definitions/epp:readWriteType'
+        required:
+        - check
+        type: object
+      - properties:
+          create:
+            $ref: '#/definitions/epp:readWriteType'
+        required:
+        - create
+        type: object
+      - properties:
+          delete:
+            $ref: '#/definitions/epp:readWriteType'
+        required:
+        - delete
+        type: object
+      - properties:
+          info:
+            $ref: '#/definitions/epp:readWriteType'
+        required:
+        - info
+        type: object
+      - properties:
+          login:
+            $ref: '#/definitions/epp:loginType'
+        required:
+        - login
+        type: object
+      - properties:
+          logout:
+            type: 'null'
+        required:
+        - logout
+        type: object
+      - properties:
+          poll:
+            $ref: '#/definitions/epp:pollType'
+        required:
+        - poll
+        type: object
+      - properties:
+          renew:
+            $ref: '#/definitions/epp:readWriteType'
+        required:
+        - renew
+        type: object
+      - properties:
+          transfer:
+            $ref: '#/definitions/epp:transferType'
+        required:
+        - transfer
+        type: object
+      - properties:
+          update:
+            $ref: '#/definitions/epp:readWriteType'
+        required:
+        - update
+        type: object
+    maxProperties: 1
+    minProperties: 1
+    properties:
+      clTRID:
+        $ref: '#/definitions/epp:trIDStringType'
+      extension:
+        $ref: '#/definitions/epp:extAnyType'
+    type: object
+  epp:credsOptionsType:
+    additionalProperties: false
+    properties:
+      lang:
+        type: string
+      version:
+        $ref: '#/definitions/epp:versionType'
+    required:
+    - version
+    - lang
+    type: object
+  epp:dcpAccessType:
+    oneOf:
+    - properties:
+        all:
+          type: 'null'
+      required:
+      - all
+      type: object
+    - properties:
+        none:
+          type: 'null'
+      required:
+      - none
+      type: object
+    - properties:
+        'null':
+          type: 'null'
+      required:
+      - 'null'
+      type: object
+    - properties:
+        other:
+          type: 'null'
+      required:
+      - other
+      type: object
+    - properties:
+        personal:
+          type: 'null'
+      required:
+      - personal
+      type: object
+    - properties:
+        personalAndOther:
+          type: 'null'
+      required:
+      - personalAndOther
+      type: object
+  epp:dcpExpiryType:
+    oneOf:
+    - properties:
+        absolute:
+          format: date-time
+          type: string
+      required:
+      - absolute
+      type: object
+    - properties:
+        relative:
+          format: duration
+          type: string
+      required:
+      - relative
+      type: object
+  epp:dcpOursType:
+    additionalProperties: false
+    properties:
+      recDesc:
+        $ref: '#/definitions/epp:dcpRecDescType'
+    type: object
+  epp:dcpPurposeType:
+    additionalProperties: false
+    properties:
+      admin:
+        type: 'null'
+      contact:
+        type: 'null'
+      other:
+        type: 'null'
+      prov:
+        type: 'null'
+    type: object
+  epp:dcpRecDescType:
+    maxLength: 255
+    minLength: 1
+    type: string
+  epp:dcpRecipientType:
+    additionalProperties: false
+    properties:
+      other:
+        type: 'null'
+      ours:
+        items:
+          $ref: '#/definitions/epp:dcpOursType'
+        minItems: 0
+        type: array
+      public:
+        type: 'null'
+      same:
+        type: 'null'
+      unrelated:
+        type: 'null'
+    type: object
+  epp:dcpRetentionType:
+    oneOf:
+    - properties:
+        business:
+          type: 'null'
+      required:
+      - business
+      type: object
+    - properties:
+        indefinite:
+          type: 'null'
+      required:
+      - indefinite
+      type: object
+    - properties:
+        legal:
+          type: 'null'
+      required:
+      - legal
+      type: object
+    - properties:
+        none:
+          type: 'null'
+      required:
+      - none
+      type: object
+    - properties:
+        stated:
+          type: 'null'
+      required:
+      - stated
+      type: object
+  epp:dcpStatementType:
+    additionalProperties: false
+    properties:
+      purpose:
+        $ref: '#/definitions/epp:dcpPurposeType'
+      recipient:
+        $ref: '#/definitions/epp:dcpRecipientType'
+      retention:
+        $ref: '#/definitions/epp:dcpRetentionType'
+    required:
+    - purpose
+    - recipient
+    - retention
+    type: object
+  epp:dcpType:
+    additionalProperties: false
+    properties:
+      access:
+        $ref: '#/definitions/epp:dcpAccessType'
+      expiry:
+        $ref: '#/definitions/epp:dcpExpiryType'
+      statement:
+        items:
+          $ref: '#/definitions/epp:dcpStatementType'
+        minItems: 1
+        type: array
+    required:
+    - access
+    type: object
+  epp:eppType:
+    oneOf:
+    - properties:
+        greeting:
+          $ref: '#/definitions/epp:greetingType'
+      required:
+      - greeting
+      additionalProperties: false
+      type: object
+    - properties:
+        hello:
+          type: 'null'
+      required:
+      - hello
+      additionalProperties: false
+      type: object
+    - properties:
+        command:
+          $ref: '#/definitions/epp:commandType'
+      required:
+      - command
+      additionalProperties: false
+      type: object
+    - properties:
+        response:
+          $ref: '#/definitions/epp:responseType'
+      required:
+      - response
+      additionalProperties: false
+      type: object
+    - properties:
+        extension:
+          $ref: '#/definitions/epp:extAnyType'
+      required:
+      - extension
+      additionalProperties: false
+      type: object
+  epp:errValueType:
+    additionalProperties:
+      type: object
+    maxProperties: 1
+    minProperties: 1
+    properties:
+      '#text':
+        items:
+          type: string
+        type: array
+    type: object
+  epp:extAnyType:
+    additionalProperties:
+      type: object
+    minProperties: 1
+    properties: {}
+    type: object
+  epp:extErrValueType:
+    additionalProperties: false
+    properties:
+      reason:
+        $ref: '#/definitions/epp:msgType'
+      value:
+        $ref: '#/definitions/epp:errValueType'
+    required:
+    - value
+    - reason
+    type: object
+  epp:extURIType:
+    additionalProperties: false
+    properties:
+      extURI:
+        items:
+          format: uri
+          type: string
+        minItems: 1
+        type: array
+    type: object
+  epp:greetingType:
+    additionalProperties: false
+    properties:
+      dcp:
+        $ref: '#/definitions/epp:dcpType'
+      svDate:
+        format: date-time
+        type: string
+      svID:
+        $ref: '#/definitions/epp:sIDType'
+      svcMenu:
+        $ref: '#/definitions/epp:svcMenuType'
+    required:
+    - svID
+    - svDate
+    - svcMenu
+    - dcp
+    type: object
+  epp:loginSvcType:
+    additionalProperties: false
+    properties:
+      objURI:
+        items:
+          format: uri
+          type: string
+        minItems: 1
+        type: array
+      svcExtension:
+        $ref: '#/definitions/epp:extURIType'
+    type: object
+  epp:loginType:
+    additionalProperties: false
+    properties:
+      clID:
+        $ref: '#/definitions/eppcom:clIDType'
+      newPW:
+        $ref: '#/definitions/epp:pwType'
+      options:
+        $ref: '#/definitions/epp:credsOptionsType'
+      pw:
+        $ref: '#/definitions/epp:pwType'
+      svcs:
+        $ref: '#/definitions/epp:loginSvcType'
+    required:
+    - clID
+    - pw
+    - options
+    - svcs
+    type: object
+  epp:mixedMsgType:
+    additionalProperties:
+      type: object
+    minProperties: 0
+    properties:
+      '#text':
+        items:
+          type: string
+        type: array
+      '@lang':
+        type: string
+    type: object
+  epp:msgQType:
+    additionalProperties: false
+    properties:
+      '@count':
+        type: integer
+      '@id':
+        minLength: 1
+        type: string
+      msg:
+        $ref: '#/definitions/epp:mixedMsgType'
+      qDate:
+        format: date-time
+        type: string
+    type: object
+  epp:msgType:
+    properties:
+      '#value':
+        type: string
+      '@lang':
+        type: string
+    type: object
+  epp:pollOpType:
+    enum: &id005
+    - ack
+    - req
+    type: string
+  epp:pollType:
+    additionalProperties: false
+    properties:
+      '@msgID':
+        type: string
+      '@op':
+        enum: *id005
+        type: string
+    type: object
+  epp:pwType:
+    maxLength: 16
+    minLength: 6
+    type: string
+  epp:readWriteType:
+    additionalProperties:
+      type: object
+    maxProperties: 1
+    minProperties: 1
+    properties: {}
+    type: object
+  epp:responseType:
+    additionalProperties: false
+    properties:
+      extension:
+        $ref: '#/definitions/epp:extAnyType'
+      msgQ:
+        $ref: '#/definitions/epp:msgQType'
+      resData:
+        $ref: '#/definitions/epp:extAnyType'
+      result:
+        items:
+          $ref: '#/definitions/epp:resultType'
+        minItems: 1
+        type: array
+      trID:
+        $ref: '#/definitions/epp:trIDType'
+    required:
+    - trID
+    type: object
+  epp:resultCodeType:
+    enum: &id006
+    - 1000
+    - 1001
+    - 1300
+    - 1301
+    - 1500
+    - 2000
+    - 2001
+    - 2002
+    - 2003
+    - 2004
+    - 2005
+    - 2100
+    - 2101
+    - 2102
+    - 2103
+    - 2104
+    - 2105
+    - 2106
+    - 2200
+    - 2201
+    - 2202
+    - 2300
+    - 2301
+    - 2302
+    - 2303
+    - 2304
+    - 2305
+    - 2306
+    - 2307
+    - 2308
+    - 2400
+    - 2500
+    - 2501
+    - 2502
+    maximum: 65535
+    minimum: 0
+    type: integer
+  epp:resultType:
+    additionalProperties:
+      oneOf:
+      - properties:
+          value:
+            $ref: '#/definitions/epp:errValueType'
+        required:
+        - value
+        type: object
+      - properties:
+          extValue:
+            $ref: '#/definitions/epp:extErrValueType'
+        required:
+        - extValue
+        type: object
+    minProperties: 0
+    properties:
+      '@code':
+        enum: *id006
+        maximum: 65535
+        minimum: 0
+        type: integer
+      msg:
+        $ref: '#/definitions/epp:msgType'
+    required:
+    - msg
+    type: object
+  epp:sIDType:
+    maxLength: 64
+    minLength: 3
+    type: string
+  epp:svcMenuType:
+    additionalProperties: false
+    properties:
+      lang:
+        items:
+          type: string
+        minItems: 1
+        type: array
+      objURI:
+        items:
+          format: uri
+          type: string
+        minItems: 1
+        type: array
+      svcExtension:
+        $ref: '#/definitions/epp:extURIType'
+      version:
+        items:
+          $ref: '#/definitions/epp:versionType'
+        minItems: 1
+        type: array
+    type: object
+  epp:trIDStringType:
+    maxLength: 64
+    minLength: 3
+    type: string
+  epp:trIDType:
+    additionalProperties: false
+    properties:
+      clTRID:
+        $ref: '#/definitions/epp:trIDStringType'
+      svTRID:
+        $ref: '#/definitions/epp:trIDStringType'
+    required:
+    - svTRID
+    type: object
+  epp:transferOpType:
+    enum: &id007
+    - approve
+    - cancel
+    - query
+    - reject
+    - request
+    type: string
+  epp:transferType:
+    additionalProperties:
+      type: object
+    maxProperties: 1
+    minProperties: 1
+    properties:
+      '@op':
+        enum: *id007
+        type: string
+    type: object
+  epp:versionType:
+    enum:
+    - '1.0'
+    type: string
+  eppcom:clIDType:
+    maxLength: 16
+    minLength: 3
+    type: string
+  eppcom:extAuthInfoType:
+    additionalProperties:
+      type: object
+    maxProperties: 1
+    minProperties: 1
+    properties: {}
+    type: object
+  eppcom:labelType:
+    maxLength: 255
+    minLength: 1
+    type: string
+  eppcom:minTokenType:
+    minLength: 1
+    type: string
+  eppcom:pwAuthInfoType:
+    properties:
+      '#value':
+        type: string
+      '@roid':
+        type: string
+    type: object
+  eppcom:reasonBaseType:
+    maxLength: 32
+    minLength: 1
+    type: string
+  eppcom:reasonType:
+    properties:
+      '#value':
+        maxLength: 32
+        minLength: 1
+        type: string
+      '@lang':
+        type: string
+    type: object
+  eppcom:roidType:
+    type: string
+  eppcom:trStatusType:
+    enum:
+    - clientApproved
+    - clientCancelled
+    - clientRejected
+    - pending
+    - serverApproved
+    - serverCancelled
+    type: string
+  host:addRemType:
+    additionalProperties: false
+    properties:
+      addr:
+        items:
+          $ref: '#/definitions/host:addrType'
+        minItems: 0
+        type: array
+      status:
+        items:
+          $ref: '#/definitions/host:statusType'
+        maxItems: 7
+        minItems: 0
+        type: array
+    type: object
+  host:addrStringType:
+    maxLength: 45
+    minLength: 3
+    type: string
+  host:addrType:
+    properties:
+      '#value':
+        maxLength: 45
+        minLength: 3
+        type: string
+      '@ip':
+        enum: &id008
+        - v4
+        - v6
+        type: string
+    type: object
+  host:checkNameType:
+    properties:
+      '#value':
+        maxLength: 255
+        minLength: 1
+        type: string
+      '@avail':
+        type: boolean
+    type: object
+  host:checkType:
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/host:checkNameType'
+      reason:
+        $ref: '#/definitions/eppcom:reasonType'
+    required:
+    - name
+    type: object
+  host:chgType:
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+    required:
+    - name
+    type: object
+  host:chkDataType:
+    additionalProperties: false
+    properties:
+      cd:
+        items:
+          $ref: '#/definitions/host:checkType'
+        minItems: 1
+        type: array
+    type: object
+  host:creDataType:
+    additionalProperties: false
+    properties:
+      crDate:
+        format: date-time
+        type: string
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+    required:
+    - name
+    - crDate
+    type: object
+  host:createType:
+    additionalProperties: false
+    properties:
+      addr:
+        items:
+          $ref: '#/definitions/host:addrType'
+        minItems: 0
+        type: array
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+    required:
+    - name
+    type: object
+  host:infDataType:
+    additionalProperties: false
+    properties:
+      addr:
+        items:
+          $ref: '#/definitions/host:addrType'
+        minItems: 0
+        type: array
+      clID:
+        $ref: '#/definitions/eppcom:clIDType'
+      crDate:
+        format: date-time
+        type: string
+      crID:
+        $ref: '#/definitions/eppcom:clIDType'
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+      roid:
+        $ref: '#/definitions/eppcom:roidType'
+      status:
+        items:
+          $ref: '#/definitions/host:statusType'
+        maxItems: 7
+        minItems: 1
+        type: array
+      trDate:
+        format: date-time
+        type: string
+      upDate:
+        format: date-time
+        type: string
+      upID:
+        $ref: '#/definitions/eppcom:clIDType'
+    required:
+    - name
+    - roid
+    - clID
+    - crID
+    - crDate
+    type: object
+  host:ipType:
+    enum: *id008
+    type: string
+  host:mNameType:
+    additionalProperties: false
+    properties:
+      name:
+        items:
+          $ref: '#/definitions/eppcom:labelType'
+        minItems: 1
+        type: array
+    type: object
+  host:paNameType:
+    properties:
+      '#value':
+        maxLength: 255
+        minLength: 1
+        type: string
+      '@paResult':
+        type: boolean
+    type: object
+  host:panDataType:
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/host:paNameType'
+      paDate:
+        format: date-time
+        type: string
+      paTRID:
+        $ref: '#/definitions/epp:trIDType'
+    required:
+    - name
+    - paTRID
+    - paDate
+    type: object
+  host:sNameType:
+    additionalProperties: false
+    properties:
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+    required:
+    - name
+    type: object
+  host:statusType:
+    properties:
+      '#value':
+        type: string
+      '@lang':
+        type: string
+      '@s':
+        enum: &id009
+        - clientDeleteProhibited
+        - clientUpdateProhibited
+        - linked
+        - ok
+        - pendingCreate
+        - pendingDelete
+        - pendingTransfer
+        - pendingUpdate
+        - serverDeleteProhibited
+        - serverUpdateProhibited
+        type: string
+    type: object
+  host:statusValueType:
+    enum: *id009
+    type: string
+  host:updateType:
+    additionalProperties: false
+    properties:
+      add:
+        $ref: '#/definitions/host:addRemType'
+      chg:
+        $ref: '#/definitions/host:chgType'
+      name:
+        $ref: '#/definitions/eppcom:labelType'
+      rem:
+        $ref: '#/definitions/host:addRemType'
+    required:
+    - name
+    type: object
+properties:
+  epp:
+    $ref: '#/definitions/epp:eppType'
+required:
+- epp
+type: object
