@@ -127,7 +127,11 @@ paths:
       tags:
         - domains
       requestBody:
-        $ref: '#/components/requestBodies/defaultRequestBody'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:  '#/components/schemas/DomainCreateRequest'
       responses:
           '200':
             $ref: '#/components/responses/200okWithBody'
@@ -475,6 +479,20 @@ paths:
 # Components
 #   
 components:
+  schemas:
+    DomainCreateRequest:
+      allOf:
+        - $ref: 'epp-schema.yaml#/definitions/epp_eppType'
+        - properties:
+            command:
+              type: object
+              properties:
+                create:
+                  $ref: 'epp-schema.yaml#/definitions/domain_createType'
+              required:
+                - create
+          required:
+            - command
   parameters:
     p_id:
       name: id

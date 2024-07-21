@@ -10,8 +10,7 @@ from {{packageName}} import util
 {{#operations}}
 {{#operation}}
 
-
-def {{operationId}}({{#allParams}}{{^isHeaderParam}}{{paramName}}{{^required}}=None{{/required}}{{^-last}}, {{/-last}}{{/isHeaderParam}}{{/allParams}}):  # noqa: E501
+def {{operationId}}({{#allParams}}{{^isHeaderParam}}{{^isBodyParam}}{{paramName}}{{^required}}=None{{/required}}{{^-last}}, {{/-last}}{{/isBodyParam}}{{/isHeaderParam}}{{/allParams}}):  # noqa: E501
     """{{summary}}{{^summary}}{{operationId}}{{/summary}}
 
     {{notes}} # noqa: E501

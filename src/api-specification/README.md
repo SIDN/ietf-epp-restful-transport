@@ -2,7 +2,6 @@
 
 ## Install OpenAPI Generator
 
-
 ```
 brew install openapi-generator
 ```
