@@ -7,9 +7,12 @@ from flask import request
 {{#imports}}{{import}}  # noqa: E501
 {{/imports}}
 from {{packageName}} import util
-{{#operations}}
-{{#operation}}
 
+{{ OperationGroup }}
+
+{{#operations}}
+from ..controller_impl import {{baseName}}_impl 
+{{#operation}}
 
 def {{operationId}}({{#allParams}}{{^isHeaderParam}}{{paramName}}{{^required}}=None{{/required}}{{^-last}}, {{/-last}}{{/isHeaderParam}}{{/allParams}}):  # noqa: E501
     """{{summary}}{{^summary}}{{operationId}}{{/summary}}
@@ -117,6 +120,9 @@ def {{operationId}}({{#allParams}}{{^isHeaderParam}}{{paramName}}{{^required}}=N
             {{/items}}
         {{/isMap}}
     {{/allParams}}
-    return 'Magic'
+
+    return {{baseName}}_impl.{{operationId}}({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}})
+
+    #return 'Magic'
 {{/operation}}
 {{/operations}}
