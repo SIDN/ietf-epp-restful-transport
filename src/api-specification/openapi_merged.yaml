@@ -62,7 +62,7 @@ components:
     p_filter_val:
       description: Value to use for filter
       in: query
-      name: filter
+      name: val
       required: false
       schema:
         type: string
@@ -255,7 +255,8 @@ components:
         type: object
       - properties:
           'null':
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - 'null'
         type: object
@@ -694,7 +695,8 @@ components:
           type: object
         - properties:
             logout:
-              type: 'null'
+              default: false
+              type: boolean
           required:
           - logout
           type: object
@@ -742,37 +744,43 @@ components:
       oneOf:
       - properties:
           all:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - all
         type: object
       - properties:
           none:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - none
         type: object
       - properties:
           'null':
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - 'null'
         type: object
       - properties:
           other:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - other
         type: object
       - properties:
           personal:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - personal
         type: object
       - properties:
           personalAndOther:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - personalAndOther
         type: object
@@ -800,13 +808,17 @@ components:
     epp_dcpPurposeType:
       properties:
         admin:
-          type: 'null'
+          default: false
+          type: boolean
         contact:
-          type: 'null'
+          default: false
+          type: boolean
         other:
-          type: 'null'
+          default: false
+          type: boolean
         prov:
-          type: 'null'
+          default: false
+          type: boolean
       type: object
     epp_dcpRecDescType:
       maxLength: 255
@@ -815,48 +827,57 @@ components:
     epp_dcpRecipientType:
       properties:
         other:
-          type: 'null'
+          default: false
+          type: boolean
         ours:
           items:
             $ref: '#/components/schemas/epp_dcpOursType'
           minItems: 0
           type: array
         public:
-          type: 'null'
+          default: false
+          type: boolean
         same:
-          type: 'null'
+          default: false
+          type: boolean
         unrelated:
-          type: 'null'
+          default: false
+          type: boolean
       type: object
     epp_dcpRetentionType:
       oneOf:
       - properties:
           business:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - business
         type: object
       - properties:
           indefinite:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - indefinite
         type: object
       - properties:
           legal:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - legal
         type: object
       - properties:
           none:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - none
         type: object
       - properties:
           stated:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - stated
         type: object
@@ -897,7 +918,8 @@ components:
         type: object
       - properties:
           hello:
-            type: 'null'
+            default: false
+            type: boolean
         required:
         - hello
         type: object
@@ -1572,7 +1594,7 @@ components:
 info:
   title: RESTful EPP
   version: '1.0'
-openapi: 3.1.0
+openapi: 3.0.2
 paths:
   /:
     get:
@@ -1766,16 +1788,6 @@ paths:
       - $ref: '#/components/parameters/p_roid'
       - $ref: '#/components/parameters/p_filter_name'
       - $ref: '#/components/parameters/p_filter_val'
-      - in: query
-        name: filter
-        required: false
-        schema:
-          type: string
-      - in: query
-        name: val
-        required: false
-        schema:
-          type: string
       requestBody:
         $ref: '#/components/requestBodies/defaultOptionalRequestBody'
       responses:
@@ -1841,7 +1853,6 @@ paths:
     - $ref: '#/components/parameters/p_cltrid'
     - $ref: '#/components/parameters/p_svcs'
     - $ref: '#/components/parameters/p_svcs-ext'
-    - $ref: '#/components/parameters/p_acceptLanguage'
     - $ref: '#/components/parameters/p_acceptLanguage'
     - $ref: '#/components/parameters/p_authinfo'
     - $ref: '#/components/parameters/p_roid'

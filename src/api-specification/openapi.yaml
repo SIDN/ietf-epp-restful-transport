@@ -482,13 +482,13 @@ components:
   schemas:
     DomainCreateRequest:
       allOf:
-        - $ref: 'epp-schema.yaml#/definitions/epp:eppType'
+        - $ref: 'epp-schema.yaml#/definitions/epp_eppType'
         - properties:
             command:
               type: object
               properties:
                 create:
-                  $ref: 'epp-schema.yaml#/definitions/domain:createType'
+                  $ref: 'epp-schema.yaml#/definitions/domain_createType'
               required:
                 - create
           required:

@@ -2,29 +2,29 @@
   "type": "object",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
-    "eppcom:reasonBaseType": {
+    "eppcom_reasonBaseType": {
       "type": "string",
       "minLength": 1,
       "maxLength": 32
     },
-    "eppcom:clIDType": {
+    "eppcom_clIDType": {
       "type": "string",
       "minLength": 3,
       "maxLength": 16
     },
-    "eppcom:labelType": {
+    "eppcom_labelType": {
       "type": "string",
       "minLength": 1,
       "maxLength": 255
     },
-    "eppcom:minTokenType": {
+    "eppcom_minTokenType": {
       "type": "string",
       "minLength": 1
     },
-    "eppcom:roidType": {
+    "eppcom_roidType": {
       "type": "string"
     },
-    "eppcom:trStatusType": {
+    "eppcom_trStatusType": {
       "type": "string",
       "enum": [
         "clientApproved",
@@ -35,7 +35,7 @@
         "serverCancelled"
       ]
     },
-    "eppcom:pwAuthInfoType": {
+    "eppcom_pwAuthInfoType": {
       "properties": {
         "@roid": {
           "type": "string"
@@ -46,16 +46,20 @@
       },
       "type": "object"
     },
-    "eppcom:extAuthInfoType": {
+    "eppcom_extAuthInfoType": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "type": "object"
+        }
+      ],
       "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "type": "object"
-      },
-      "minProperties": 1,
-      "maxProperties": 1
+      "properties": {}
     },
-    "eppcom:reasonType": {
+    "eppcom_reasonType": {
       "properties": {
         "@lang": {
           "type": "string"
@@ -68,35 +72,35 @@
       },
       "type": "object"
     },
-    "epp:sIDType": {
+    "epp_sIDType": {
       "type": "string",
       "minLength": 3,
       "maxLength": 64
     },
-    "epp:dcpRecDescType": {
+    "epp_dcpRecDescType": {
       "type": "string",
       "minLength": 1,
       "maxLength": 255
     },
-    "epp:versionType": {
+    "epp_versionType": {
       "type": "string",
       "enum": [
         "1.0"
       ]
     },
-    "epp:pwType": {
+    "epp_pwType": {
       "type": "string",
       "minLength": 6,
       "maxLength": 16
     },
-    "epp:pollOpType": {
+    "epp_pollOpType": {
       "type": "string",
       "enum": [
         "ack",
         "req"
       ]
     },
-    "epp:transferOpType": {
+    "epp_transferOpType": {
       "type": "string",
       "enum": [
         "approve",
@@ -106,12 +110,12 @@
         "request"
       ]
     },
-    "epp:trIDStringType": {
+    "epp_trIDStringType": {
       "type": "string",
       "minLength": 3,
       "maxLength": 64
     },
-    "epp:resultCodeType": {
+    "epp_resultCodeType": {
       "type": "integer",
       "minimum": 0,
       "maximum": 65535,
@@ -152,13 +156,13 @@
         2502
       ]
     },
-    "epp:eppType": {
+    "epp_eppType": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "greeting": {
-              "$ref": "#/definitions/epp:greetingType"
+              "$ref": "#/definitions/epp_greetingType"
             }
           },
           "required": [
@@ -169,7 +173,8 @@
           "type": "object",
           "properties": {
             "hello": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -180,7 +185,7 @@
           "type": "object",
           "properties": {
             "command": {
-              "$ref": "#/definitions/epp:commandType"
+              "$ref": "#/definitions/epp_commandType"
             }
           },
           "required": [
@@ -191,7 +196,7 @@
           "type": "object",
           "properties": {
             "response": {
-              "$ref": "#/definitions/epp:responseType"
+              "$ref": "#/definitions/epp_responseType"
             }
           },
           "required": [
@@ -202,7 +207,7 @@
           "type": "object",
           "properties": {
             "extension": {
-              "$ref": "#/definitions/epp:extAnyType"
+              "$ref": "#/definitions/epp_extAnyType"
             }
           },
           "required": [
@@ -211,24 +216,23 @@
         }
       ]
     },
-    "epp:greetingType": {
+    "epp_greetingType": {
       "type": "object",
       "properties": {
         "svID": {
-          "$ref": "#/definitions/epp:sIDType"
+          "$ref": "#/definitions/epp_sIDType"
         },
         "svDate": {
           "type": "string",
           "format": "date-time"
         },
         "svcMenu": {
-          "$ref": "#/definitions/epp:svcMenuType"
+          "$ref": "#/definitions/epp_svcMenuType"
         },
         "dcp": {
-          "$ref": "#/definitions/epp:dcpType"
+          "$ref": "#/definitions/epp_dcpType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "svID",
         "svDate",
@@ -236,13 +240,13 @@
         "dcp"
       ]
     },
-    "epp:svcMenuType": {
+    "epp_svcMenuType": {
       "type": "object",
       "properties": {
         "version": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/epp:versionType"
+            "$ref": "#/definitions/epp_versionType"
           },
           "minItems": 1
         },
@@ -262,40 +266,39 @@
           "minItems": 1
         },
         "svcExtension": {
-          "$ref": "#/definitions/epp:extURIType"
+          "$ref": "#/definitions/epp_extURIType"
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "epp:dcpType": {
+    "epp_dcpType": {
       "type": "object",
       "properties": {
         "access": {
-          "$ref": "#/definitions/epp:dcpAccessType"
+          "$ref": "#/definitions/epp_dcpAccessType"
         },
         "statement": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/epp:dcpStatementType"
+            "$ref": "#/definitions/epp_dcpStatementType"
           },
           "minItems": 1
         },
         "expiry": {
-          "$ref": "#/definitions/epp:dcpExpiryType"
+          "$ref": "#/definitions/epp_dcpExpiryType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "access"
       ]
     },
-    "epp:dcpAccessType": {
+    "epp_dcpAccessType": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "all": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -306,7 +309,8 @@
           "type": "object",
           "properties": {
             "none": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -317,7 +321,8 @@
           "type": "object",
           "properties": {
             "null": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -328,7 +333,8 @@
           "type": "object",
           "properties": {
             "other": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -339,7 +345,8 @@
           "type": "object",
           "properties": {
             "personal": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -350,7 +357,8 @@
           "type": "object",
           "properties": {
             "personalAndOther": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -359,85 +367,90 @@
         }
       ]
     },
-    "epp:dcpStatementType": {
+    "epp_dcpStatementType": {
       "type": "object",
       "properties": {
         "purpose": {
-          "$ref": "#/definitions/epp:dcpPurposeType"
+          "$ref": "#/definitions/epp_dcpPurposeType"
         },
         "recipient": {
-          "$ref": "#/definitions/epp:dcpRecipientType"
+          "$ref": "#/definitions/epp_dcpRecipientType"
         },
         "retention": {
-          "$ref": "#/definitions/epp:dcpRetentionType"
+          "$ref": "#/definitions/epp_dcpRetentionType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "purpose",
         "recipient",
         "retention"
       ]
     },
-    "epp:dcpPurposeType": {
+    "epp_dcpPurposeType": {
       "type": "object",
       "properties": {
         "admin": {
-          "type": "null"
+          "type": "boolean",
+          "default": false
         },
         "contact": {
-          "type": "null"
+          "type": "boolean",
+          "default": false
         },
         "other": {
-          "type": "null"
+          "type": "boolean",
+          "default": false
         },
         "prov": {
-          "type": "null"
+          "type": "boolean",
+          "default": false
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "epp:dcpRecipientType": {
+    "epp_dcpRecipientType": {
       "type": "object",
       "properties": {
         "other": {
-          "type": "null"
+          "type": "boolean",
+          "default": false
         },
         "ours": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/epp:dcpOursType"
+            "$ref": "#/definitions/epp_dcpOursType"
           },
           "minItems": 0
         },
         "public": {
-          "type": "null"
+          "type": "boolean",
+          "default": false
         },
         "same": {
-          "type": "null"
+          "type": "boolean",
+          "default": false
         },
         "unrelated": {
-          "type": "null"
+          "type": "boolean",
+          "default": false
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "epp:dcpOursType": {
+    "epp_dcpOursType": {
       "type": "object",
       "properties": {
         "recDesc": {
-          "$ref": "#/definitions/epp:dcpRecDescType"
+          "$ref": "#/definitions/epp_dcpRecDescType"
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "epp:dcpRetentionType": {
+    "epp_dcpRetentionType": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "business": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -448,7 +461,8 @@
           "type": "object",
           "properties": {
             "indefinite": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -459,7 +473,8 @@
           "type": "object",
           "properties": {
             "legal": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -470,7 +485,8 @@
           "type": "object",
           "properties": {
             "none": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -481,7 +497,8 @@
           "type": "object",
           "properties": {
             "stated": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -490,7 +507,7 @@
         }
       ]
     },
-    "epp:dcpExpiryType": {
+    "epp_dcpExpiryType": {
       "oneOf": [
         {
           "type": "object",
@@ -518,15 +535,20 @@
         }
       ]
     },
-    "epp:extAnyType": {
+    "epp_extAnyType": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "type": "object"
+        }
+      ],
       "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "type": "object"
-      },
-      "minProperties": 1
+      "properties": {}
     },
-    "epp:extURIType": {
+    "epp_extURIType": {
       "type": "object",
       "properties": {
         "extURI": {
@@ -537,156 +559,166 @@
           },
           "minItems": 1
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "epp:commandType": {
+    "epp_commandType": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "extension": {
+              "$ref": "#/definitions/epp_extAnyType"
+            },
+            "clTRID": {
+              "$ref": "#/definitions/epp_trIDStringType"
+            }
+          }
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "check": {
+                  "$ref": "#/definitions/epp_readWriteType"
+                }
+              },
+              "required": [
+                "check"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "create": {
+                  "$ref": "#/definitions/epp_readWriteType"
+                }
+              },
+              "required": [
+                "create"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "delete": {
+                  "$ref": "#/definitions/epp_readWriteType"
+                }
+              },
+              "required": [
+                "delete"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "info": {
+                  "$ref": "#/definitions/epp_readWriteType"
+                }
+              },
+              "required": [
+                "info"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "login": {
+                  "$ref": "#/definitions/epp_loginType"
+                }
+              },
+              "required": [
+                "login"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "logout": {
+                  "type": "boolean",
+                  "default": false
+                }
+              },
+              "required": [
+                "logout"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "poll": {
+                  "$ref": "#/definitions/epp_pollType"
+                }
+              },
+              "required": [
+                "poll"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "renew": {
+                  "$ref": "#/definitions/epp_readWriteType"
+                }
+              },
+              "required": [
+                "renew"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "transfer": {
+                  "$ref": "#/definitions/epp_transferType"
+                }
+              },
+              "required": [
+                "transfer"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "update": {
+                  "$ref": "#/definitions/epp_readWriteType"
+                }
+              },
+              "required": [
+                "update"
+              ]
+            }
+          ]
+        }
+      ],
       "type": "object",
       "properties": {
         "extension": {
-          "$ref": "#/definitions/epp:extAnyType"
+          "$ref": "#/definitions/epp_extAnyType"
         },
         "clTRID": {
-          "$ref": "#/definitions/epp:trIDStringType"
+          "$ref": "#/definitions/epp_trIDStringType"
         }
-      },
-      "additionalProperties": {
-        "oneOf": [
-          {
-            "type": "object",
-            "properties": {
-              "check": {
-                "$ref": "#/definitions/epp:readWriteType"
-              }
-            },
-            "required": [
-              "check"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "create": {
-                "$ref": "#/definitions/epp:readWriteType"
-              }
-            },
-            "required": [
-              "create"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "delete": {
-                "$ref": "#/definitions/epp:readWriteType"
-              }
-            },
-            "required": [
-              "delete"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "info": {
-                "$ref": "#/definitions/epp:readWriteType"
-              }
-            },
-            "required": [
-              "info"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "login": {
-                "$ref": "#/definitions/epp:loginType"
-              }
-            },
-            "required": [
-              "login"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "logout": {
-                "type": "null"
-              }
-            },
-            "required": [
-              "logout"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "poll": {
-                "$ref": "#/definitions/epp:pollType"
-              }
-            },
-            "required": [
-              "poll"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "renew": {
-                "$ref": "#/definitions/epp:readWriteType"
-              }
-            },
-            "required": [
-              "renew"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "transfer": {
-                "$ref": "#/definitions/epp:transferType"
-              }
-            },
-            "required": [
-              "transfer"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "update": {
-                "$ref": "#/definitions/epp:readWriteType"
-              }
-            },
-            "required": [
-              "update"
-            ]
-          }
-        ]
-      },
-      "minProperties": 1,
-      "maxProperties": 1
+      }
     },
-    "epp:loginType": {
+    "epp_loginType": {
       "type": "object",
       "properties": {
         "clID": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "pw": {
-          "$ref": "#/definitions/epp:pwType"
+          "$ref": "#/definitions/epp_pwType"
         },
         "newPW": {
-          "$ref": "#/definitions/epp:pwType"
+          "$ref": "#/definitions/epp_pwType"
         },
         "options": {
-          "$ref": "#/definitions/epp:credsOptionsType"
+          "$ref": "#/definitions/epp_credsOptionsType"
         },
         "svcs": {
-          "$ref": "#/definitions/epp:loginSvcType"
+          "$ref": "#/definitions/epp_loginSvcType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "clID",
         "pw",
@@ -694,23 +726,22 @@
         "svcs"
       ]
     },
-    "epp:credsOptionsType": {
+    "epp_credsOptionsType": {
       "type": "object",
       "properties": {
         "version": {
-          "$ref": "#/definitions/epp:versionType"
+          "$ref": "#/definitions/epp_versionType"
         },
         "lang": {
           "type": "string"
         }
       },
-      "additionalProperties": false,
       "required": [
         "version",
         "lang"
       ]
     },
-    "epp:loginSvcType": {
+    "epp_loginSvcType": {
       "type": "object",
       "properties": {
         "objURI": {
@@ -722,12 +753,11 @@
           "minItems": 1
         },
         "svcExtension": {
-          "$ref": "#/definitions/epp:extURIType"
+          "$ref": "#/definitions/epp_extURIType"
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "epp:pollType": {
+    "epp_pollType": {
       "type": "object",
       "properties": {
         "@op": {
@@ -740,10 +770,29 @@
         "@msgID": {
           "type": "string"
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "epp:transferType": {
+    "epp_transferType": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "@op": {
+              "type": "string",
+              "enum": [
+                "approve",
+                "cancel",
+                "query",
+                "reject",
+                "request"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
       "type": "object",
       "properties": {
         "@op": {
@@ -756,70 +805,147 @@
             "request"
           ]
         }
-      },
-      "additionalProperties": {
-        "type": "object"
-      },
-      "minProperties": 1,
-      "maxProperties": 1
+      }
     },
-    "epp:readWriteType": {
+    "epp_readWriteType": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {}
+        },
+        {
+          "type": "object"
+        }
+      ],
       "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "type": "object"
-      },
-      "minProperties": 1,
-      "maxProperties": 1
+      "properties": {}
     },
-    "epp:trIDType": {
+    "epp_trIDType": {
       "type": "object",
       "properties": {
         "clTRID": {
-          "$ref": "#/definitions/epp:trIDStringType"
+          "$ref": "#/definitions/epp_trIDStringType"
         },
         "svTRID": {
-          "$ref": "#/definitions/epp:trIDStringType"
+          "$ref": "#/definitions/epp_trIDStringType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "svTRID"
       ]
     },
-    "epp:responseType": {
+    "epp_responseType": {
       "type": "object",
       "properties": {
         "result": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/epp:resultType"
+            "$ref": "#/definitions/epp_resultType"
           },
           "minItems": 1
         },
         "msgQ": {
-          "$ref": "#/definitions/epp:msgQType"
+          "$ref": "#/definitions/epp_msgQType"
         },
         "resData": {
-          "$ref": "#/definitions/epp:extAnyType"
+          "$ref": "#/definitions/epp_extAnyType"
         },
         "extension": {
-          "$ref": "#/definitions/epp:extAnyType"
+          "$ref": "#/definitions/epp_extAnyType"
         },
         "trID": {
-          "$ref": "#/definitions/epp:trIDType"
+          "$ref": "#/definitions/epp_trIDType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "trID"
       ]
     },
-    "epp:resultType": {
+    "epp_resultType": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "$ref": "#/definitions/epp_msgType"
+            },
+            "@code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "enum": [
+                1000,
+                1001,
+                1300,
+                1301,
+                1500,
+                2000,
+                2001,
+                2002,
+                2003,
+                2004,
+                2005,
+                2100,
+                2101,
+                2102,
+                2103,
+                2104,
+                2105,
+                2106,
+                2200,
+                2201,
+                2202,
+                2300,
+                2301,
+                2302,
+                2303,
+                2304,
+                2305,
+                2306,
+                2307,
+                2308,
+                2400,
+                2500,
+                2501,
+                2502
+              ]
+            }
+          },
+          "required": [
+            "msg"
+          ]
+        },
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "$ref": "#/definitions/epp_errValueType"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "extValue": {
+                  "$ref": "#/definitions/epp_extErrValueType"
+                }
+              },
+              "required": [
+                "extValue"
+              ]
+            }
+          ]
+        }
+      ],
       "type": "object",
       "properties": {
         "msg": {
-          "$ref": "#/definitions/epp:msgType"
+          "$ref": "#/definitions/epp_msgType"
         },
         "@code": {
           "type": "integer",
@@ -863,38 +989,27 @@
           ]
         }
       },
-      "additionalProperties": {
-        "oneOf": [
-          {
-            "type": "object",
-            "properties": {
-              "value": {
-                "$ref": "#/definitions/epp:errValueType"
-              }
-            },
-            "required": [
-              "value"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "extValue": {
-                "$ref": "#/definitions/epp:extErrValueType"
-              }
-            },
-            "required": [
-              "extValue"
-            ]
-          }
-        ]
-      },
       "required": [
         "msg"
-      ],
-      "minProperties": 0
+      ]
     },
-    "epp:errValueType": {
+    "epp_errValueType": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "#text": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
       "type": "object",
       "properties": {
         "#text": {
@@ -903,30 +1018,24 @@
             "type": "string"
           }
         }
-      },
-      "additionalProperties": {
-        "type": "object"
-      },
-      "minProperties": 1,
-      "maxProperties": 1
+      }
     },
-    "epp:extErrValueType": {
+    "epp_extErrValueType": {
       "type": "object",
       "properties": {
         "value": {
-          "$ref": "#/definitions/epp:errValueType"
+          "$ref": "#/definitions/epp_errValueType"
         },
         "reason": {
-          "$ref": "#/definitions/epp:msgType"
+          "$ref": "#/definitions/epp_msgType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "value",
         "reason"
       ]
     },
-    "epp:msgQType": {
+    "epp_msgQType": {
       "type": "object",
       "properties": {
         "qDate": {
@@ -934,7 +1043,7 @@
           "format": "date-time"
         },
         "msg": {
-          "$ref": "#/definitions/epp:mixedMsgType"
+          "$ref": "#/definitions/epp_mixedMsgType"
         },
         "@count": {
           "type": "integer"
@@ -943,10 +1052,28 @@
           "type": "string",
           "minLength": 1
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "epp:mixedMsgType": {
+    "epp_mixedMsgType": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "#text": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "@lang": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object"
+        }
+      ],
       "type": "object",
       "properties": {
         "#text": {
@@ -958,13 +1085,9 @@
         "@lang": {
           "type": "string"
         }
-      },
-      "additionalProperties": {
-        "type": "object"
-      },
-      "minProperties": 0
+      }
     },
-    "epp:msgType": {
+    "epp_msgType": {
       "properties": {
         "@lang": {
           "type": "string"
@@ -975,19 +1098,19 @@
       },
       "type": "object"
     },
-    "domain:pLimitType": {
+    "domain_pLimitType": {
       "type": "integer",
       "minimum": 1,
       "maximum": 99
     },
-    "domain:pUnitType": {
+    "domain_pUnitType": {
       "type": "string",
       "enum": [
         "y",
         "m"
       ]
     },
-    "domain:contactAttrType": {
+    "domain_contactAttrType": {
       "type": "string",
       "enum": [
         "admin",
@@ -995,7 +1118,7 @@
         "tech"
       ]
     },
-    "domain:hostsType": {
+    "domain_hostsType": {
       "type": "string",
       "enum": [
         "all",
@@ -1004,12 +1127,12 @@
         "sub"
       ]
     },
-    "domain:clIDChgType": {
+    "domain_clIDChgType": {
       "type": "string",
       "minLength": 0,
       "maxLength": 16
     },
-    "domain:statusValueType": {
+    "domain_statusValueType": {
       "type": "string",
       "enum": [
         "clientDeleteProhibited",
@@ -1031,39 +1154,38 @@
         "serverUpdateProhibited"
       ]
     },
-    "domain:createType": {
+    "domain_createType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "period": {
-          "$ref": "#/definitions/domain:periodType"
+          "$ref": "#/definitions/domain_periodType"
         },
         "ns": {
-          "$ref": "#/definitions/domain:nsType"
+          "$ref": "#/definitions/domain_nsType"
         },
         "registrant": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "contact": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/domain:contactType"
+            "$ref": "#/definitions/domain_contactType"
           },
           "minItems": 0
         },
         "authInfo": {
-          "$ref": "#/definitions/domain:authInfoType"
+          "$ref": "#/definitions/domain_authInfoType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name",
         "authInfo"
       ]
     },
-    "domain:periodType": {
+    "domain_periodType": {
       "properties": {
         "@unit": {
           "type": "string",
@@ -1080,7 +1202,7 @@
       },
       "type": "object"
     },
-    "domain:nsType": {
+    "domain_nsType": {
       "oneOf": [
         {
           "type": "object",
@@ -1088,7 +1210,7 @@
             "hostObj": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/eppcom:labelType"
+                "$ref": "#/definitions/eppcom_labelType"
               },
               "minItems": 1
             }
@@ -1100,7 +1222,7 @@
             "hostAttr": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/domain:hostAttrType"
+                "$ref": "#/definitions/domain_hostAttrType"
               },
               "minItems": 1
             }
@@ -1108,26 +1230,25 @@
         }
       ]
     },
-    "domain:hostAttrType": {
+    "domain_hostAttrType": {
       "type": "object",
       "properties": {
         "hostName": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "hostAddr": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/host:addrType"
+            "$ref": "#/definitions/host_addrType"
           },
           "minItems": 0
         }
       },
-      "additionalProperties": false,
       "required": [
         "hostName"
       ]
     },
-    "domain:contactType": {
+    "domain_contactType": {
       "properties": {
         "@type": {
           "type": "string",
@@ -1145,13 +1266,13 @@
       },
       "type": "object"
     },
-    "domain:authInfoType": {
+    "domain_authInfoType": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "pw": {
-              "$ref": "#/definitions/eppcom:pwAuthInfoType"
+              "$ref": "#/definitions/eppcom_pwAuthInfoType"
             }
           },
           "required": [
@@ -1162,7 +1283,7 @@
           "type": "object",
           "properties": {
             "ext": {
-              "$ref": "#/definitions/eppcom:extAuthInfoType"
+              "$ref": "#/definitions/eppcom_extAuthInfoType"
             }
           },
           "required": [
@@ -1171,47 +1292,44 @@
         }
       ]
     },
-    "domain:sNameType": {
+    "domain_sNameType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "domain:mNameType": {
+    "domain_mNameType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/eppcom:labelType"
+            "$ref": "#/definitions/eppcom_labelType"
           },
           "minItems": 1
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "domain:infoType": {
+    "domain_infoType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/domain:infoNameType"
+          "$ref": "#/definitions/domain_infoNameType"
         },
         "authInfo": {
-          "$ref": "#/definitions/domain:authInfoType"
+          "$ref": "#/definitions/domain_authInfoType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "domain:infoNameType": {
+    "domain_infoNameType": {
       "properties": {
         "@hosts": {
           "type": "string",
@@ -1230,108 +1348,103 @@
       },
       "type": "object"
     },
-    "domain:renewType": {
+    "domain_renewType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "curExpDate": {
           "type": "string",
           "format": "date"
         },
         "period": {
-          "$ref": "#/definitions/domain:periodType"
+          "$ref": "#/definitions/domain_periodType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name",
         "curExpDate"
       ]
     },
-    "domain:transferType": {
+    "domain_transferType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "period": {
-          "$ref": "#/definitions/domain:periodType"
+          "$ref": "#/definitions/domain_periodType"
         },
         "authInfo": {
-          "$ref": "#/definitions/domain:authInfoType"
+          "$ref": "#/definitions/domain_authInfoType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "domain:updateType": {
+    "domain_updateType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "add": {
-          "$ref": "#/definitions/domain:addRemType"
+          "$ref": "#/definitions/domain_addRemType"
         },
         "rem": {
-          "$ref": "#/definitions/domain:addRemType"
+          "$ref": "#/definitions/domain_addRemType"
         },
         "chg": {
-          "$ref": "#/definitions/domain:chgType"
+          "$ref": "#/definitions/domain_chgType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "domain:addRemType": {
+    "domain_addRemType": {
       "type": "object",
       "properties": {
         "ns": {
-          "$ref": "#/definitions/domain:nsType"
+          "$ref": "#/definitions/domain_nsType"
         },
         "contact": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/domain:contactType"
+            "$ref": "#/definitions/domain_contactType"
           },
           "minItems": 0
         },
         "status": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/domain:statusType"
+            "$ref": "#/definitions/domain_statusType"
           },
           "maxItems": 11,
           "minItems": 0
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "domain:chgType": {
+    "domain_chgType": {
       "type": "object",
       "properties": {
         "registrant": {
-          "$ref": "#/definitions/domain:clIDChgType"
+          "$ref": "#/definitions/domain_clIDChgType"
         },
         "authInfo": {
-          "$ref": "#/definitions/domain:authInfoChgType"
+          "$ref": "#/definitions/domain_authInfoChgType"
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "domain:authInfoChgType": {
+    "domain_authInfoChgType": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "pw": {
-              "$ref": "#/definitions/eppcom:pwAuthInfoType"
+              "$ref": "#/definitions/eppcom_pwAuthInfoType"
             }
           },
           "required": [
@@ -1342,7 +1455,7 @@
           "type": "object",
           "properties": {
             "ext": {
-              "$ref": "#/definitions/eppcom:extAuthInfoType"
+              "$ref": "#/definitions/eppcom_extAuthInfoType"
             }
           },
           "required": [
@@ -1353,7 +1466,8 @@
           "type": "object",
           "properties": {
             "null": {
-              "type": "null"
+              "type": "boolean",
+              "default": false
             }
           },
           "required": [
@@ -1362,35 +1476,33 @@
         }
       ]
     },
-    "domain:chkDataType": {
+    "domain_chkDataType": {
       "type": "object",
       "properties": {
         "cd": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/domain:checkType"
+            "$ref": "#/definitions/domain_checkType"
           },
           "minItems": 1
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "domain:checkType": {
+    "domain_checkType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/domain:checkNameType"
+          "$ref": "#/definitions/domain_checkNameType"
         },
         "reason": {
-          "$ref": "#/definitions/eppcom:reasonType"
+          "$ref": "#/definitions/eppcom_reasonType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "domain:checkNameType": {
+    "domain_checkNameType": {
       "properties": {
         "@avail": {
           "type": "boolean"
@@ -1403,11 +1515,11 @@
       },
       "type": "object"
     },
-    "domain:creDataType": {
+    "domain_creDataType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "crDate": {
           "type": "string",
@@ -1418,61 +1530,60 @@
           "format": "date-time"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name",
         "crDate"
       ]
     },
-    "domain:infDataType": {
+    "domain_infDataType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "roid": {
-          "$ref": "#/definitions/eppcom:roidType"
+          "$ref": "#/definitions/eppcom_roidType"
         },
         "status": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/domain:statusType"
+            "$ref": "#/definitions/domain_statusType"
           },
           "maxItems": 11,
           "minItems": 0
         },
         "registrant": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "contact": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/domain:contactType"
+            "$ref": "#/definitions/domain_contactType"
           },
           "minItems": 0
         },
         "ns": {
-          "$ref": "#/definitions/domain:nsType"
+          "$ref": "#/definitions/domain_nsType"
         },
         "host": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/eppcom:labelType"
+            "$ref": "#/definitions/eppcom_labelType"
           },
           "minItems": 0
         },
         "clID": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "crID": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "crDate": {
           "type": "string",
           "format": "date-time"
         },
         "upID": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "upDate": {
           "type": "string",
@@ -1487,17 +1598,16 @@
           "format": "date-time"
         },
         "authInfo": {
-          "$ref": "#/definitions/domain:authInfoType"
+          "$ref": "#/definitions/domain_authInfoType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name",
         "roid",
         "clID"
       ]
     },
-    "domain:statusType": {
+    "domain_statusType": {
       "properties": {
         "@s": {
           "type": "string",
@@ -1530,28 +1640,27 @@
       },
       "type": "object"
     },
-    "domain:panDataType": {
+    "domain_panDataType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/domain:paNameType"
+          "$ref": "#/definitions/domain_paNameType"
         },
         "paTRID": {
-          "$ref": "#/definitions/epp:trIDType"
+          "$ref": "#/definitions/epp_trIDType"
         },
         "paDate": {
           "type": "string",
           "format": "date-time"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name",
         "paTRID",
         "paDate"
       ]
     },
-    "domain:paNameType": {
+    "domain_paNameType": {
       "properties": {
         "@paResult": {
           "type": "boolean"
@@ -1564,40 +1673,39 @@
       },
       "type": "object"
     },
-    "domain:renDataType": {
+    "domain_renDataType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "exDate": {
           "type": "string",
           "format": "date-time"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "domain:trnDataType": {
+    "domain_trnDataType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "trStatus": {
-          "$ref": "#/definitions/eppcom:trStatusType"
+          "$ref": "#/definitions/eppcom_trStatusType"
         },
         "reID": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "reDate": {
           "type": "string",
           "format": "date-time"
         },
         "acID": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "acDate": {
           "type": "string",
@@ -1608,7 +1716,6 @@
           "format": "date-time"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name",
         "trStatus",
@@ -1618,19 +1725,19 @@
         "acDate"
       ]
     },
-    "host:addrStringType": {
+    "host_addrStringType": {
       "type": "string",
       "minLength": 3,
       "maxLength": 45
     },
-    "host:ipType": {
+    "host_ipType": {
       "type": "string",
       "enum": [
         "v4",
         "v6"
       ]
     },
-    "host:statusValueType": {
+    "host_statusValueType": {
       "type": "string",
       "enum": [
         "clientDeleteProhibited",
@@ -1645,26 +1752,25 @@
         "serverUpdateProhibited"
       ]
     },
-    "host:createType": {
+    "host_createType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "addr": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/host:addrType"
+            "$ref": "#/definitions/host_addrType"
           },
           "minItems": 0
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "host:addrType": {
+    "host_addrType": {
       "properties": {
         "@ip": {
           "type": "string",
@@ -1681,114 +1787,107 @@
       },
       "type": "object"
     },
-    "host:sNameType": {
+    "host_sNameType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "host:mNameType": {
+    "host_mNameType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/eppcom:labelType"
+            "$ref": "#/definitions/eppcom_labelType"
           },
           "minItems": 1
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "host:updateType": {
+    "host_updateType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "add": {
-          "$ref": "#/definitions/host:addRemType"
+          "$ref": "#/definitions/host_addRemType"
         },
         "rem": {
-          "$ref": "#/definitions/host:addRemType"
+          "$ref": "#/definitions/host_addRemType"
         },
         "chg": {
-          "$ref": "#/definitions/host:chgType"
+          "$ref": "#/definitions/host_chgType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "host:addRemType": {
+    "host_addRemType": {
       "type": "object",
       "properties": {
         "addr": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/host:addrType"
+            "$ref": "#/definitions/host_addrType"
           },
           "minItems": 0
         },
         "status": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/host:statusType"
+            "$ref": "#/definitions/host_statusType"
           },
           "maxItems": 7,
           "minItems": 0
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "host:chgType": {
+    "host_chgType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "host:chkDataType": {
+    "host_chkDataType": {
       "type": "object",
       "properties": {
         "cd": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/host:checkType"
+            "$ref": "#/definitions/host_checkType"
           },
           "minItems": 1
         }
-      },
-      "additionalProperties": false
+      }
     },
-    "host:checkType": {
+    "host_checkType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/host:checkNameType"
+          "$ref": "#/definitions/host_checkNameType"
         },
         "reason": {
-          "$ref": "#/definitions/eppcom:reasonType"
+          "$ref": "#/definitions/eppcom_reasonType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name"
       ]
     },
-    "host:checkNameType": {
+    "host_checkNameType": {
       "properties": {
         "@avail": {
           "type": "boolean"
@@ -1801,36 +1900,35 @@
       },
       "type": "object"
     },
-    "host:creDataType": {
+    "host_creDataType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "crDate": {
           "type": "string",
           "format": "date-time"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name",
         "crDate"
       ]
     },
-    "host:infDataType": {
+    "host_infDataType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/eppcom:labelType"
+          "$ref": "#/definitions/eppcom_labelType"
         },
         "roid": {
-          "$ref": "#/definitions/eppcom:roidType"
+          "$ref": "#/definitions/eppcom_roidType"
         },
         "status": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/host:statusType"
+            "$ref": "#/definitions/host_statusType"
           },
           "maxItems": 7,
           "minItems": 1
@@ -1838,22 +1936,22 @@
         "addr": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/host:addrType"
+            "$ref": "#/definitions/host_addrType"
           },
           "minItems": 0
         },
         "clID": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "crID": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "crDate": {
           "type": "string",
           "format": "date-time"
         },
         "upID": {
-          "$ref": "#/definitions/eppcom:clIDType"
+          "$ref": "#/definitions/eppcom_clIDType"
         },
         "upDate": {
           "type": "string",
@@ -1864,7 +1962,6 @@
           "format": "date-time"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name",
         "roid",
@@ -1873,7 +1970,7 @@
         "crDate"
       ]
     },
-    "host:statusType": {
+    "host_statusType": {
       "properties": {
         "@s": {
           "type": "string",
@@ -1899,28 +1996,27 @@
       },
       "type": "object"
     },
-    "host:panDataType": {
+    "host_panDataType": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/definitions/host:paNameType"
+          "$ref": "#/definitions/host_paNameType"
         },
         "paTRID": {
-          "$ref": "#/definitions/epp:trIDType"
+          "$ref": "#/definitions/epp_trIDType"
         },
         "paDate": {
           "type": "string",
           "format": "date-time"
         }
       },
-      "additionalProperties": false,
       "required": [
         "name",
         "paTRID",
         "paDate"
       ]
     },
-    "host:paNameType": {
+    "host_paNameType": {
       "properties": {
         "@paResult": {
           "type": "boolean"
@@ -1934,13 +2030,26 @@
       "type": "object"
     }
   },
-  "properties": {
-    "epp": {
+  "allOf": [
+    {
+      "properties": {
+        "command": {
+          "properties": {
+            "create": {
+              "$ref": "#/definitions/domain:createType"
+            }
+          },
+          "required": [
+            "create"
+          ]
+        }
+      },
+      "required": [
+        "command"
+      ]
+    },
+    {
       "$ref": "#/definitions/epp:eppType"
     }
-  },
-  "required": [
-    "epp"
-  ],
-  "additionalProperties": false
+  ]
 }
