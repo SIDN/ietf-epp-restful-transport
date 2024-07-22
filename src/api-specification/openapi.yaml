@@ -482,17 +482,22 @@ components:
   schemas:
     DomainCreateRequest:
       allOf:
-        - $ref: 'epp-schema.yaml#/definitions/epp_eppType'
-        - properties:
-            command:
-              type: object
-              properties:
-                create:
-                  $ref: 'epp-schema.yaml#/definitions/domain_createType'
-              required:
-                - create
-          required:
-            - command
+      - $ref: 'epp-schema.yaml#/definitions/epp_eppType'
+      - properties:
+          command:
+            properties:
+              create:
+                $ref: 'epp-schema.yaml#/definitions/domain_createType'
+              extension:
+                properties:
+                  secDNS:
+                    $ref: 'epp-schema.yaml#/definitions/secDNS_dsOrKeyType'
+                type: object
+            required:
+            - create
+            type: object
+        required:
+        - command
   parameters:
     p_id:
       name: id
