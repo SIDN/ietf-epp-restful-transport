@@ -124,6 +124,14 @@ def {{operationId}}({{#allParams}}{{^isHeaderParam}}{{^isBodyParam}}{{paramName}
         {{/isMap}}
     {{/allParams}}
 
+    {{#allParams}}
+        {{#isBodyParam}}
+    {{paramName}} = None
+    if connexion.request.is_json:
+        {{paramName}} = connexion.request.get_json()
+        {{/isBodyParam}}
+    {{/allParams}}   
+
     return {{baseName}}_impl.{{operationId}}({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}})
 
     #return 'Magic'
